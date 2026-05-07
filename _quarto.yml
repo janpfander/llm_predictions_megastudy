@@ -1,0 +1,36 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - "*.qmd"
+    - "!manuscript.qmd"
+    - "!preregistration.qmd"
+
+freeze: auto 
+
+website:
+  title: "LLM Predictions Megastudy"
+  description: "Predicting behavioral intervention effects on humans with LLM clones"
+  favicon: ""
+  page-footer:
+    center: "Jan Pfänder · 2026"
+  navbar:
+    background: dark
+    foreground: light
+    left:
+      # - text: "Preregistration"
+      #   href: index.qmd
+      - text: "Preregistration"
+        href: preregistration.qmd
+format:
+  html:
+    theme: cosmo
+    toc: true
+    toc-depth: 4
+    toc-location: right
+    code-fold: true
+    code-tools: true
+    smooth-scroll: true
+    link-external-newwindow: true
+
+bibliography: bibliography.bib

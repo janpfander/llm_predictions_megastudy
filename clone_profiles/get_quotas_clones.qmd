@@ -1,0 +1,438 @@
+---
+title: "Marginal Quotas for Clone Sampling: Census vs. GSS"
+subtitle: "Non-crossed quotas for AGE, GENDER, PARTY, RACE, EDUCATION, POLITICAL_ORIENTATION"
+author: "[Your name]"
+date: today
+format:
+  html:
+    toc: true
+    number-sections: true
+execute:
+  echo: true
+  eval: false
+  warning: false
+  message: false
+---
+
+# Purpose
+
+This script produces **non-crossed (marginal) quotas** for the six profile variables we need for an alternative prompting strategy: `AGE`, `GENDER`, `PARTY`, `RACE`, `EDUCATION`, `POLITICAL_ORIENTATION`.
+
+We compute each marginal twice:
+
+- **Census-based** quotas, using `tidycensus` against the most recent Census Population Estimates (vintage 2024) for `gender`, `age`, `race`, and the most recent ACS 1-year release for `education`. Census has no measure of party or political orientation, so those rows are `NA` on the Census side.
+- **GSS-based** quotas, computed from the most recent GSS wave with post-stratification weights (`wtssps`). GSS covers all six variables.
+
+The script binds the two sets and saves a comparison table.
+
+# Setup
+
+```{r setup}
+#| eval: false
+
+# install.packages(c("tidycensus", "tidyverse", "haven", "labelled", "fs", "here"))
+# remotes::install_github("kjhealy/gssr")
+
+library(tidycensus)
+library(tidyverse)
+library(gssr)
+library(haven)
+library(labelled)
+library(fs)
+library(here)
+
+tidycensus::census_api_key(Sys.getenv("my_census_api"))
+
+out_dir <- here("outputs", "quotas_clones")
+dir_create(out_dir)
+```
+
+# Census quotas
+
+We mirror the approach used in the main megastudy's `quotas.R` for the variables Census measures, and add education from ACS 1-year estimates.
+
+## Gender (18+)
+
+```{r census-gender}
+#| eval: false
+
+census_gender <- get_estimates(
+  geography        = "state",
+  product          = "characteristics",
+  breakdown        = c("SEX", "AGE"),
+  breakdown_labels = TRUE,
+  vintage          = 2024
+) |>
+  filter(SEX %in% c("Male", "Female"), AGE >= 18) |>
+  group_by(SEX) |>
+  summarise(value = sum(value), .groups = "drop") |>
+  mutate(
+    variable    = "Gender",
+    category    = SEX,
+    pct_census  = value / sum(value)
+  ) |>
+  select(variable, category, pct_census)
+```
+
+## Age (18+)
+
+```{r census-age}
+#| eval: false
+
+census_age <- get_estimates(
+  geography        = "state",
+  product          = "characteristics",
+  breakdown        = "AGE",
+  breakdown_labels = TRUE,
+  vintage          = 2024
+) |>
+  filter(AGE >= 18) |>
+  mutate(
+    category = case_when(
+      AGE <= 29 ~ "18-29",
+      AGE <= 44 ~ "30-44",
+      AGE <= 59 ~ "45-59",
+      TRUE      ~ "60+"
+    )
+  ) |>
+  group_by(category) |>
+  summarise(value = sum(value), .groups = "drop") |>
+  mutate(
+    variable   = "Age",
+    pct_census = value / sum(value)
+  ) |>
+  select(variable, category, pct_census)
+```
+
+## Race / Ethnicity (18+)
+
+```{r census-race}
+#| eval: false
+
+census_race <- get_estimates(
+  geography        = "state",
+  product          = "characteristics",
+  breakdown        = c("RACE", "HISP", "AGE"),
+  breakdown_labels = TRUE,
+  vintage          = 2024
+) |>
+  filter(HISP != "Both Hispanic Origins", AGE >= 18) |>
+  mutate(
+    category = case_when(
+      HISP == "Hispanic"      ~ "Hispanic / Latino",
+      RACE == "White alone"   ~ "White (non-Hispanic)",
+      RACE == "Black alone"   ~ "Black / African American",
+      RACE == "Asian alone"   ~ "Asian / Asian American",
+      TRUE                    ~ "Other"
+    )
+  ) |>
+  group_by(category) |>
+  summarise(value = sum(value), .groups = "drop") |>
+  mutate(
+    variable   = "Race / Ethnicity",
+    pct_census = value / sum(value)
+  ) |>
+  select(variable, category, pct_census)
+```
+
+## Education (25+)
+
+::: {.callout-note}
+ACS table `B15003` reports educational attainment for the population aged 25 and older — the standard table for educational distributions. The 18–24 group is excluded because most of them are still in school. This means the resulting education marginal is for the *25+* adult population, slightly older than the survey target (18+). For quota purposes the deviation is small (the 18–24 group is ~12% of adults and skews lower in completed education), and using B15003 keeps the script simple. If you want strict 18+ education, swap in table B15001 and aggregate by sex × age × education.
+:::
+
+We collapse the 25 disaggregated education codes in B15003 into the same 5 brackets used in the human survey (with Master's, Professional, and Doctorate lumped, since GSS lumps them into a single "Graduate" code).
+
+```{r census-education}
+#| eval: false
+
+# Most recent 1-year ACS available; update if a newer release exists
+acs_year <- 2023
+
+census_edu <- get_acs(
+  geography = "us",
+  table     = "B15003",
+  year      = acs_year,
+  survey    = "acs1"
+) |>
+  separate(variable, into = c("table", "code"), sep = "_") |>
+  mutate(
+    code_num = as.integer(code),
+    category = case_when(
+      code_num %in% 2:16            ~ "Less than high school",
+      code_num %in% c(17, 18)       ~ "High school / GED",
+      code_num %in% 19:21           ~ "Some college / Associate's",
+      code_num == 22                ~ "Bachelor's",
+      code_num %in% 23:25           ~ "Graduate (Master's / Prof / Doctorate)",
+      TRUE                          ~ NA_character_
+    )
+  ) |>
+  filter(!is.na(category)) |>
+  group_by(category) |>
+  summarise(value = sum(estimate), .groups = "drop") |>
+  mutate(
+    variable   = "Education",
+    pct_census = value / sum(value)
+  ) |>
+  select(variable, category, pct_census)
+```
+
+## Party and political orientation (not in Census)
+
+```{r census-politics-na}
+#| eval: false
+
+census_party <- tibble(
+  variable   = "Party",
+  category   = c("Democrat", "Republican", "Independent", "Other"),
+  pct_census = NA_real_
+)
+
+census_polorient <- tibble(
+  variable   = "Political orientation",
+  category   = c("Liberal", "Moderate", "Conservative"),
+  pct_census = NA_real_
+)
+```
+
+## Bind census quotas
+
+```{r census-bind}
+#| eval: false
+
+census_quotas <- bind_rows(
+  census_gender, census_age, census_race,
+  census_edu, census_party, census_polorient
+)
+```
+
+# GSS quotas
+
+We use the most recent GSS wave with post-stratification weights. All six variables come from the same source, so categories are internally consistent.
+
+```{r gss-load}
+#| eval: false
+
+target_year <- 2022
+
+data(gss_all)
+
+gss_recent <- gss_all |>
+  filter(year == target_year) |>
+  filter(!is.na(wtssps)) |>
+  select(year, age, sex, race, hispanic, degree, partyid, polviews, wtssps) |>
+  mutate(across(c(sex, race, hispanic, degree, partyid, polviews),
+                ~ as_factor(.x))) |>
+  mutate(age = as.numeric(age),
+         wtssps = as.numeric(wtssps))
+```
+
+## Helper: weighted marginal proportion
+
+```{r gss-helper}
+#| eval: false
+
+weighted_pct <- function(df, var, weight = "wtssps") {
+  df |>
+    drop_na({{ var }}) |>
+    count({{ var }}, wt = .data[[weight]], name = "value") |>
+    mutate(pct_gss = value / sum(value)) |>
+    rename(category = {{ var }}) |>
+    mutate(category = as.character(category))
+}
+```
+
+## Gender
+
+```{r gss-gender}
+#| eval: false
+
+gss_gender <- gss_recent |>
+  weighted_pct(sex) |>
+  mutate(variable = "Gender",
+         category = recode(category,
+                           "MALE"   = "Male",
+                           "FEMALE" = "Female")) |>
+  select(variable, category, pct_gss)
+```
+
+## Age
+
+```{r gss-age}
+#| eval: false
+
+gss_age <- gss_recent |>
+  filter(!is.na(age)) |>
+  mutate(category = case_when(
+    age <= 29 ~ "18-29",
+    age <= 44 ~ "30-44",
+    age <= 59 ~ "45-59",
+    TRUE      ~ "60+"
+  )) |>
+  count(category, wt = wtssps, name = "value") |>
+  mutate(pct_gss   = value / sum(value),
+         variable  = "Age") |>
+  select(variable, category, pct_gss)
+```
+
+## Race / Ethnicity
+
+```{r gss-race}
+#| eval: false
+
+# GSS race + hispanic combined into the same 5-category schema used for Census
+gss_race <- gss_recent |>
+  drop_na(race, hispanic) |>
+  mutate(
+    is_hisp = !grepl("NOT HISPANIC", toupper(as.character(hispanic))),
+    category = case_when(
+      is_hisp                                 ~ "Hispanic / Latino",
+      toupper(as.character(race)) == "WHITE"  ~ "White (non-Hispanic)",
+      toupper(as.character(race)) == "BLACK"  ~ "Black / African American",
+      TRUE                                    ~ "Other"  # GSS lumps Asian into "Other"
+    )
+  ) |>
+  count(category, wt = wtssps, name = "value") |>
+  mutate(pct_gss   = value / sum(value),
+         variable  = "Race / Ethnicity") |>
+  select(variable, category, pct_gss)
+```
+
+::: {.callout-note}
+GSS's `race` variable has only three levels (White, Black, Other), so Asian respondents are folded into Other. This is a known limitation of GSS race coding. The Census categories are more granular but we collapse to GSS's bins to make the comparison meaningful. If you want to keep Asian separate, you would need to use `racecen1` (the more detailed Census-recoded race variable, available in some years).
+:::
+
+## Education
+
+```{r gss-education}
+#| eval: false
+
+gss_edu <- gss_recent |>
+  drop_na(degree) |>
+  mutate(category = case_when(
+    grepl("LT HIGH SCHOOL|LESS THAN", toupper(as.character(degree))) ~ "Less than high school",
+    grepl("HIGH SCHOOL", toupper(as.character(degree)))              ~ "High school / GED",
+    grepl("JUNIOR|ASSOCIATE", toupper(as.character(degree)))         ~ "Some college / Associate's",
+    grepl("BACHELOR", toupper(as.character(degree)))                  ~ "Bachelor's",
+    grepl("GRADUATE", toupper(as.character(degree)))                  ~ "Graduate (Master's / Prof / Doctorate)",
+    TRUE                                                              ~ NA_character_
+  )) |>
+  drop_na(category) |>
+  count(category, wt = wtssps, name = "value") |>
+  mutate(pct_gss   = value / sum(value),
+         variable  = "Education") |>
+  select(variable, category, pct_gss)
+```
+
+## Party
+
+```{r gss-party}
+#| eval: false
+
+# partyid: 0 = strong Dem ... 6 = strong Rep, 7 = other
+gss_party <- gss_recent |>
+  drop_na(partyid) |>
+  mutate(
+    pid_chr = toupper(as.character(partyid)),
+    category = case_when(
+      grepl("STRONG DEMOCRAT|NOT STR DEMOCRAT|IND,NEAR DEM", pid_chr) ~ "Democrat",
+      grepl("STRONG REPUBLICAN|NOT STR REPUBLICAN|IND,NEAR REP", pid_chr) ~ "Republican",
+      grepl("INDEPENDENT", pid_chr)                                       ~ "Independent",
+      grepl("OTHER", pid_chr)                                             ~ "Other",
+      TRUE                                                                ~ NA_character_
+    )
+  ) |>
+  drop_na(category) |>
+  count(category, wt = wtssps, name = "value") |>
+  mutate(pct_gss   = value / sum(value),
+         variable  = "Party") |>
+  select(variable, category, pct_gss)
+```
+
+::: {.callout-note}
+GSS `partyid` distinguishes strong/weak partisans and "leaners" (independents who lean toward a party). We collapse leaners *with* their party (the standard "branched" recoding); pure independents stay as "Independent". Adjust the `case_when` if you prefer the strict-categorical recoding (where leaners count as Independent).
+:::
+
+## Political orientation
+
+```{r gss-polorient}
+#| eval: false
+
+# polviews: 1 = extremely liberal ... 7 = extremely conservative
+gss_polorient <- gss_recent |>
+  drop_na(polviews) |>
+  mutate(
+    pv_chr = toupper(as.character(polviews)),
+    category = case_when(
+      grepl("LIBERAL", pv_chr)      ~ "Liberal",
+      grepl("MODERATE", pv_chr)     ~ "Moderate",
+      grepl("CONSERVATIVE", pv_chr) ~ "Conservative",
+      TRUE                          ~ NA_character_
+    )
+  ) |>
+  drop_na(category) |>
+  count(category, wt = wtssps, name = "value") |>
+  mutate(pct_gss   = value / sum(value),
+         variable  = "Political orientation") |>
+  select(variable, category, pct_gss)
+```
+
+## Bind GSS quotas
+
+```{r gss-bind}
+#| eval: false
+
+gss_quotas <- bind_rows(
+  gss_gender, gss_age, gss_race,
+  gss_edu, gss_party, gss_polorient
+)
+```
+
+# Comparison data frame
+
+We join the two sources on `variable` and `category`, compute the difference, and order the rows for readability.
+
+```{r compare}
+#| eval: false
+
+quota_compare <- full_join(
+  census_quotas, gss_quotas,
+  by = c("variable", "category")
+) |>
+  mutate(
+    diff_gss_minus_census = pct_gss - pct_census,
+    pct_census            = round(pct_census, 4),
+    pct_gss               = round(pct_gss, 4),
+    diff_gss_minus_census = round(diff_gss_minus_census, 4)
+  ) |>
+  arrange(
+    factor(variable, levels = c("Gender", "Age", "Race / Ethnicity",
+                                "Education", "Party", "Political orientation")),
+    category
+  )
+
+quota_compare
+```
+
+# Save
+
+```{r save}
+#| eval: false
+
+write_csv(quota_compare, path(out_dir, "quotas_comparison.csv"))
+write_csv(census_quotas, path(out_dir, "quotas_census.csv"))
+write_csv(gss_quotas,    path(out_dir, "quotas_gss.csv"))
+
+cat(sprintf(
+  "Saved 3 files to %s:\n  - quotas_comparison.csv (Census vs GSS, side-by-side)\n  - quotas_census.csv\n  - quotas_gss.csv\n",
+  out_dir
+))
+```
+
+# Notes
+
+- **Census party / political orientation** are intentionally `NA` — the Census Bureau does not measure these. Any clone-sampling strategy that requires party or ideology quotas must use a survey-based source (GSS, ANES, Pew).
+- **Education age range** is 25+ for Census (table B15003) and 18+ for GSS (the standard adult population). The two are not perfectly comparable; expect Census to show modestly higher educational attainment because younger adults still in school are excluded. Swap in B15001 if strict 18+ is needed.
+- **Race coding** is collapsed to the GSS schema (which lacks a separate Asian category). To preserve Asian as a distinct quota, use `racecen1` from GSS (where available) and re-run the race section.
+- **GSS party recoding** treats leaners as partisans (the standard branched recoding). Adjust the `case_when` in the `gss_party` block if you prefer pure-independent treatment.
+- **Output schema** of `quotas_comparison.csv` is one row per (variable × category) with columns `pct_census`, `pct_gss`, `diff_gss_minus_census`. Plug this into your simulation framework as the quota target.

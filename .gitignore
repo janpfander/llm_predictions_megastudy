@@ -4,3 +4,15 @@
 .httr-oauth
 .DS_Store
 .quarto
+.Rprofile
+
+submissions/
+/.quarto/
+**/*.quarto_ipynb
+
+manuscript*
+preregistration*
+
+data/
+
+CONTEXT.md

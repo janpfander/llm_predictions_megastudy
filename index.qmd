@@ -1,0 +1,18 @@
+---
+title: "Predicting the effects of behavioral interventions on humans with LLMs"
+format:
+  html:
+    code-tools: false
+    toc: false
+sidebar: false
+---
+
+```{r echo=FALSE}
+yaml_metadata <- rmarkdown::yaml_front_matter(here::here("preregistration.qmd"))
+title <- yaml_metadata$title
+abstract <- yaml_metadata$abstract
+```
+
+### Abstract
+
+`r abstract`
