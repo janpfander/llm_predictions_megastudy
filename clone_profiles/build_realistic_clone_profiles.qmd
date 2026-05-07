@@ -359,11 +359,11 @@ profiles <- profiles |>
 #| eval: false
 
 # (a) Full profile table with raw GSS values + both prompt strings
-write_csv(profiles, path(out_dir, "profiles.csv"))
+write_csv(profiles, "clone_profiles/profiles.csv")
 
 # (b) Compact prompt-only file: one row per clone, two prompt columns
 profiles |>
   select(profile_id, profile_basic, profile_detailed) |>
-  write_csv(path(out_dir, "prompts.csv"))
+  write_csv("clone_profiles/prompts.csv")
 ```
 

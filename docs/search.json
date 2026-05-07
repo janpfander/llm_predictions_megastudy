@@ -82,5 +82,33 @@
     "title": "Predicting the effects of behavioral interventions on humans with LLMs",
     "section": "Measures",
     "text": "Measures\n\n\nCode\noutcomes_primary &lt;- \"trust_multidimensional\"\n\noutcomes_secondary &lt;- c(\n  \"trust_post\", \"distrust_post\", \"donation_ams\",\n  \"funding_perceptions\", \"policy_role_mean\", \"inst_trust_mean\"\n)\n\noutcomes_binary &lt;- \"newsletter_signup\"\n\noutcomes_tertiary &lt;- c(\n  \"belief_post\", \"concern_mean\", \"policy_general\",\n  \"policy_specific_mean\", \"behavior_mean\"\n)\n\noutcomes_continuous &lt;- c(outcomes_primary, outcomes_secondary, outcomes_tertiary)\n\ntrust_dimensions &lt;- c(\n  \"trust_competence\", \"trust_integrity\", \"trust_benevolence\", \"trust_openness\"\n)\n\ntrust_items &lt;- c(\n  paste0(\"trust_competence_\",  1:3),\n  paste0(\"trust_integrity_\",   1:3),\n  paste0(\"trust_benevolence_\", 1:3),\n  paste0(\"trust_openness_\",    1:3)\n)\n\nmoderators_cat &lt;- c(\"gender\", \"age_band\", \"race\", \"education\", \"income\", \"party\")\n\noutcome_label_map &lt;- c(\n  trust_multidimensional = \"Multidimensional trust (primary)\",\n  trust_post             = \"Overall trust\",\n  distrust_post          = \"Distrust\",\n  donation_ams           = \"Donation to AMS ($)\",\n  newsletter_signup      = \"Newsletter sign-up\",\n  funding_perceptions    = \"Funding perceptions\",\n  policy_role_mean       = \"Policy role\",\n  inst_trust_mean        = \"Institutional trust\",\n  belief_post            = \"Climate belief\",\n  concern_mean           = \"Climate concern\",\n  policy_general         = \"General climate policy\",\n  policy_specific_mean   = \"Specific climate policy\",\n  behavior_mean          = \"Pro-climate behavior\"\n)"
+  },
+  {
+    "objectID": "clone_profiles/build_realistic_clone_profiles.html",
+    "href": "clone_profiles/build_realistic_clone_profiles.html",
+    "title": "Building the behavioral clone profile bank from real human profiles",
+    "section": "",
+    "text": "# Required packages\n# install.packages(c(\"tidyverse\", \"haven\", \"labelled\", \"fs\", \"glue\", \"here\"))\n# remotes::install_github(\"kjhealy/gssr\")\n# remotes::install_github(\"kjhealy/gssrdoc\")\n\nlibrary(tidyverse)\nlibrary(gssr)        # GSS data\nlibrary(gssrdoc)     # GSS variable documentation\nlibrary(haven)       # labelled data handling\nlibrary(labelled)    # label utilities\nlibrary(glue)        # string interpolation\nlibrary(here)        # project paths\nlibrary(fs)          # file paths\nlibrary(tinytable)\n\n# Reproducibility for any tie-breaking in deterministic replication\nset.seed(2026)"
+  },
+  {
+    "objectID": "clone_profiles/build_realistic_clone_profiles.html#step-3a.-recode-gss-missing-value-labels-to-proper-na",
+    "href": "clone_profiles/build_realistic_clone_profiles.html#step-3a.-recode-gss-missing-value-labels-to-proper-na",
+    "title": "Building the behavioral clone profile bank from real human profiles",
+    "section": "6.1 Step 3a. Recode GSS missing-value labels to proper NA",
+    "text": "6.1 Step 3a. Recode GSS missing-value labels to proper NA\nIn GSS labelled data, missingness appears as named factor levels rather than real NAs. We recode the four common labels (\"don't know\", \"no answer\", \"skipped on web\", \"iap\") before applying the missing-data rule.\n\ngss_missing_labels &lt;- c(\"no answer\", \"skipped on web\")\n\ngss_sel &lt;- gss_sel |&gt;\n  mutate(across(where(is.factor), ~ {\n    chr &lt;- as.character(.x)\n    chr[tolower(chr) %in% gss_missing_labels] &lt;- NA\n    factor(chr, levels = setdiff(levels(.x), gss_missing_labels))\n  }))"
+  },
+  {
+    "objectID": "clone_profiles/build_realistic_clone_profiles.html#step-3b.-tiered-missing-data-rule",
+    "href": "clone_profiles/build_realistic_clone_profiles.html#step-3b.-tiered-missing-data-rule",
+    "title": "Building the behavioral clone profile bank from real human profiles",
+    "section": "6.2 Step 3b. Tiered missing-data rule",
+    "text": "6.2 Step 3b. Tiered missing-data rule\n\n# Required: respondents missing any of these are dropped.\n# Includes the post-stratification weight itself (~17% NA in GSS 2024)\n# plus the core demographic variables we need for prompt construction.\nrequired_vars &lt;- c(\n  \"wtssps\",                           # post-strat weight; drop NA\n  \"age\", \"sex\", \"race\", \"hispanic\",\n  \"degree\", \"income16\", \"class\",\n  \"region\",\n  \"partyid\", \"polviews\",\n  \"relig\"\n)\n\ngss_complete &lt;- gss_sel |&gt;\n  drop_na(all_of(required_vars))"
+  },
+  {
+    "objectID": "clone_profiles/build_realistic_clone_profiles.html#step-3c.-audit",
+    "href": "clone_profiles/build_realistic_clone_profiles.html#step-3c.-audit",
+    "title": "Building the behavioral clone profile bank from real human profiles",
+    "section": "6.3 Step 3c. Audit",
+    "text": "6.3 Step 3c. Audit\n\nn_before &lt;- nrow(gss_sel)\nn_after  &lt;- nrow(gss_complete)\n\ncat(sprintf(\n  \"Required-vars complete cases: %d of %d (%.1f%%).\\n\",\n  n_after, n_before, 100 * n_after / n_before\n))\n\noptional_vars &lt;- c(\"reborn\", \"reliten\", \"attend\", \"consci\", \"hompop\")\n\n# Per-variable NA rates among the kept respondents (optional variables only)\ngss_complete |&gt;\n  summarise(across(all_of(optional_vars), ~ mean(is.na(.x)))) |&gt;\n  pivot_longer(everything(),\n               names_to  = \"variable\",\n               values_to = \"pct_na\") |&gt;\n  mutate(pct_na = round(100 * pct_na, 1))"
   }
 ]
