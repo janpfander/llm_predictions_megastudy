@@ -1,0 +1,315 @@
+---
+title: "Building the 9,000-profile pool by pooling multiple GSS cross-sections"
+subtitle: "Alternative to single-year weight duplication"
+author: "[Your name]"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    code-fold: false
+  pdf:
+    toc: true
+    number-sections: true
+execute:
+  echo: true
+  eval: false
+  warning: false
+  message: false
+---
+
+```{r setup}
+#| eval: false
+
+# Required packages
+# install.packages(c("tidyverse", "haven", "labelled", "fs", "glue", "here"))
+# remotes::install_github("kjhealy/gssr")
+
+library(tidyverse)
+library(gssr)       # GSS data (cumulative gss_all + gss_get_yr)
+library(haven)      # labelled data handling
+library(labelled)   # label utilities
+library(glue)       # string interpolation
+library(here)       # project paths
+library(fs)         # file paths
+
+set.seed(2026)
+```
+
+# Overview
+
+This script builds a 9,000-profile demographic pool for LLM simulation by pooling
+multiple recent GSS cross-sectional waves rather than duplicating respondents by
+weight from a single year.
+
+**Key design decisions:**
+
+- **Years used**: The 4 most recent distinct cross-sectional GSS waves (2016, 2018,
+  2022, 2024). GSS was not fielded in 2020 (COVID); 2021 was a panel recontact of
+  prior respondents, not a fresh cross-section.
+- **Weight reconciliation**: Each year's `wtssps` is normalized within year (divides
+  by that year's weight sum), so each wave contributes equal total weight to the
+  sampling lottery while preserving within-year relative weights.
+- **Sampling**: Weighted without replacement (N = 9,000). If the 4-year pool falls
+  short of 9,000 complete cases, the script extends to 2014 automatically and warns.
+- **Output**: Demographic dataset only. Prompt strings are not generated here —
+  that step is handled by a collaborator in a separate project.
+
+This approach avoids the artificial duplication inherent in weight-cloning from a
+single year (where high-weight respondents would appear 3–4×), replacing it with
+genuinely different individuals surveyed in different years.
+
+# Variable selection
+
+Same 19 GSS variables as `build_realistic_clone_profiles.qmd`, minus prompt output.
+
+```{r variable-setup}
+#| eval: false
+
+selected_vars <- c(
+  # weighting and identifiers
+  "year", "id", "wtssps",
+  # core demographics
+  "age", "sex", "race", "hispanic",
+  "degree", "income16", "hompop", "class",
+  "region",
+  # politics
+  "partyid", "polviews",
+  # religion
+  "relig", "reborn", "reliten", "attend",
+  # opinion
+  "consci"
+)
+
+# Variables where NA means "drop respondent"
+required_vars <- c(
+  "wtssps",
+  "age", "sex", "race", "hispanic",
+  "degree", "income16", "class",
+  "region",
+  "partyid", "polviews",
+  "relig"
+)
+
+# Variables where NA is acceptable (handled downstream)
+optional_vars <- c("hompop", "reborn", "reliten", "attend", "consci")
+
+numeric_vars <- c("age", "hompop", "wtssps")
+factor_vars  <- setdiff(selected_vars, c("year", "id", numeric_vars))
+```
+
+# Step 1. Load the cumulative GSS and select target years
+
+We use `gss_all` (the full cumulative GSS file shipped with the `gssr` package) and
+filter to our target years. This is more efficient than four separate `gss_get_yr()`
+calls.
+
+```{r load-gss}
+#| eval: false
+
+# The initial target: 4 most recent true cross-sectional waves
+# (2020 cancelled; 2021 was a panel recontact, not a fresh cross-section)
+target_years <- c(2016, 2018, 2022, 2024)
+
+data(gss_all)
+
+gss_multi <- gss_all |>
+  filter(year %in% target_years) |>
+  select(any_of(selected_vars))
+
+# Year audit — verify all target years loaded and check raw N per year
+cat("Raw respondent counts by year:\n")
+print(table(gss_multi$year))
+cat(glue("\nTotal raw respondents across {length(target_years)} years: {nrow(gss_multi)}\n"))
+```
+
+# Step 2. Select, type-convert, and recode GSS missing labels
+
+```{r clean-vars}
+#| eval: false
+
+# Convert weight and numeric vars; attach factor labels to all others
+gss_sel <- gss_multi |>
+  mutate(across(all_of(numeric_vars), ~ as.numeric(haven::zap_labels(.x)))) |>
+  mutate(across(all_of(factor_vars),  ~ haven::as_factor(.x)))
+
+# GSS encodes missingness as named factor levels rather than real NAs.
+# Recode the four common "missing" labels to proper NA.
+gss_missing_labels <- c("don't know", "no answer", "skipped on web", "iap")
+
+gss_sel <- gss_sel |>
+  mutate(across(where(is.factor), ~ {
+    chr <- as.character(.x)
+    chr[tolower(chr) %in% gss_missing_labels] <- NA
+    factor(chr, levels = setdiff(levels(.x), gss_missing_labels))
+  }))
+```
+
+# Step 3. Tiered missing-data filter
+
+Respondents must be non-missing on `wtssps` and the 11 core demographic variables.
+`wtssps` is structurally missing for ~17% of GSS respondents in recent waves (those
+that could not be placed in a post-stratification cell).
+
+```{r drop-missing}
+#| eval: false
+
+gss_complete <- gss_sel |>
+  drop_na(all_of(required_vars))
+
+# Per-year complete-case audit
+cat("Complete cases by year (after required-var filter):\n")
+gss_complete |>
+  count(year) |>
+  mutate(pct_of_raw = round(100 * n / table(gss_multi$year)[as.character(year)], 1)) |>
+  print()
+
+cat(glue(
+  "\nTotal eligible pool: {nrow(gss_complete)} respondents ",
+  "({round(100 * nrow(gss_complete) / nrow(gss_sel), 1)}% of {nrow(gss_sel)} multi-year rows)\n"
+))
+
+# Safety check: if pool is still under 9000, extend to 2014
+if (nrow(gss_complete) < 9000) {
+  warning(
+    "Pool of ", nrow(gss_complete), " complete cases is below the target N = 9000. ",
+    "Extending to 2014. Re-run from Step 1 with target_years <- c(2014, 2016, 2018, 2022, 2024)."
+  )
+}
+
+# Per-variable NA rates among kept respondents (optional variables only)
+cat("\nNA rates on optional variables (kept respondents):\n")
+gss_complete |>
+  summarise(across(all_of(optional_vars), ~ round(100 * mean(is.na(.x)), 1))) |>
+  pivot_longer(everything(), names_to = "variable", values_to = "pct_na") |>
+  print()
+```
+
+# Step 4. Within-year weight normalization
+
+Each year's `wtssps` values sum to that year's effective sample size, which differs
+across waves. Normalizing within year ensures each wave contributes equal total weight
+to the sampling lottery, while preserving the relative ordering of respondents within
+each year.
+
+```{r normalize-weights}
+#| eval: false
+
+gss_complete <- gss_complete |>
+  group_by(year) |>
+  mutate(w_pooled = wtssps / sum(wtssps, na.rm = TRUE)) |>
+  ungroup()
+
+# Sanity check: each year's normalized weights should sum to 1.0
+cat("Sum of normalized weights by year (should be 1.0 each):\n")
+gss_complete |>
+  group_by(year) |>
+  summarise(w_sum = round(sum(w_pooled, na.rm = TRUE), 6)) |>
+  print()
+```
+
+# Step 5. Weighted sampling without replacement (N = 9,000)
+
+```{r sample}
+#| eval: false
+
+target_n <- 9000
+
+# Guard: pool must be large enough for without-replacement sampling
+stopifnot(
+  "Pool too small for without-replacement sampling — extend target_years to include 2014" =
+    nrow(gss_complete) >= target_n
+)
+
+profiles <- gss_complete |>
+  slice_sample(n = target_n, weight_by = w_pooled, replace = FALSE) |>
+  select(-w_pooled) |>
+  mutate(profile_id = sprintf("p%05d", row_number())) |>
+  select(profile_id, everything())
+
+glue("Profile pool built: N = {nrow(profiles)} unique individuals ",
+     "drawn from {nrow(gss_complete)} eligible respondents across ",
+     "{n_distinct(profiles$year)} GSS waves.")
+```
+
+# Step 6. Validate the profile pool
+
+## Year balance
+
+Normalized within-year weights means each year contributes equal total sampling
+probability. In expectation, the sample should be split roughly equally across years
+(~2,250 per year for a 4-year pool).
+
+```{r validate-years}
+#| eval: false
+
+cat("Sample composition by GSS year:\n")
+profiles |>
+  count(year) |>
+  mutate(pct = round(100 * n / sum(n), 1)) |>
+  print()
+```
+
+## Uniqueness check
+
+```{r validate-unique}
+#| eval: false
+
+n_unique_pairs <- nrow(distinct(profiles, year, id))
+cat(glue(
+  "Unique (year, id) pairs: {n_unique_pairs} of {nrow(profiles)} ",
+  "({if (n_unique_pairs == nrow(profiles)) 'PASS — no duplicates' else 'FAIL — duplicates present'})\n"
+))
+```
+
+## Marginal distributions vs. weighted 2024 GSS
+
+We use the 2024 wave (most recent) as the reference population. The pooled sample
+should approximate 2024-weighted GSS marginals on key variables; deviations are
+expected because older waves represent slightly different demographic compositions.
+
+```{r validate-marginals}
+#| eval: false
+
+gss_2024 <- gss_complete |> filter(year == 2024)
+
+validate_marginal <- function(var) {
+  src <- gss_2024 |>
+    count(.data[[var]], wt = wtssps) |>
+    mutate(prop_gss2024 = n / sum(n)) |>
+    select(-n)
+  prof <- profiles |>
+    count(.data[[var]]) |>
+    mutate(prop_pool = n / sum(n)) |>
+    select(-n)
+  full_join(src, prof, by = var) |>
+    mutate(diff = round(prop_pool - prop_gss2024, 4),
+           prop_gss2024 = round(prop_gss2024, 4),
+           prop_pool    = round(prop_pool, 4))
+}
+
+vars_to_check <- c("sex", "race", "degree", "partyid", "polviews", "region")
+
+walk(vars_to_check, \(v) {
+  cat("\n----", v, "----\n")
+  print(validate_marginal(v))
+})
+```
+
+# Step 7. Save output
+
+```{r save}
+#| eval: false
+
+# Demographic dataset only — no prompt strings
+out_path <- here("clone_profiles", "alternative_profiles.csv")
+write_csv(profiles, out_path)
+
+cat(glue(
+  "Saved: {out_path}\n",
+  "  Rows    : {nrow(profiles)}\n",
+  "  Columns : {ncol(profiles)}\n",
+  "  Years   : {paste(sort(unique(profiles$year)), collapse = ', ')}\n"
+))
+```

@@ -166,7 +166,7 @@ In GSS labelled data, missingness appears as named factor levels rather than rea
 ```{r recode-na}
 #| eval: false
 
-gss_missing_labels <- c("no answer", "skipped on web")
+gss_missing_labels <- c("don't know", "no answer", "skipped on web", "iap")
 
 gss_sel <- gss_sel |>
   mutate(across(where(is.factor), ~ {
