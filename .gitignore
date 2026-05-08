@@ -11,7 +11,7 @@ submissions/
 **/*.quarto_ipynb
 
 manuscript*
-preregistration*
+
 
 data/
 

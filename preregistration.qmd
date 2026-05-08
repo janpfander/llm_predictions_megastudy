@@ -1,0 +1,722 @@
+---
+title: "Predicting the effects of behavioral interventions on humans with LLMs"
+
+abstract: |
+    We test the potential of predicting human behavior in survey experiments with behavioral clones—large language model (LLM) generated artificial agents mimicking human participants. To evaluate this potential, we predict the outcomes of a large-scale field experiment (N = ~22,000) to be conducted in the United States. The experiment will test 20 text-based interventions designed to increase trust in climate scientists, assessing a broad range of secondary, outcomes including self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization). Before the human study is fielded, we will simulate it with behavioral clones using demographically representative U.S. participant profiles. We will lock the simulated dataset and analysis code. Once human data are available, we will compare clone-based predictions to human results using a set of preregistered metrics spanning (i) inferential agreement and estimate convergence on treatment effects, (ii) outcome distributions, and (iii) subgroup heterogeneity. Our study will provide a large-scale, credible benchmark test of LLMs' potential---and limitations---as tools for simulating human subjects in social science research. All analyses in this preregistration are demonstrated on simulated placeholder data with identical structure to the real datasets; no human outcome data have been observed at the time of registration.
+
+# bibliography: ../references.bib
+#csl: https://www.zotero.org/styles/apa
+date: "2026-05-04"
+
+format:
+  html:
+    code-fold: true
+    toc: true
+    toc-depth: 4
+  pdf:
+    toc: true
+    toc-depth: 5
+    include-before-body:
+      text: |
+        \clearpage
+    colorlinks: true
+    tbl-colwidths: true
+    header-includes:
+      - \usepackage{float}
+      - \floatplacement{figure}{H}
+      - \floatplacement{table}{H}
+
+execute:
+  echo: true
+  warning: false
+  message: false
+  fig-width: 8
+  fig-height: 5
+  fig-dpi: 300
+---
+
+```{r}
+#| label: setup
+#| output: false
+
+# packages
+library(tidyverse)
+library(sandwich)
+library(lmtest)
+library(marginaleffects)
+library(broom)
+library(MetBrewer)
+library(patchwork)
+library(gt)
+library(here)
+
+# custom functions
+source(here("R/functions/statistics.R"))
+source(here("R/functions/plots.R"))
+source(here("R/functions/tables.R"))
+source(here("R/functions/reporting.R"))
+
+# simulated (random) data
+human_data <- readRDS(here("data/simulation_preregistration/human_data_preregistration.rds"))
+llm_data   <- readRDS(here("data/simulation_preregistration/llm_data_preregistration.rds"))
+
+# actual data later
+# human_data  <- readRDS("data/cleaned_llm.rds")
+# llm_data <- readRDS("data/cleaned_llm.rds")
+```
+
+::: {.callout-important}
+**Placeholder data.** Both datasets used throughout are simulated random noise with the correct structure. The analysis code will be applied to real human and LLM clone data without modification once both are available.
+:::
+
+## Research Questions
+
+The main outcome of the megastudy is trust in climate scientists. However, there are several secondary and tertiary outcomes. For each of these outcomes we have the following research questions:
+
+**RQ1 — ATE recovery.** How well do LLM clones predict the average treatment effects (ATEs) across 20 interventions?
+
+**RQ2 — Distribution shape recovery.** How well do LLM clones mirror human response distributions (within experimental conditions)?
+
+**RQ3 — Subgroup heterogeneity recovery.** How well do LLM clones recover differences in intervention effects across different demographic groups?
+
+**RQ4 — Individual-level demographic calibration.** Are LLM clone responses calibrated to the demographic profile of each simulated participant? We examine (i) whether clones reproduce the correct baseline response level for each demographic group, (ii) whether demographic variables predict clone responses with the same magnitude as in humans (stereotyping test), and (iii) whether within-subgroup response distributions match between humans and clones.
+
+**Secondary — Stacked-model discrepancy test.** As a complement to the TOST-based equivalence tests in RQ1, we pool human and clone data and estimate a condition × source interaction, providing a direct inferential test of whether each clone ATE significantly departs from its human counterpart.
+
+## Measures
+
+```{r}
+#| label: variables
+
+outcomes_primary <- "trust_multidimensional"
+
+outcomes_secondary <- c(
+  "trust_post", "distrust_post", 
+  #"donation_ams",
+  "funding_perceptions", "policy_role_mean", "inst_trust_mean"
+)
+
+outcomes_binary <- "newsletter_signup"
+
+outcomes_tertiary <- c(
+  "belief_post", "concern_mean", "policy_general",
+  "policy_specific_mean", "behavior_mean"
+)
+
+outcomes_continuous <- c(outcomes_primary, outcomes_secondary, outcomes_tertiary)
+
+trust_dimensions <- c(
+  "trust_competence", "trust_integrity", "trust_benevolence", "trust_openness"
+)
+
+trust_items <- c(
+  paste0("trust_competence_",  1:3),
+  paste0("trust_integrity_",   1:3),
+  paste0("trust_benevolence_", 1:3),
+  paste0("trust_openness_",    1:3)
+)
+
+moderators_cat <- c("gender", "age_band", "race", "education", "income", "party")
+
+outcome_label_map <- c(
+  trust_multidimensional = "Multidimensional trust (primary)",
+  trust_post             = "Overall trust",
+  distrust_post          = "Distrust",
+  donation_ams           = "Donation to AMS ($)",
+  newsletter_signup      = "Newsletter sign-up",
+  funding_perceptions    = "Funding perceptions",
+  policy_role_mean       = "Policy role",
+  inst_trust_mean        = "Institutional trust",
+  belief_post            = "Climate belief",
+  concern_mean           = "Climate concern",
+  policy_general         = "General climate policy",
+  policy_specific_mean   = "Specific climate policy",
+  behavior_mean          = "Pro-climate behavior"
+)
+```
+
+## Comparison Functions
+
+Two helper functions operationalize the comparison metrics. They are applied symmetrically to human and LLM clone model outputs throughout the document.
+
+### Comparison metrics
+
+`compare_estimates()` is used throughout the document — for ATEs (RQ1), moderator interaction estimates (RQ3), and secondary analyses. It takes two tidy model result tibbles and a `join_by` argument specifying the key columns, and computes six metrics:
+
+- **Spearman ρ** — rank correlation of point estimates; primary metric for RQ1
+- **Pearson r** — linear correlation of point estimates
+- **RMSE** — root mean squared error; captures magnitude accuracy
+- **Directional agreement** — % of estimates with the same sign
+- **Inferential agreement** — % of estimates with the same BH-adjusted conclusion (significantly positive, significantly negative, or non-significant at α = .05)
+- **TOST (%)** — % of individual estimate pairs that pass an equivalence test with preregistered bound Δ_k = 0.5 × |estimate_human_k|; equivalence is declared (two one-sided tests, α = .05) when the clone estimate falls within ±50% of the human estimate. Note: when human estimates are near zero, Δ_k shrinks accordingly, making equivalence harder to achieve.
+
+```{r}
+#| label: fn-compare-estimates
+
+compare_estimates <- function(h_result, l_result,
+                              join_by = "condition",
+                              tost_delta_pct = 0.5) {
+
+  # Standardize columns; SE derived from std.error or from 95% CI width if absent
+  prep <- function(df, suffix) {
+    df |>
+      select(all_of(join_by), estimate) |>
+      mutate(
+        se    = if ("std.error" %in% names(df)) df$std.error
+                else if (all(c("conf.low", "conf.high") %in% names(df)))
+                  (df$conf.high - df$conf.low) / (2 * 1.96)
+                else NA_real_,
+        p_adj = if ("p.value_adjusted" %in% names(df)) df$p.value_adjusted
+                else NA_real_
+      ) |>
+      rename_with(~ paste0(.x, "_", suffix), c(estimate, se, p_adj))
+  }
+
+  joined <- inner_join(prep(h_result, "h"), prep(l_result, "l"), by = join_by)
+
+  # Three-level inferential category based on BH-adjusted p and direction
+  infer_cat <- function(est, p_adj) {
+    case_when(
+      p_adj < 0.05 & est > 0 ~ "sig_positive",
+      p_adj < 0.05 & est < 0 ~ "sig_negative",
+      TRUE                   ~ "not_significant"
+    )
+  }
+
+  # TOST: equivalence declared when |ATE_h - ATE_l| < delta = tost_delta_pct × |ATE_h|
+  # p_tost is the maximum of the two one-sided p-values; equivalent if p_tost < 0.05
+  joined |>
+    mutate(
+      delta      = tost_delta_pct * abs(estimate_h),
+      diff       = estimate_h - estimate_l,
+      se_diff    = sqrt(se_h^2 + se_l^2),
+      p_lower    = pnorm((diff + delta) / se_diff, lower.tail = FALSE),
+      p_upper    = pnorm((diff - delta) / se_diff),
+      p_tost     = pmax(p_lower, p_upper),
+      equivalent = p_tost < 0.05,
+      same_infer = infer_cat(estimate_h, p_adj_h) == infer_cat(estimate_l, p_adj_l)
+    ) |>
+    summarise(
+      spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
+                            use = "pairwise.complete.obs"),
+      pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs"),
+      rmse            = sqrt(mean((estimate_h - estimate_l)^2, na.rm = TRUE)),
+      directional_pct = mean(sign(estimate_h) == sign(estimate_l), na.rm = TRUE) * 100,
+      inferential_pct = if (!anyNA(p_adj_h) && !anyNA(p_adj_l))
+        mean(same_infer, na.rm = TRUE) * 100 else NA_real_,
+      tost_pct        = mean(equivalent, na.rm = TRUE) * 100
+    )
+}
+```
+
+### Distribution comparison metrics
+
+`compare_distributions()` compares response distributions for a single condition and outcome using three metrics:
+
+- **OVL (overlapping coefficient)** — proportion of area where the two kernel density estimates overlap; 0 = no overlap, 1 = identical distributions; primary metric for RQ2
+- **KS D-statistic** — maximum absolute difference between the two empirical CDFs; 0 = identical
+- **Variance ratio** — LLM clone variance divided by human variance; 1 = equal spread
+
+```{r}
+#| label: fn-compare-distributions
+
+compute_ovl <- function(x, y, n_grid = 512) {
+  lo <- min(c(x, y)); hi <- max(c(x, y))
+  if (lo == hi) return(NA_real_)
+  # Evaluate both KDEs on the same grid, then integrate the overlap area
+  d_h <- density(x, from = lo, to = hi, n = n_grid)
+  d_l <- density(y, from = lo, to = hi, n = n_grid)
+  sum(pmin(d_h$y, d_l$y)) * (hi - lo) / n_grid
+}
+
+compare_distributions <- function(human_data, llm_data, outcome, condition_val) {
+  x <- human_data |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
+  y <- llm_data   |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
+  tibble(
+    condition      = as.character(condition_val),
+    ovl            = compute_ovl(x, y),
+    ks_d           = suppressWarnings(ks.test(x, y)$statistic),
+    variance_ratio = var(y) / var(x)  # > 1: clones more variable; < 1: less variable
+  )
+}
+```
+
+### Calibration regression
+
+`run_calibration()` regresses human ATEs on LLM clone ATEs: `ATE_human = α + β × ATE_clone`. The intercept α captures systematic bias (positive α means clones underestimate the baseline, negative means overestimation). The slope β captures proportionality: β = 1 is perfect calibration, β > 1 means clone effects are too small relative to human effects, β < 1 means they are too large. We report a formal F-test of β = 1 alongside α, β, and R².
+
+```{r}
+#| label: fn-calibration
+
+run_calibration <- function(h_result, l_result) {
+  joined <- inner_join(
+    h_result |> select(condition, estimate_h = estimate),
+    l_result |> select(condition, estimate_l = estimate),
+    by = "condition"
+  )
+
+  # ATE_h = α + β × ATE_l; perfect calibration: α = 0 and β = 1
+  fit   <- lm(estimate_h ~ estimate_l, data = joined)
+  coefs <- broom::tidy(fit, conf.int = TRUE)
+
+  tibble(
+    alpha     = coefs$estimate[1],
+    alpha_lo  = coefs$conf.low[1],
+    alpha_hi  = coefs$conf.high[1],
+    beta      = coefs$estimate[2],
+    beta_lo   = coefs$conf.low[2],
+    beta_hi   = coefs$conf.high[2],
+    r_squared = broom::glance(fit)$r.squared,
+    # F-test H0: β = 1 (clone ATEs are proportionally calibrated to human ATEs)
+    p_beta_1  = car::linearHypothesis(fit, "estimate_l = 1")$`Pr(>F)`[2]
+  )
+}
+```
+
+## RQ1: Average Treatment Effect Recovery
+
+For each preregistered outcome we run `run_main_treatment_model()` (OLS, HC2 robust SEs, BH-adjusted p-values) on both datasets separately and compare the 20 intervention-vs-control ATEs using `compare_estimates()`. For `newsletter_signup` (binary), we use marginal effects from `run_main_treatment_model_binary()`.
+
+### Primary outcome
+
+```{r}
+#| label: rq1-primary
+
+h_primary <- run_main_treatment_model(human_data, outcome = "trust_multidimensional")
+l_primary <- run_main_treatment_model(llm_data,   outcome = "trust_multidimensional")
+
+compare_estimates(h_primary, l_primary)
+```
+
+```{r}
+#| label: fig-rq1-primary
+#| fig-cap: "Human vs. LLM clone ATEs for the primary outcome (multidimensional trust). Each point is one of the 20 interventions. The dashed line indicates perfect agreement; dotted lines mark zero."
+
+inner_join(
+  h_primary |> select(condition, estimate_h = estimate),
+  l_primary |> select(condition, estimate_l = estimate),
+  by = "condition"
+) |>
+  ggplot(aes(x = estimate_h, y = estimate_l)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
+              color = "grey60", linewidth = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_point(size = 2.5, alpha = 0.8, color = "grey20") +
+  geom_text(aes(label = str_remove(condition, "intervention_")),
+            size = 2.5, vjust = -0.8, color = "grey40") +
+  labs(x = "Human ATE (OLS estimate)", y = "LLM clone ATE (OLS estimate)") +
+  plot_theme
+```
+
+```{r}
+#| label: rq1-primary-calibration
+#| tbl-cap: "Calibration regression for the primary outcome. α: intercept (systematic bias). β: slope (proportionality; 1 = perfect). p(β=1): F-test of perfect calibration."
+
+run_calibration(h_primary, l_primary)
+```
+
+### All outcomes
+
+```{r}
+#| label: rq1-all
+
+# Run and store models to avoid re-fitting for calibration
+ate_model_results <- map(outcomes_continuous, function(out) {
+  list(
+    h = run_main_treatment_model(human_data, outcome = out),
+    l = run_main_treatment_model(llm_data,   outcome = out)
+  )
+}) |> set_names(outcomes_continuous)
+
+ate_metrics <- map_dfr(outcomes_continuous, function(out) {
+  compare_estimates(ate_model_results[[out]]$h, ate_model_results[[out]]$l) |>
+    mutate(outcome = out)
+})
+
+calib_metrics <- map_dfr(outcomes_continuous, function(out) {
+  run_calibration(ate_model_results[[out]]$h, ate_model_results[[out]]$l) |>
+    mutate(outcome = out)
+})
+
+# Binary: newsletter signup (marginal effects on probability scale)
+h_bin <- run_main_treatment_model_binary(human_data, "newsletter_signup")
+l_bin <- run_main_treatment_model_binary(llm_data,   "newsletter_signup")
+
+ate_metrics <- bind_rows(
+  ate_metrics,
+  compare_estimates(h_bin$marginal_effects, l_bin$marginal_effects) |>
+    mutate(outcome = "newsletter_signup")
+) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary                          ~ "Primary",
+      outcome %in% c(outcomes_secondary, outcomes_binary) ~ "Secondary",
+      TRUE                                                ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
+
+calib_metrics <- bind_rows(
+  calib_metrics,
+  run_calibration(h_bin$marginal_effects, l_bin$marginal_effects) |>
+    mutate(outcome = "newsletter_signup")
+) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary                          ~ "Primary",
+      outcome %in% c(outcomes_secondary, outcomes_binary) ~ "Secondary",
+      TRUE                                                ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
+```
+
+```{r}
+#| label: tbl-rq1
+#| tbl-cap: "RQ1 comparison metrics by outcome. Spearman ρ and Pearson r: correlations of the 20 ATEs. RMSE: root mean squared error. Directional and inferential agreement are percentages out of 20 interventions. TOST: % of ATE pairs achieving equivalence (Δ = 50% of human ATE)."
+
+ate_metrics |>
+  arrange(match(tier, c("Primary", "Secondary", "Tertiary")), outcome_label) |>
+  select(Tier = tier, Outcome = outcome_label,
+         `Spearman ρ` = spearman_rho, `Pearson r` = pearson_r, RMSE = rmse,
+         `Directional (%)` = directional_pct, `Inferential (%)` = inferential_pct,
+         `TOST (%)` = tost_pct) |>
+  gt(groupname_col = "Tier") |>
+  fmt_number(columns = c(`Spearman ρ`, `Pearson r`, RMSE), decimals = 3) |>
+  fmt_number(columns = c(`Directional (%)`, `Inferential (%)`, `TOST (%)`), decimals = 1) |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_row_groups()
+  )
+```
+
+```{r}
+#| label: tbl-rq1-calibration
+#| tbl-cap: "Calibration regression by outcome. α: intercept (systematic bias, with 95% CI). β: slope (proportionality; 1 = perfect, with 95% CI). R²: variance explained. p(β=1): F-test of perfect calibration."
+
+calib_metrics |>
+  arrange(match(tier, c("Primary", "Secondary", "Tertiary")), outcome_label) |>
+  mutate(
+    beta_ci  = paste0("[", round(beta_lo,  2), ", ", round(beta_hi,  2), "]"),
+    alpha_ci = paste0("[", round(alpha_lo, 2), ", ", round(alpha_hi, 2), "]")
+  ) |>
+  select(Tier = tier, Outcome = outcome_label,
+         alpha, alpha_ci, beta, beta_ci, r_squared, p_beta_1) |>
+  gt(groupname_col = "Tier") |>
+  cols_label(alpha = "α", alpha_ci = "95% CI (α)",
+             beta = "β", beta_ci = "95% CI (β)",
+             r_squared = "R²", p_beta_1 = "p (β=1)") |>
+  fmt_number(columns = c(alpha, beta, r_squared), decimals = 3) |>
+  fmt_number(columns = p_beta_1, decimals = 3) |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_row_groups()
+  )
+```
+
+```{r}
+#| label: fig-rq1-all
+#| fig-cap: "Human vs. LLM clone ATEs for all continuous outcomes. Each point is one of the 20 interventions; axes are free-scaled across panels."
+#| fig-height: 12
+
+map_dfr(outcomes_continuous, function(out) {
+  h <- run_main_treatment_model(human_data, outcome = out)
+  l <- run_main_treatment_model(llm_data,   outcome = out)
+  inner_join(
+    h |> select(condition, estimate_h = estimate),
+    l |> select(condition, estimate_l = estimate),
+    by = "condition"
+  ) |> mutate(outcome = outcome_label_map[out])
+}) |>
+  ggplot(aes(x = estimate_h, y = estimate_l)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
+              color = "grey60", linewidth = 0.4) +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_point(size = 1.5, alpha = 0.7, color = "grey20") +
+  facet_wrap(~ outcome, scales = "free", ncol = 3) +
+  labs(x = "Human ATE", y = "LLM clone ATE") +
+  plot_theme
+```
+
+### Secondary: Stacked-model discrepancy test
+
+As a complement to the TOST equivalence tests above, we pool both datasets and
+estimate a `condition × source` interaction. The interaction term for each
+intervention directly estimates the human–clone ATE discrepancy and provides
+a conventional (directional) inferential test alongside the equivalence tests.
+
+```{r}
+#| label: rq1-stacked-primary
+
+# Stack and test condition × source interaction for the primary outcome.
+# Positive estimate_h > estimate_l → clone underestimates; negative → overestimates.
+stacked_primary <- run_stacked_model(human_data, llm_data,
+                                     outcome = "trust_multidimensional")
+```
+
+```{r}
+#| label: tbl-rq1-stacked
+#| tbl-cap: "Stacked-model discrepancy estimates for the primary outcome. Each row is one intervention; estimate = ATE_human − ATE_clone from the condition × source interaction."
+
+stacked_primary |>
+  select(Condition = condition, Estimate = estimate,
+         `95% CI low` = conf.low, `95% CI high` = conf.high,
+         `p (adj)` = p.value_adjusted, ` ` = significant_adjusted) |>
+  gt() |>
+  fmt_number(columns = c(Estimate, `95% CI low`, `95% CI high`), decimals = 3) |>
+  fmt_number(columns = `p (adj)`, decimals = 3)
+```
+
+## RQ2: Response Distribution Shape Recovery
+
+For the primary outcome (`trust_multidimensional`), we compare response distributions of human and LLM clone participants within each of the 21 experimental conditions (control + 20 interventions).
+
+```{r}
+#| label: rq2-compute
+
+conditions_all <- levels(human_data$condition)
+
+dist_metrics <- map_dfr(conditions_all, function(cond) {
+  compare_distributions(human_data, llm_data, "trust_multidimensional", cond)
+})
+```
+
+```{r}
+#| label: fig-rq2-densities
+#| fig-cap: "Response distributions for multidimensional trust by experimental condition. Human participants shown in dark grey, LLM clones in orange."
+#| fig-height: 14
+
+source_colors <- c("Human" = "grey30", "LLM clone" = met.brewer("Juarez", n = 10)[1])
+
+bind_rows(
+  human_data |> select(condition, value = trust_multidimensional) |>
+    mutate(source = "Human"),
+  llm_data   |> select(condition, value = trust_multidimensional) |>
+    mutate(source = "LLM clone")
+) |>
+  filter(!is.na(value)) |>
+  ggplot(aes(x = value, fill = source, color = source)) +
+  geom_density(alpha = 0.35, linewidth = 0.4) +
+  scale_fill_manual(values  = source_colors, name = NULL) +
+  scale_color_manual(values = source_colors, name = NULL) +
+  facet_wrap(~ condition, ncol = 4) +
+  labs(x = "Multidimensional trust (0–100)", y = "Density") +
+  plot_theme +
+  theme(legend.position = "top")
+```
+
+```{r}
+#| label: tbl-rq2
+#| tbl-cap: "RQ2 distribution comparison metrics by condition. OVL: overlapping coefficient (1 = identical). KS D: Kolmogorov–Smirnov D-statistic (0 = identical CDFs). Variance ratio: LLM clone / human variance."
+
+dist_metrics |>
+  mutate(condition = factor(condition, levels = conditions_all)) |>
+  arrange(condition) |>
+  mutate(condition = as.character(condition)) |>
+  gt() |>
+  cols_label(condition = "Condition", ovl = "OVL",
+             ks_d = "KS D", variance_ratio = "Variance ratio") |>
+  fmt_number(columns = c(ovl, ks_d, variance_ratio), decimals = 3)
+```
+
+Mean OVL across all conditions: `r round(mean(dist_metrics$ovl, na.rm = TRUE), 3)`. Mean KS D: `r round(mean(dist_metrics$ks_d, na.rm = TRUE), 3)`. Mean variance ratio: `r round(mean(dist_metrics$variance_ratio, na.rm = TRUE), 3)`.
+
+## RQ3: Subgroup Heterogeneity Recovery
+
+For each of six categorical moderators, we run `run_moderator_model()` on both datasets for the primary outcome and compare the condition × moderator interaction estimates using `compare_estimates()` (with `join_by = c("condition", "moderator_level")`).
+
+```{r}
+#| label: rq3-models
+
+mod_results_h <- map(set_names(moderators_cat), function(mod) {
+  run_moderator_model(human_data, outcome = "trust_multidimensional", moderator = mod)
+})
+
+mod_results_l <- map(set_names(moderators_cat), function(mod) {
+  run_moderator_model(llm_data, outcome = "trust_multidimensional", moderator = mod)
+})
+```
+
+```{r}
+#| label: rq3-metrics
+
+rq3_metrics <- map_dfr(moderators_cat, function(mod) {
+  compare_estimates(
+    mod_results_h[[mod]]$interaction_effects,
+    mod_results_l[[mod]]$interaction_effects,
+    join_by = c("condition", "moderator_level")
+  ) |> mutate(
+    moderator   = mod,
+    n_estimates = nrow(mod_results_h[[mod]]$interaction_effects)
+  )
+})
+```
+
+```{r}
+#| label: tbl-rq3
+#| tbl-cap: "RQ3 interaction estimate comparison metrics by moderator. Spearman ρ: rank correlation across all condition × moderator level interaction estimates. Directional agreement: % with the same sign. N: number of interaction estimates compared."
+
+rq3_metrics |>
+  select(Moderator = moderator, `Spearman ρ` = spearman_rho, `Pearson r` = pearson_r,
+         RMSE = rmse, `Directional (%)` = directional_pct,
+         `Inferential (%)` = inferential_pct, `TOST (%)` = tost_pct,
+         `N estimates` = n_estimates) |>
+  gt() |>
+  fmt_number(columns = c(`Spearman ρ`, `Pearson r`, RMSE), decimals = 3) |>
+  fmt_number(columns = c(`Directional (%)`, `Inferential (%)`, `TOST (%)`), decimals = 1)
+```
+
+```{r}
+#| label: fig-rq3
+#| fig-cap: "Human vs. LLM clone condition × moderator interaction estimates for the primary outcome, by moderator. Each point is one condition × moderator level combination."
+#| fig-height: 10
+
+map_dfr(moderators_cat, function(mod) {
+  inner_join(
+    mod_results_h[[mod]]$interaction_effects |>
+      select(condition, moderator_level, estimate_h = estimate),
+    mod_results_l[[mod]]$interaction_effects |>
+      select(condition, moderator_level, estimate_l = estimate),
+    by = c("condition", "moderator_level")
+  ) |> mutate(moderator = mod)
+}) |>
+  ggplot(aes(x = estimate_h, y = estimate_l)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
+              color = "grey60", linewidth = 0.4) +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_point(size = 1.5, alpha = 0.65, color = "grey20") +
+  facet_wrap(~ moderator, scales = "free", ncol = 2) +
+  labs(x = "Human interaction estimate", y = "LLM clone interaction estimate") +
+  plot_theme
+```
+
+## RQ4: Individual-level Demographic Calibration
+
+RQ1–3 operate at the level of aggregated estimates (ATEs, interaction effects,
+distributions). RQ4 asks whether clone responses are calibrated at the individual
+level: do clones assigned a given demographic profile give responses that match what
+real humans with those demographics give? All analyses below use the primary outcome
+(`trust_multidimensional`) and the control condition unless stated otherwise.
+
+### RQ4a: Demographic baseline calibration
+
+For each of the six moderators, we compute mean outcomes within each demographic
+group in the control condition separately for humans and clones, then correlate and
+compare those cell means. High correlation and low RMSE indicate that clones have
+the right baseline response level for each demographic type.
+
+```{r}
+#| label: rq4a-compute
+
+# Cell-mean comparison in the control condition, one moderator at a time
+baseline_cal <- compare_demographic_baselines(
+  human_data, llm_data,
+  outcome    = "trust_multidimensional",
+  moderators = moderators_cat
+)
+```
+
+```{r}
+#| label: tbl-rq4a
+#| tbl-cap: "Demographic baseline calibration. For each moderator, cell means in the control condition are compared between humans and clones. r: Pearson correlation of cell means. RMSE: root mean squared error. N cells: number of demographic groups."
+
+baseline_cal |>
+  select(Moderator = moderator, r, RMSE = rmse, `N cells` = n_cells) |>
+  gt() |>
+  fmt_number(columns = c(r, RMSE), decimals = 3)
+```
+
+### RQ4b: Demographic predictability — stereotyping test
+
+We regress the primary outcome on all six demographic moderators plus condition
+fixed effects separately for humans and clones. A substantially higher R² in clones
+indicates over-reliance on demographic stereotypes (mapping demographics to responses
+too mechanically). We also compare individual demographic coefficients side by side.
+
+```{r}
+#| label: rq4b-compute
+
+pred_test <- compare_demographic_predictability(
+  human_data, llm_data,
+  outcome    = "trust_multidimensional",
+  predictors = moderators_cat
+)
+```
+
+```{r}
+#| label: tbl-rq4b-rsq
+#| tbl-cap: "R² from regressing the primary outcome on demographics + condition FE, separately for humans and clones. Clone R² >> human R² signals demographic stereotyping."
+
+pred_test$r_squared |>
+  mutate(source = if_else(source == "human", "Human", "LLM clone")) |>
+  gt() |>
+  cols_label(source = "Source", r_squared = "R²") |>
+  fmt_number(columns = r_squared, decimals = 3)
+```
+
+```{r}
+#| label: fig-rq4b-coefs
+#| fig-cap: "Demographic regression coefficients for the primary outcome in humans (x-axis) vs. LLM clones (y-axis). Each point is one dummy-coded level of a moderator. The dashed line marks perfect agreement."
+
+pred_test$coefficients |>
+  ggplot(aes(x = est_h, y = est_l)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
+              color = "grey60", linewidth = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_point(size = 2, alpha = 0.8, color = "grey20") +
+  geom_text(aes(label = term), size = 2.2, vjust = -0.8, color = "grey40") +
+  labs(x = "Human coefficient", y = "LLM clone coefficient") +
+  plot_theme
+```
+
+### RQ4c: Within-subgroup distribution shapes
+
+We extend RQ2 by comparing response distributions within demographic subgroups in
+the control condition. This tests whether distributional calibration holds within
+groups, not just in the aggregate (a clone dataset could match the overall
+distribution while having miscalibrated within-group spreads).
+
+```{r}
+#| label: rq4c-compute
+
+control_val <- levels(human_data$condition)[1]
+
+# For each moderator × level, compare human and clone distributions in control
+subgroup_dist <- map_dfr(moderators_cat, function(mod) {
+  groups <- levels(human_data[[mod]])
+  map_dfr(groups, function(grp) {
+    x <- human_data |>
+      filter(condition == control_val, .data[[mod]] == grp) |>
+      pull(trust_multidimensional) |> na.omit()
+    y <- llm_data |>
+      filter(condition == control_val, .data[[mod]] == grp) |>
+      pull(trust_multidimensional) |> na.omit()
+    # Require minimum n for stable KDE
+    if (length(x) < 10 | length(y) < 10) return(NULL)
+    tibble(moderator = mod, group = grp,
+           ovl = compute_ovl(x, y),
+           ks_d = suppressWarnings(ks.test(x, y)$statistic),
+           variance_ratio = var(y) / var(x))
+  })
+})
+```
+
+```{r}
+#| label: tbl-rq4c
+#| tbl-cap: "Within-subgroup distribution comparison in the control condition. OVL: overlapping coefficient (1 = identical). KS D: Kolmogorov–Smirnov statistic. Variance ratio: clone / human."
+
+subgroup_dist |>
+  arrange(moderator, group) |>
+  gt(groupname_col = "moderator") |>
+  cols_label(group = "Group", ovl = "OVL", ks_d = "KS D",
+             variance_ratio = "Variance ratio") |>
+  fmt_number(columns = c(ovl, ks_d, variance_ratio), decimals = 3) |>
+  tab_style(style = cell_text(weight = "bold"),
+            locations = cells_row_groups())
+```
+
+
