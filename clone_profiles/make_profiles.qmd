@@ -73,11 +73,11 @@ selected_vars <- c(
   # core demographics
   "age", "sex", "race", "hispanic",
   "degree", "income16", "hompop", "class",
-  "region",
+  "region", "srcbelt",
   # politics
   "partyid", "polviews",
   # religion
-  "relig", "reborn", "reliten", "attend",
+  "relig", "reborn", "reliten", 
   # opinion
   "consci"
 )
@@ -89,11 +89,11 @@ required_vars <- c(
   "degree", "income16", "class",
   "region",
   "partyid", "polviews",
-  "relig"
+  "relig", "srcbelt"
 )
 
 # Variables where NA is acceptable (handled downstream)
-optional_vars <- c("hompop", "reborn", "reliten", "attend", "consci")
+optional_vars <- c("hompop", "reborn", "reliten", "consci")
 
 numeric_vars <- c("age", "hompop", "wtssps")
 factor_vars  <- setdiff(selected_vars, c("year", "id", numeric_vars))
@@ -109,8 +109,7 @@ calls.
 #| eval: false
 
 # The initial target: 4 most recent true cross-sectional waves
-# (2020 cancelled; 2021 was a panel recontact, not a fresh cross-section)
-target_years <- c(2016, 2018, 2022, 2024)
+target_years <- c(2018, 2021, 2022, 2024)
 
 data(gss_all)
 
@@ -144,13 +143,20 @@ gss_sel <- gss_sel |>
     chr[tolower(chr) %in% gss_missing_labels] <- NA
     factor(chr, levels = setdiff(levels(.x), gss_missing_labels))
   }))
+
+# check
+gss_sel |>
+  summarise(across(everything(),
+                   ~ mean(is.na(.x), na.rm = FALSE),
+                   .names = "{.col}_na_share")) |>
+  tidyr::pivot_longer(everything(),
+                      names_to = "variable",
+                      values_to = "na_share") |>
+  mutate(variable = stringr::str_remove(variable, "_na_share"),
+         na_share = scales::percent(na_share, accuracy = 0.1))
 ```
 
-# Step 3. Tiered missing-data filter
-
-Respondents must be non-missing on `wtssps` and the 11 core demographic variables.
-`wtssps` is structurally missing for ~17% of GSS respondents in recent waves (those
-that could not be placed in a post-stratification cell).
+# Step 3. Remove missing data for required variables
 
 ```{r drop-missing}
 #| eval: false
@@ -302,8 +308,7 @@ walk(vars_to_check, \(v) {
 ```{r save}
 #| eval: false
 
-# Demographic dataset only — no prompt strings
-out_path <- here("clone_profiles", "alternative_profiles.csv")
+out_path <- here("clone_profiles", "profiles.csv")
 write_csv(profiles, out_path)
 
 cat(glue(

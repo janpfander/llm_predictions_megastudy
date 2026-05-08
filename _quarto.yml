@@ -4,7 +4,6 @@ project:
   render:
     - "*.qmd"
     - "!manuscript.qmd"
-    - "!preregistration.qmd"
 
 freeze: auto 
 
@@ -18,17 +17,18 @@ website:
     background: dark
     foreground: light
     left:
-      # - text: "Preregistration"
-      #   href: index.qmd
+      - text: "Home"
+        href: index.qmd
       - text: "Preregistration"
         href: preregistration.qmd
+      - text: "Generate profiles from GSS"
+        href: clone_profiles/make_profiles.qmd
 format:
   html:
     theme: cosmo
     toc: true
     toc-depth: 4
     toc-location: right
-    code-fold: true
     code-tools: true
     smooth-scroll: true
     link-external-newwindow: true
