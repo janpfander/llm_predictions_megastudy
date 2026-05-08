@@ -97,7 +97,7 @@ run_main_treatment_model_binary <- function(data,
     as_tibble() |>
     select(contrast, estimate, conf.low, conf.high, p.value) |>
     mutate(
-      condition            = str_extract(contrast, "intervention_\\d+"),
+      condition            = str_remove(contrast, " - .+$"),
       outcome              = outcome,
       baseline             = baseline,
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
@@ -143,7 +143,7 @@ run_moderator_model <- function(data,
     filter(str_detect(term, ":")) |>
     mutate(
       baseline             = baseline,
-      condition            = str_extract(term, "intervention_\\d+"),
+      condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
       moderator_level      = str_remove(str_extract(term, "(?<=:).+"), moderator),
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
       significant_adjusted = case_when(
@@ -166,7 +166,7 @@ run_moderator_model <- function(data,
     ) |>
       as_tibble() |>
       mutate(
-        condition            = str_extract(contrast, "intervention_\\d+"),
+        condition            = str_remove(contrast, " - .+$"),
         moderator_level      = .data[[moderator]],
         baseline             = baseline,
         p.value_adjusted     = p.adjust(p.value, method = adjust_method),
@@ -195,7 +195,7 @@ run_moderator_model <- function(data,
     ) |>
       as_tibble() |>
       mutate(
-        condition            = str_extract(contrast, "intervention_\\d+"),
+        condition            = str_remove(contrast, " - .+$"),
         moderator_value      = .data[[moderator]],
         baseline             = baseline,
         p.value_adjusted     = p.adjust(p.value, method = adjust_method),
@@ -246,7 +246,7 @@ run_moderator_model_binary <- function(data,
     filter(str_detect(term, ":")) |>
     mutate(
       baseline             = baseline,
-      condition            = str_extract(term, "intervention_\\d+"),
+      condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
       moderator_level      = str_remove(str_extract(term, "(?<=:).+"), moderator),
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
       significant_adjusted = case_when(
@@ -271,7 +271,7 @@ run_moderator_model_binary <- function(data,
     ) |>
       as_tibble() |>
       mutate(
-        condition       = str_extract(contrast, "intervention_\\d+"),
+        condition       = str_remove(contrast, " - .+$"),
         moderator_level = .data[[moderator]],
         baseline        = baseline
       ) |>
@@ -293,7 +293,7 @@ run_moderator_model_binary <- function(data,
     ) |>
       as_tibble() |>
       mutate(
-        condition       = str_extract(contrast, "intervention_\\d+"),
+        condition       = str_remove(contrast, " - .+$"),
         moderator_value = .data[[moderator]],
         baseline        = baseline
       ) |>
@@ -494,7 +494,7 @@ run_persistence_model <- function(data,
     mutate(
       baseline             = baseline,
       outcome              = outcome,
-      condition            = str_extract(term, "intervention_\\d+"),
+      condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
       significant_adjusted = case_when(
         p.value_adjusted < .001 ~ "***",
@@ -514,7 +514,7 @@ run_persistence_model <- function(data,
   ) |>
     as_tibble() |>
     mutate(
-      condition            = str_extract(contrast, "intervention_\\d+"),
+      condition            = str_remove(contrast, " - .+$"),
       baseline             = baseline,
       outcome              = outcome,
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
@@ -575,7 +575,7 @@ run_persistence_model_binary <- function(data,
     mutate(
       baseline             = baseline,
       outcome              = outcome,
-      condition            = str_extract(term, "intervention_\\d+"),
+      condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
       significant_adjusted = case_when(
         p.value_adjusted < .001 ~ "***",
@@ -599,7 +599,7 @@ run_persistence_model_binary <- function(data,
   ) |>
     as_tibble() |>
     mutate(
-      condition            = str_extract(contrast, "intervention_\\d+"),
+      condition            = str_remove(contrast, " - .+$"),
       baseline             = baseline,
       outcome              = outcome,
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
@@ -661,7 +661,7 @@ run_trust_dimensions_model <- function(data,
     broom::tidy(conf.int = TRUE) |>
     filter(str_detect(term, ":")) |>
     mutate(
-      condition            = str_extract(term, "intervention_\\d+"),
+      condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
       dimension            = str_remove(str_extract(term, "(?<=:).+"), 
                                         "dimension"),
       baseline_dimension   = baseline_dim,
@@ -686,7 +686,7 @@ run_trust_dimensions_model <- function(data,
   ) |>
     as_tibble() |>
     mutate(
-      condition            = str_extract(contrast, "intervention_\\d+"),
+      condition            = str_remove(contrast, " - .+$"),
       baseline             = baseline,
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
       significant_adjusted = case_when(
@@ -744,7 +744,7 @@ run_items_model <- function(data,
     broom::tidy(conf.int = TRUE) |>
     filter(str_detect(term, ":")) |>
     mutate(
-      condition            = str_extract(term, "intervention_\\d+"),
+      condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
       item                 = str_remove(str_extract(term, "(?<=:).+"), "item"),
       baseline_item        = baseline_item,
       baseline             = baseline,
@@ -768,7 +768,7 @@ run_items_model <- function(data,
   ) |>
     as_tibble() |>
     mutate(
-      condition            = str_extract(contrast, "intervention_\\d+"),
+      condition            = str_remove(contrast, " - .+$"),
       baseline             = baseline,
       outcome              = outcome_name,
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
@@ -782,10 +782,109 @@ run_items_model <- function(data,
     filter(!is.na(condition)) |>
     select(condition, item, estimate, conf.low, conf.high,
            p.value, p.value_adjusted, significant_adjusted, baseline, outcome)
-  
+
   list(
     interaction_effects = interaction_effects,
     predicted_effects   = predicted_effects
   )
 }
 
+# Stack human and LLM data; test ATE discrepancy via condition × source interaction.
+# The interaction estimate = ATE_human − ATE_clone for each intervention.
+run_stacked_model <- function(human_data, llm_data,
+                               outcome,
+                               condition_var = "condition",
+                               adjust_method = "BH") {
+
+  stacked <- bind_rows(
+    human_data |> mutate(source = 0L),
+    llm_data   |> mutate(source = 1L)
+  ) |>
+    mutate(source = factor(source, labels = c("human", "llm")))
+
+  baseline      <- levels(stacked[[condition_var]])[1]
+  model_formula <- as.formula(paste(outcome, "~", condition_var, "* source"))
+  fit           <- lm(model_formula, data = stacked)
+  vcov_robust   <- sandwich::vcovHC(fit, type = "HC2")
+
+  lmtest::coeftest(fit, vcov = vcov_robust) |>
+    broom::tidy(conf.int = TRUE) |>
+    # keep only condition:source interaction terms (one per intervention)
+    filter(str_detect(term, ":") & str_detect(term, "source")) |>
+    mutate(
+      outcome              = outcome,
+      condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
+      baseline             = baseline,
+      p.value_adjusted     = p.adjust(p.value, method = adjust_method),
+      significant_adjusted = case_when(
+        p.value_adjusted < .001 ~ "***",
+        p.value_adjusted < .01  ~ "**",
+        p.value_adjusted < .05  ~ "*",
+        TRUE                    ~ NA_character_
+      )
+    ) |>
+    select(condition, outcome, estimate, std.error, conf.low, conf.high,
+           p.value, p.value_adjusted, significant_adjusted, baseline)
+}
+
+# Compare cell-mean outcomes in the control condition across demographic groups.
+# r and RMSE measure how well clone baseline levels match human baseline levels.
+compare_demographic_baselines <- function(human_data, llm_data,
+                                           outcome,
+                                           moderators,
+                                           condition_var = "condition") {
+  control_val <- levels(human_data[[condition_var]])[1]
+
+  map_dfr(moderators, function(mod) {
+    h_cells <- human_data |>
+      filter(.data[[condition_var]] == control_val) |>
+      group_by(cell = .data[[mod]]) |>
+      summarise(mean_h = mean(.data[[outcome]], na.rm = TRUE), .groups = "drop")
+
+    l_cells <- llm_data |>
+      filter(.data[[condition_var]] == control_val) |>
+      group_by(cell = .data[[mod]]) |>
+      summarise(mean_l = mean(.data[[outcome]], na.rm = TRUE), .groups = "drop")
+
+    inner_join(h_cells, l_cells, by = "cell") |>
+      summarise(
+        moderator = mod,
+        r         = cor(mean_h, mean_l, use = "pairwise.complete.obs"),
+        rmse      = sqrt(mean((mean_h - mean_l)^2, na.rm = TRUE)),
+        n_cells   = n()
+      )
+  })
+}
+
+# Regress outcome on demographics + condition FE in each dataset separately.
+# Clone R² >> human R² signals over-reliance on demographic stereotypes.
+compare_demographic_predictability <- function(human_data, llm_data,
+                                                outcome,
+                                                predictors,
+                                                condition_var = "condition") {
+  model_formula <- as.formula(
+    paste(outcome, "~", paste(c(predictors, condition_var), collapse = " + "))
+  )
+
+  fit_h <- lm(model_formula, data = human_data)
+  fit_l <- lm(model_formula, data = llm_data)
+
+  r_squared <- tibble(
+    source    = c("human", "llm"),
+    r_squared = c(broom::glance(fit_h)$r.squared, broom::glance(fit_l)$r.squared)
+  )
+
+  # str_detect handles factor dummy terms (e.g. "partyRepublican" matches "party")
+  coefs_h <- broom::tidy(fit_h, conf.int = TRUE) |>
+    filter(str_detect(term, paste(predictors, collapse = "|"))) |>
+    select(term, est_h = estimate, lo_h = conf.low, hi_h = conf.high)
+
+  coefs_l <- broom::tidy(fit_l, conf.int = TRUE) |>
+    filter(str_detect(term, paste(predictors, collapse = "|"))) |>
+    select(term, est_l = estimate, lo_l = conf.low, hi_l = conf.high)
+
+  list(
+    r_squared    = r_squared,
+    coefficients = inner_join(coefs_h, coefs_l, by = "term")
+  )
+}
