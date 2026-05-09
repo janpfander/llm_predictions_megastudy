@@ -141,14 +141,14 @@ Two helper functions operationalize the comparison metrics. They are applied sym
 
 ### Comparison metrics
 
-`compare_estimates()` is used throughout the document — for ATEs (RQ1), moderator interaction estimates (RQ3), and secondary analyses. It takes two tidy model result tibbles and a `join_by` argument specifying the key columns, and computes six metrics:
+`compare_estimates()` is used throughout — for ATEs (RQ1), moderator interaction estimates (RQ3), and secondary analyses. It takes two tidy model result tibbles and a `join_by` argument specifying the key columns, and computes six metrics:
 
-- **Spearman ρ** — rank correlation of point estimates; primary metric for RQ1
-- **Pearson r** — linear correlation of point estimates
-- **RMSE** — root mean squared error; captures magnitude accuracy
-- **Directional agreement** — % of estimates with the same sign
-- **Inferential agreement** — % of estimates with the same BH-adjusted conclusion (significantly positive, significantly negative, or non-significant at α = .05)
-- **TOST (%)** — % of individual estimate pairs that pass an equivalence test with preregistered bound Δ_k = 0.5 × |estimate_human_k|; equivalence is declared (two one-sided tests, α = .05) when the clone estimate falls within ±50% of the human estimate. Note: when human estimates are near zero, Δ_k shrinks accordingly, making equivalence harder to achieve.
+- **Spearman ρ** — rank correlation of point estimates. Answers: do clones rank the 20 interventions in the same order as humans? A value of 1 means perfect rank agreement; 0 means no correspondence.
+- **Pearson r** — linear correlation of point estimates. Sensitive to outliers but captures linear proportionality.
+- **RMSE** — root mean squared error. Captures average magnitude error in the same units as the outcome.
+- **Directional agreement** — % of estimates with the same sign. Answers: do clones at least get the direction of each effect right?
+- **Inferential agreement** — % of estimates with the same BH-adjusted conclusion (significantly positive, significantly negative, or non-significant at α = .05). Answers: would a researcher using clones reach the same inferential conclusion as one using human data?
+- **TOST (%)** — % of individual estimate pairs that pass an equivalence test with preregistered bound Δ_k = 0.5 × |estimate_human_k|. Equivalence is declared (two one-sided tests, α = .05) when the clone estimate falls within ±50% of the human estimate. Note: when human estimates are near zero, Δ_k shrinks accordingly, making equivalence harder to achieve.
 
 ```{r}
 #| label: fn-compare-estimates
@@ -243,7 +243,7 @@ compare_distributions <- function(human_data, llm_data, outcome, condition_val) 
 
 ### Calibration regression
 
-`run_calibration()` regresses human ATEs on LLM clone ATEs: `ATE_human = α + β × ATE_clone`. The intercept α captures systematic bias (positive α means clones underestimate the baseline, negative means overestimation). The slope β captures proportionality: β = 1 is perfect calibration, β > 1 means clone effects are too small relative to human effects, β < 1 means they are too large. We report a formal F-test of β = 1 alongside α, β, and R².
+`run_calibration()` regresses human ATEs on LLM clone ATEs: `ATE_human = α + β × ATE_clone`. Think of it as asking: if you know the clone's ATE for an intervention, how well can you predict the human ATE? The intercept α captures systematic bias — positive α means clones systematically underestimate, negative means they overestimate. The slope β captures proportionality: β = 1 is perfect calibration (clone effects scale 1:1 with human effects), β > 1 means clone effects are too small, β < 1 means they are too large. We report R² and a formal F-test of the hypothesis β = 1.
 
 ```{r}
 #| label: fn-calibration
@@ -275,53 +275,14 @@ run_calibration <- function(h_result, l_result) {
 
 ## RQ1: Average Treatment Effect Recovery
 
-For each preregistered outcome we run `run_main_treatment_model()` (OLS, HC2 robust SEs, BH-adjusted p-values) on both datasets separately and compare the 20 intervention-vs-control ATEs using `compare_estimates()`. For `newsletter_signup` (binary), we use marginal effects from `run_main_treatment_model_binary()`.
+For each intervention, the average treatment effect (ATE) is the difference in mean outcome between participants assigned to that intervention and those in the control condition. We estimate ATEs by running `run_main_treatment_model()` — OLS with HC2 heteroskedasticity-robust standard errors and BH-adjusted p-values — on human and LLM clone data separately for each preregistered outcome. For `newsletter_signup` (binary), we use `run_main_treatment_model_binary()`, which returns marginal effects on the probability scale.
 
-### Primary outcome
-
-```{r}
-#| label: rq1-primary
-
-h_primary <- run_main_treatment_model(human_data, outcome = "trust_multidimensional")
-l_primary <- run_main_treatment_model(llm_data,   outcome = "trust_multidimensional")
-
-compare_estimates(h_primary, l_primary)
-```
-
-```{r}
-#| label: fig-rq1-primary
-#| fig-cap: "Human vs. LLM clone ATEs for the primary outcome (multidimensional trust). Each point is one of the 20 interventions. The dashed line indicates perfect agreement; dotted lines mark zero."
-
-inner_join(
-  h_primary |> select(condition, estimate_h = estimate),
-  l_primary |> select(condition, estimate_l = estimate),
-  by = "condition"
-) |>
-  ggplot(aes(x = estimate_h, y = estimate_l)) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
-              color = "grey60", linewidth = 0.5) +
-  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
-  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
-  geom_point(size = 2.5, alpha = 0.8, color = "grey20") +
-  geom_text(aes(label = str_remove(condition, "intervention_")),
-            size = 2.5, vjust = -0.8, color = "grey40") +
-  labs(x = "Human ATE (OLS estimate)", y = "LLM clone ATE (OLS estimate)") +
-  plot_theme
-```
-
-```{r}
-#| label: rq1-primary-calibration
-#| tbl-cap: "Calibration regression for the primary outcome. α: intercept (systematic bias). β: slope (proportionality; 1 = perfect). p(β=1): F-test of perfect calibration."
-
-run_calibration(h_primary, l_primary)
-```
-
-### All outcomes
+Good prediction means the clones rank the interventions in the same order as humans (high Spearman ρ), and that individual ATE pairs fall within a preregistered tolerance band (high TOST %). We first report metrics pooled across all outcomes — `r (length(outcomes_continuous) + length(outcomes_binary)) * 20` estimate pairs in total — to maximize statistical power, then break down by outcome and zoom in on the primary outcome. All models are fit first.
 
 ```{r}
 #| label: rq1-all
 
-# Run and store models to avoid re-fitting for calibration
+# Run and store all models (avoids re-fitting in later chunks)
 ate_model_results <- map(outcomes_continuous, function(out) {
   list(
     h = run_main_treatment_model(human_data, outcome = out),
@@ -329,6 +290,53 @@ ate_model_results <- map(outcomes_continuous, function(out) {
   )
 }) |> set_names(outcomes_continuous)
 
+# Binary outcome: marginal effects on probability scale
+h_bin <- run_main_treatment_model_binary(human_data, "newsletter_signup")
+l_bin <- run_main_treatment_model_binary(llm_data,   "newsletter_signup")
+
+# References to primary outcome models for the primary subsection below
+h_primary <- ate_model_results[["trust_multidimensional"]]$h
+l_primary <- ate_model_results[["trust_multidimensional"]]$l
+
+# Extract ATE pairs with SE and adjusted p-value from a model result tibble
+prep_ate <- function(df) {
+  df |>
+    select(condition, estimate) |>
+    mutate(
+      se    = if ("std.error"        %in% names(df)) df$std.error        else NA_real_,
+      p_adj = if ("p.value_adjusted" %in% names(df)) df$p.value_adjusted else NA_real_
+    )
+}
+
+# Pool ATE pairs across all outcomes (continuous + binary)
+pooled_ates <- bind_rows(
+  map_dfr(outcomes_continuous, function(out) {
+    inner_join(
+      prep_ate(ate_model_results[[out]]$h) |>
+        rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj),
+      prep_ate(ate_model_results[[out]]$l) |>
+        rename(estimate_l = estimate, se_l = se, p_adj_l = p_adj),
+      by = "condition"
+    ) |> mutate(outcome = out)
+  }),
+  inner_join(
+    prep_ate(h_bin$marginal_effects) |>
+      rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj),
+    prep_ate(l_bin$marginal_effects) |>
+      rename(estimate_l = estimate, se_l = se, p_adj_l = p_adj),
+    by = "condition"
+  ) |> mutate(outcome = "newsletter_signup")
+) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary                          ~ "Primary",
+      outcome %in% c(outcomes_secondary, outcomes_binary) ~ "Secondary",
+      TRUE                                                ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
+
+# Per-outcome summary metrics
 ate_metrics <- map_dfr(outcomes_continuous, function(out) {
   compare_estimates(ate_model_results[[out]]$h, ate_model_results[[out]]$l) |>
     mutate(outcome = out)
@@ -338,10 +346,6 @@ calib_metrics <- map_dfr(outcomes_continuous, function(out) {
   run_calibration(ate_model_results[[out]]$h, ate_model_results[[out]]$l) |>
     mutate(outcome = out)
 })
-
-# Binary: newsletter signup (marginal effects on probability scale)
-h_bin <- run_main_treatment_model_binary(human_data, "newsletter_signup")
-l_bin <- run_main_treatment_model_binary(llm_data,   "newsletter_signup")
 
 ate_metrics <- bind_rows(
   ate_metrics,
@@ -370,20 +374,81 @@ calib_metrics <- bind_rows(
     ),
     outcome_label = outcome_label_map[outcome]
   )
+
+# Pooled summary row — prepended to ate_metrics so it appears at the top of tbl-rq1
+pooled_row <- pooled_ates |>
+  mutate(
+    delta      = 0.5 * abs(estimate_h),
+    diff       = estimate_h - estimate_l,
+    se_diff    = sqrt(se_h^2 + se_l^2),
+    p_lower    = pnorm((diff + delta) / se_diff, lower.tail = FALSE),
+    p_upper    = pnorm((diff - delta) / se_diff),
+    p_tost     = pmax(p_lower, p_upper),
+    equivalent = p_tost < 0.05,
+    same_sign  = sign(estimate_h) == sign(estimate_l),
+    infer_h    = case_when(
+      !is.na(p_adj_h) & p_adj_h < 0.05 & estimate_h > 0 ~ "sig_positive",
+      !is.na(p_adj_h) & p_adj_h < 0.05 & estimate_h < 0 ~ "sig_negative",
+      TRUE ~ "not_significant"
+    ),
+    infer_l    = case_when(
+      !is.na(p_adj_l) & p_adj_l < 0.05 & estimate_l > 0 ~ "sig_positive",
+      !is.na(p_adj_l) & p_adj_l < 0.05 & estimate_l < 0 ~ "sig_negative",
+      TRUE ~ "not_significant"
+    )
+  ) |>
+  summarise(
+    spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
+                          use = "pairwise.complete.obs"),
+    pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs"),
+    rmse            = NA_real_,
+    directional_pct = mean(same_sign,  na.rm = TRUE) * 100,
+    inferential_pct = mean(infer_h == infer_l, na.rm = TRUE) * 100,
+    tost_pct        = mean(equivalent, na.rm = TRUE) * 100
+  ) |>
+  mutate(outcome = "pooled", tier = "All outcomes", outcome_label = "All outcomes")
+
+ate_metrics <- bind_rows(pooled_row, ate_metrics)
+```
+
+### All outcomes
+
+The scatter below shows all `r nrow(pooled_ates)` estimate pairs — one per intervention × outcome combination — colored by outcome tier. Points above the diagonal indicate clone overestimation; points below indicate underestimation. Because estimates from different outcomes are on different scales, the spread also reflects scale variation across outcomes.
+
+The comparison table below includes a pooled summary row at the top, followed by per-outcome rows grouped by tier. RMSE is left blank for the pooled row because it is not comparable across outcomes on different scales; all other metrics are scale-invariant. The calibration regression (second table) and faceted scatter (third figure) are per-outcome only.
+
+```{r}
+#| label: fig-rq1-pooled
+#| fig-cap: "Human vs. LLM clone ATEs pooled across all outcomes. Each point is one intervention × outcome pair (N = 240). The dashed line is perfect agreement; dotted lines mark zero. Color indicates outcome tier."
+
+tier_colors <- c("Primary" = "#C0392B", "Secondary" = "#2980B9", "Tertiary" = "#7F8C8D")
+
+pooled_ates |>
+  ggplot(aes(x = estimate_h, y = estimate_l, color = tier)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
+              color = "grey60", linewidth = 0.5) +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_point(size = 2, alpha = 0.65) +
+  scale_color_manual(values = tier_colors, name = "Outcome tier") +
+  labs(x = "Human ATE", y = "LLM clone ATE") +
+  plot_theme +
+  theme(legend.position = "top")
 ```
 
 ```{r}
 #| label: tbl-rq1
-#| tbl-cap: "RQ1 comparison metrics by outcome. Spearman ρ and Pearson r: correlations of the 20 ATEs. RMSE: root mean squared error. Directional and inferential agreement are percentages out of 20 interventions. TOST: % of ATE pairs achieving equivalence (Δ = 50% of human ATE)."
+#| tbl-cap: "RQ1 comparison metrics. The 'All outcomes' row pools all estimate pairs across outcomes; RMSE (—) is omitted there because outcomes differ in scale. Per-outcome rows each have N = 20 intervention pairs. TOST: % of pairs achieving equivalence (Δ = 50% of human ATE)."
 
 ate_metrics |>
-  arrange(match(tier, c("Primary", "Secondary", "Tertiary")), outcome_label) |>
+  arrange(match(tier, c("All outcomes", "Primary", "Secondary", "Tertiary")), outcome_label) |>
   select(Tier = tier, Outcome = outcome_label,
          `Spearman ρ` = spearman_rho, `Pearson r` = pearson_r, RMSE = rmse,
          `Directional (%)` = directional_pct, `Inferential (%)` = inferential_pct,
          `TOST (%)` = tost_pct) |>
   gt(groupname_col = "Tier") |>
   fmt_number(columns = c(`Spearman ρ`, `Pearson r`, RMSE), decimals = 3) |>
+  sub_missing(columns = "RMSE", missing_text = "—") |>
   fmt_number(columns = c(`Directional (%)`, `Inferential (%)`, `TOST (%)`), decimals = 1) |>
   tab_style(
     style     = cell_text(weight = "bold"),
@@ -417,70 +482,100 @@ calib_metrics |>
 
 ```{r}
 #| label: fig-rq1-all
-#| fig-cap: "Human vs. LLM clone ATEs for all continuous outcomes. Each point is one of the 20 interventions; axes are free-scaled across panels."
+#| fig-cap: "Human vs. LLM clone ATEs for all continuous outcomes. Each point is one of the 20 interventions; axes are free-scaled across panels. Blue line: OLS regression through the panel's points. Faint dashed line: perfect calibration (slope = 1)."
 #| fig-height: 12
 
 map_dfr(outcomes_continuous, function(out) {
-  h <- run_main_treatment_model(human_data, outcome = out)
-  l <- run_main_treatment_model(llm_data,   outcome = out)
   inner_join(
-    h |> select(condition, estimate_h = estimate),
-    l |> select(condition, estimate_l = estimate),
+    ate_model_results[[out]]$h |> select(condition, estimate_h = estimate),
+    ate_model_results[[out]]$l |> select(condition, estimate_l = estimate),
     by = "condition"
   ) |> mutate(outcome = outcome_label_map[out])
 }) |>
   ggplot(aes(x = estimate_h, y = estimate_l)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed",
-              color = "grey60", linewidth = 0.4) +
+              color = "grey60", linewidth = 0.4, alpha = 0.35) +
   geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
   geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_smooth(method = "lm", se = FALSE, color = "#2980B9", linewidth = 0.6) +
   geom_point(size = 1.5, alpha = 0.7, color = "grey20") +
   facet_wrap(~ outcome, scales = "free", ncol = 3) +
   labs(x = "Human ATE", y = "LLM clone ATE") +
   plot_theme
 ```
 
-### Secondary: Stacked-model discrepancy test
+### Primary outcome (focused)
 
-As a complement to the TOST equivalence tests above, we pool both datasets and
-estimate a `condition × source` interaction. The interaction term for each
-intervention directly estimates the human–clone ATE discrepancy and provides
-a conventional (directional) inferential test alongside the equivalence tests.
+The primary outcome, multidimensional trust in climate scientists, is the pre-specified main endpoint — a composite averaging four subdimensions (competence, integrity, benevolence, openness). We show its ATE scatter separately to allow easy reading of individual intervention labels. The calibration regression fits `ATE_human = α + β × ATE_clone`: α = 0 means no systematic bias; β = 1 means clone effects are proportionally accurate. We test β = 1 via a formal F-test.
 
 ```{r}
-#| label: rq1-stacked-primary
+#| label: fig-rq1-primary
+#| fig-cap: "Human vs. LLM clone ATEs for the primary outcome (multidimensional trust). Each point is one of the 20 interventions. Blue line: OLS regression through the points. Faint dashed line: perfect calibration (slope = 1). Dotted lines mark zero."
 
-# Stack and test condition × source interaction for the primary outcome.
-# Positive estimate_h > estimate_l → clone underestimates; negative → overestimates.
-stacked_primary <- run_stacked_model(human_data, llm_data,
-                                     outcome = "trust_multidimensional")
+inner_join(
+  h_primary |> select(condition, estimate_h = estimate),
+  l_primary |> select(condition, estimate_l = estimate),
+  by = "condition"
+) |>
+  ggplot(aes(x = estimate_h, y = estimate_l)) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
+              color = "grey60", linewidth = 0.5, alpha = 0.35) +
+  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
+  geom_smooth(method = "lm", se = FALSE, color = "#2980B9", linewidth = 0.7) +
+  geom_point(size = 2.5, alpha = 0.8, color = "grey20") +
+  geom_text(aes(label = str_remove(condition, "intervention_")),
+            size = 2.5, vjust = -0.8, color = "grey40") +
+  labs(x = "Human ATE (OLS estimate)", y = "LLM clone ATE (OLS estimate)") +
+  plot_theme
 ```
 
 ```{r}
-#| label: tbl-rq1-stacked
-#| tbl-cap: "Stacked-model discrepancy estimates for the primary outcome. Each row is one intervention; estimate = ATE_human − ATE_clone from the condition × source interaction."
+#| label: rq1-primary-calibration
+#| tbl-cap: "Calibration regression for the primary outcome. α: intercept (systematic bias). β: slope (proportionality; 1 = perfect). p(β=1): F-test of perfect calibration."
 
-stacked_primary |>
-  select(Condition = condition, Estimate = estimate,
-         `95% CI low` = conf.low, `95% CI high` = conf.high,
-         `p (adj)` = p.value_adjusted, ` ` = significant_adjusted) |>
-  gt() |>
-  fmt_number(columns = c(Estimate, `95% CI low`, `95% CI high`), decimals = 3) |>
-  fmt_number(columns = `p (adj)`, decimals = 3)
+run_calibration(h_primary, l_primary)
 ```
 
 ## RQ2: Response Distribution Shape Recovery
 
-For the primary outcome (`trust_multidimensional`), we compare response distributions of human and LLM clone participants within each of the 21 experimental conditions (control + 20 interventions).
+Even if clones match the average treatment effect for each intervention, they may diverge from humans in how responses are distributed: two groups with the same mean can differ in spread, skewness, or tail shape. RQ2 asks whether clones reproduce the full response distribution within each condition, not just its mean.
+
+We compare distributions using three metrics. The **overlapping coefficient (OVL)** is the proportion of area shared between the two kernel density estimates: it equals 1 when distributions are identical and 0 when they share no support. Intuitively, imagine overlaying the two smoothed histograms — OVL is the fraction of the total area covered by both. The **Kolmogorov–Smirnov D-statistic** is the largest vertical gap between the two empirical cumulative distribution functions at any response value: 0 means the CDFs are indistinguishable everywhere, and larger values indicate a point on the scale where the distributions diverge substantially. The **variance ratio** (clone variance / human variance) captures relative spread: a ratio of 1 is ideal, > 1 means clones are more dispersed than humans, and < 1 means clones give more uniform responses.
+
+We first examine distributions within each of the 21 conditions for the primary outcome in detail, then summarise the three metrics averaged across conditions for all outcomes.
 
 ```{r}
 #| label: rq2-compute
 
 conditions_all <- levels(human_data$condition)
 
-dist_metrics <- map_dfr(conditions_all, function(cond) {
-  compare_distributions(human_data, llm_data, "trust_multidimensional", cond)
+# All continuous outcomes: per-condition metrics
+dist_metrics_all <- map_dfr(outcomes_continuous, function(out) {
+  map_dfr(conditions_all, function(cond) {
+    compare_distributions(human_data, llm_data, out, cond)
+  }) |> mutate(outcome = out)
 })
+
+# Primary outcome per-condition metrics (subset for density table and plot)
+dist_metrics <- dist_metrics_all |> filter(outcome == "trust_multidimensional")
+
+# Summary: average metrics across conditions, one row per outcome
+dist_summary <- dist_metrics_all |>
+  group_by(outcome) |>
+  summarise(
+    mean_ovl       = mean(ovl,            na.rm = TRUE),
+    mean_ks_d      = mean(ks_d,           na.rm = TRUE),
+    mean_var_ratio = mean(variance_ratio, na.rm = TRUE)
+  ) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary     ~ "Primary",
+      outcome %in% outcomes_secondary ~ "Secondary",
+      TRUE                            ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
 ```
 
 ```{r}
@@ -521,11 +616,34 @@ dist_metrics |>
   fmt_number(columns = c(ovl, ks_d, variance_ratio), decimals = 3)
 ```
 
-Mean OVL across all conditions: `r round(mean(dist_metrics$ovl, na.rm = TRUE), 3)`. Mean KS D: `r round(mean(dist_metrics$ks_d, na.rm = TRUE), 3)`. Mean variance ratio: `r round(mean(dist_metrics$variance_ratio, na.rm = TRUE), 3)`.
+Primary outcome summary — mean OVL across all conditions: `r round(mean(dist_metrics$ovl, na.rm = TRUE), 3)`. Mean KS D: `r round(mean(dist_metrics$ks_d, na.rm = TRUE), 3)`. Mean variance ratio: `r round(mean(dist_metrics$variance_ratio, na.rm = TRUE), 3)`.
+
+### All outcomes
+
+The table below summarises distribution similarity averaged across all 21 conditions for each continuous outcome. OVL close to 1 indicates near-identical distributions; KS D close to 0 indicates CDFs that track each other everywhere; variance ratio close to 1 indicates matched spread. Newsletter signup is excluded because kernel density estimates are not meaningful for a binary outcome.
+
+```{r}
+#| label: tbl-rq2-summary
+#| tbl-cap: "RQ2 distribution metrics averaged across all 21 conditions, by outcome. OVL: mean overlapping coefficient (1 = identical). KS D: mean Kolmogorov–Smirnov D-statistic (0 = identical CDFs). Variance ratio: mean clone / human variance (1 = equal spread)."
+
+dist_summary |>
+  arrange(match(tier, c("Primary", "Secondary", "Tertiary")), outcome_label) |>
+  select(Tier = tier, Outcome = outcome_label,
+         `Mean OVL` = mean_ovl, `Mean KS D` = mean_ks_d,
+         `Mean variance ratio` = mean_var_ratio) |>
+  gt(groupname_col = "Tier") |>
+  fmt_number(columns = c(`Mean OVL`, `Mean KS D`, `Mean variance ratio`), decimals = 3) |>
+  tab_style(
+    style     = cell_text(weight = "bold"),
+    locations = cells_row_groups()
+  )
+```
 
 ## RQ3: Subgroup Heterogeneity Recovery
 
-For each of six categorical moderators, we run `run_moderator_model()` on both datasets for the primary outcome and compare the condition × moderator interaction estimates using `compare_estimates()` (with `join_by = c("condition", "moderator_level")`).
+Interventions may work differently for different demographic groups — for example, a message about scientific consensus might shift trust more strongly among Republicans than Democrats, or more among younger than older respondents. RQ3 asks whether clones reproduce these subgroup differences, or whether they produce a one-size-fits-all response that averages across demographic groups.
+
+For each of six categorical moderators (gender, age band, race, education, income, and partisan identity), we estimate condition × moderator interactions using `run_moderator_model()` separately on human and clone data. Each interaction term captures how much more (or less) effective a given intervention is for one demographic group compared to the reference group. We then compare the full set of interaction estimates between humans and clones using `compare_estimates()` (with `join_by = c("condition", "moderator_level")`). A clone that predicts subgroup heterogeneity well will produce interaction estimates that correlate strongly with human estimates (high Spearman ρ) and agree on sign (high directional %).
 
 ```{r}
 #| label: rq3-models
@@ -595,18 +713,13 @@ map_dfr(moderators_cat, function(mod) {
 
 ## RQ4: Individual-level Demographic Calibration
 
-RQ1–3 operate at the level of aggregated estimates (ATEs, interaction effects,
-distributions). RQ4 asks whether clone responses are calibrated at the individual
-level: do clones assigned a given demographic profile give responses that match what
-real humans with those demographics give? All analyses below use the primary outcome
-(`trust_multidimensional`) and the control condition unless stated otherwise.
+RQ1–3 all operate on aggregated estimates — average treatment effects, interaction effects, and marginal distributions. RQ4 asks a different question: are individual clone responses calibrated to the demographic profile they were assigned? A clone given a profile of, say, a young Black woman with low income should give responses that match what real young Black women with low income give — not just what the average American gives.
+
+All analyses use the primary outcome (`trust_multidimensional`) and the control condition unless stated otherwise. Three sub-questions are examined in turn.
 
 ### RQ4a: Demographic baseline calibration
 
-For each of the six moderators, we compute mean outcomes within each demographic
-group in the control condition separately for humans and clones, then correlate and
-compare those cell means. High correlation and low RMSE indicate that clones have
-the right baseline response level for each demographic type.
+For each moderator, we compute mean outcomes within each demographic group in the control condition separately for humans and clones, then correlate and compare those cell means. High correlation and low RMSE indicate that clones start from the right baseline response level for each demographic type — before any intervention is applied.
 
 ```{r}
 #| label: rq4a-compute
@@ -631,10 +744,7 @@ baseline_cal |>
 
 ### RQ4b: Demographic predictability — stereotyping test
 
-We regress the primary outcome on all six demographic moderators plus condition
-fixed effects separately for humans and clones. A substantially higher R² in clones
-indicates over-reliance on demographic stereotypes (mapping demographics to responses
-too mechanically). We also compare individual demographic coefficients side by side.
+We regress the primary outcome on all six demographic moderators plus condition fixed effects separately for humans and clones. If clones over-rely on demographic stereotypes — mapping demographic variables to outcomes too mechanically — they will show a much higher R² than humans: demographics explain more of the variance in clone responses than in human responses. We also compare individual regression coefficients to identify which demographic predictors are over- or underweighted by the clones.
 
 ```{r}
 #| label: rq4b-compute
@@ -675,10 +785,7 @@ pred_test$coefficients |>
 
 ### RQ4c: Within-subgroup distribution shapes
 
-We extend RQ2 by comparing response distributions within demographic subgroups in
-the control condition. This tests whether distributional calibration holds within
-groups, not just in the aggregate (a clone dataset could match the overall
-distribution while having miscalibrated within-group spreads).
+A clone dataset could reproduce the overall response distribution while having miscalibrated within-group spreads — matching the average but not what specific demographic groups look like. We extend RQ2 by comparing response distributions within each demographic subgroup in the control condition, using the same OVL, KS D, and variance ratio metrics. Minimum group size of 10 is required for stable kernel density estimation.
 
 ```{r}
 #| label: rq4c-compute
