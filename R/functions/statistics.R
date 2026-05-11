@@ -1,5 +1,112 @@
 # Custom statistics functions
 
+# compare treatment effects
+compare_estimates <- function(h_result, l_result,
+                              join_by = "condition",
+                              tost_delta_pct = 0.5) {
+
+  # Standardize columns; SE derived from std.error or from 95% CI width if absent
+  prep <- function(df, suffix) {
+    df |>
+      select(all_of(join_by), estimate) |>
+      mutate(
+        se    = if ("std.error" %in% names(df)) df$std.error
+                else if (all(c("conf.low", "conf.high") %in% names(df)))
+                  (df$conf.high - df$conf.low) / (2 * 1.96)
+                else NA_real_,
+        p_adj = if ("p.value_adjusted" %in% names(df)) df$p.value_adjusted
+                else NA_real_
+      ) |>
+      rename_with(~ paste0(.x, "_", suffix), c(estimate, se, p_adj))
+  }
+
+  joined <- inner_join(prep(h_result, "h"), prep(l_result, "l"), by = join_by)
+
+  # Three-level inferential category based on BH-adjusted p and direction
+  infer_cat <- function(est, p_adj) {
+    case_when(
+      p_adj < 0.05 & est > 0 ~ "sig_positive",
+      p_adj < 0.05 & est < 0 ~ "sig_negative",
+      TRUE                   ~ "not_significant"
+    )
+  }
+
+  # TOST: equivalence declared when |ATE_h - ATE_l| < delta = tost_delta_pct × |ATE_h|
+  # p_tost is the maximum of the two one-sided p-values; equivalent if p_tost < 0.05
+  joined |>
+    mutate(
+      delta      = tost_delta_pct * abs(estimate_h),
+      diff       = estimate_h - estimate_l,
+      se_diff    = sqrt(se_h^2 + se_l^2),
+      p_lower    = pnorm((diff + delta) / se_diff, lower.tail = FALSE),
+      p_upper    = pnorm((diff - delta) / se_diff),
+      p_tost     = pmax(p_lower, p_upper),
+      equivalent = p_tost < 0.05,
+      same_infer = infer_cat(estimate_h, p_adj_h) == infer_cat(estimate_l, p_adj_l)
+    ) |>
+    summarise(
+      spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
+                            use = "pairwise.complete.obs"),
+      pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs"),
+      rmse            = sqrt(mean((estimate_h - estimate_l)^2, na.rm = TRUE)),
+      directional_pct = mean(sign(estimate_h) == sign(estimate_l), na.rm = TRUE) * 100,
+      inferential_pct = if (!anyNA(p_adj_h) && !anyNA(p_adj_l))
+        mean(same_infer, na.rm = TRUE) * 100 else NA_real_,
+      tost_pct        = mean(equivalent, na.rm = TRUE) * 100
+    )
+}
+
+# compare distribution overlap
+compute_ovl <- function(x, y, n_grid = 512) {
+  lo <- min(c(x, y)); hi <- max(c(x, y))
+  if (lo == hi) return(NA_real_)
+  # Evaluate both KDEs on the same grid, then integrate the overlap area
+  d_h <- density(x, from = lo, to = hi, n = n_grid)
+  d_l <- density(y, from = lo, to = hi, n = n_grid)
+  sum(pmin(d_h$y, d_l$y)) * (hi - lo) / n_grid
+}
+
+# calibration regression
+run_calibration <- function(h_result, l_result) {
+  joined <- inner_join(
+    h_result |> select(condition, estimate_h = estimate),
+    l_result |> select(condition, estimate_l = estimate),
+    by = "condition"
+  )
+
+  # ATE_h = α + β × ATE_l
+  fit   <- lm(estimate_h ~ estimate_l, data = joined)
+  coefs <- broom::tidy(fit, conf.int = TRUE)
+
+  tibble(
+    alpha     = coefs$estimate[1],
+    alpha_lo  = coefs$conf.low[1],
+    alpha_hi  = coefs$conf.high[1],
+    beta      = coefs$estimate[2],
+    beta_lo   = coefs$conf.low[2],
+    beta_hi   = coefs$conf.high[2],
+    r_squared = broom::glance(fit)$r.squared,
+    # Joint F-test  H0: α = 0 AND β = 1  (perfect calibration on the original scale)
+    p_joint   = car::linearHypothesis(
+                  fit, c("(Intercept) = 0", "estimate_l = 1")
+                )$`Pr(>F)`[2],
+    # Slope-only F-test  H0: β = 1  (proportional calibration; constant offset allowed)
+    p_beta_1  = car::linearHypothesis(fit, "estimate_l = 1")$`Pr(>F)`[2]
+  )
+}
+
+compare_distributions <- function(human_data, llm_data, outcome, condition_val) {
+  x <- human_data |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
+  y <- llm_data   |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
+  tibble(
+    condition      = as.character(condition_val),
+    ovl            = compute_ovl(x, y),
+    ks_d           = suppressWarnings(ks.test(x, y)$statistic),
+    variance_ratio = var(y) / var(x)  # > 1: clones more variable; < 1: less variable
+  )
+}
+
+
 # main treatment model — continuous outcomes (OLS)
 run_main_treatment_model <- function(data,
                                      outcome,

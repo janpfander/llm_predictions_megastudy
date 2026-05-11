@@ -22,8 +22,12 @@ website:
         href: index.qmd
       - text: "Preregistration"
         href: preregistration.qmd
-      - text: "Generate profiles from GSS"
-        href: clone_profiles/make_profiles.qmd
+      - text: "Clone profiles"
+        menu:
+          - text: "Download profiles"
+            href: clone_profiles/download_profiles.qmd
+          - text: "Generate profiles"
+            href: clone_profiles/make_profiles.qmd
 format:
   html:
     theme: cosmo
