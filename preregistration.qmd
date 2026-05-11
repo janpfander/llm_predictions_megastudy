@@ -95,7 +95,7 @@ The main outcome of the megastudy is trust in climate scientists, but several se
 
 **Section 2 — Subgroup Effects.** We ask (a) whether clones recover differences in intervention effects across six demographic moderators (gender, age, race, education, income, partisan identity) for all outcomes, and (b) whether within-subgroup response distributions in the control condition match between humans and clones for the primary outcome.
 
-**Section 3 — Demographic Stereotyping.** We ask whether individual clone responses are calibrated to the assigned demographic profile: (a) do clones reproduce the correct baseline response level for each demographic group, and (b) do demographic variables predict clone responses with the same magnitude as in humans?
+**Section 3 — Demographic Baseline Calibration.** We ask whether clone baseline outcome levels are calibrated to the assigned demographic profile, independent of treatment effects: (a) do clones reproduce the correct group mean for each demographic group in the control condition, and (b) do demographic variables predict clone outcomes with the same magnitude as in humans, or do clones over-rely on demographic cues? Analyses are run separately for all outcomes; results are illustrated with the primary outcome (`trust_multidimensional`).
 
 ## Data
 
@@ -105,7 +105,7 @@ The human dataset comes from a large-scale between-subjects field experiment con
 
 #### Interventions
 
-@tbl-interventions provides a summary of the different interventions tested in the megastudy. 
+@tbl-interventions provides a summary of the different interventions tested in the megastudy. In this project, we only generate LLM clone responses for non-interactive interventions. As a result, we only test 16 interventions (none of the three LLM-chatbot interventions, neither the 'Value similarity' quiz intervention). 
 
 ```{r}
 #| label: build-tbl-interventions
@@ -819,7 +819,7 @@ map_dfr(moderators_cat, function(mod) {
 
 ### Response Distributions by Subgroup
 
-Mirroring the distribution analysis in Section 1, we compare response distributions within each demographic subgroup in the control condition for the primary outcome. A clone dataset could reproduce the overall response distribution while having miscalibrated within-group spreads. We use the same OVL, KS D, and variance ratio metrics. Minimum group size of 10 is required for stable kernel density estimation.
+Mirroring the distribution analysis in Section 1, we compare response distributions within each demographic subgroup in the control condition. A clone dataset could reproduce the overall response distribution while having miscalibrated within-group spreads. We use the same OVL, KS D, and variance ratio metrics, in the same increasing order of strictness. These analyses are run separately for all outcomes; the preregistration demonstrates them on the primary outcome (`trust_multidimensional`). Minimum group size of 10 is required for stable kernel density estimation.
 
 ```{r}
 #| label: rq4c-compute
@@ -890,7 +890,7 @@ subgroup_dist |>
 
 Section 2 already provides a partial test of demographic stereotyping: if clones exaggerate heterogeneity in treatment effects across subgroups, that is evidence of over-reliance on demographic cues. But there is a second, orthogonal question namely whether clones get the baseline right: For example, the conles could still assign far too low trust to Black respondents or far too high trust to conservatives before any treatment is applied. This is a distinct failure mode — demographic stereotyping at the level of the outcome rather than the effect.
 
-Section 3 tests this directly, using only the control condition and the primary outcome (`trust_multidimensional`). It asks two questions: (a) do clone group means match human group means for each demographic group? and (b) do demographic variables predict clone outcomes too strongly — does the demographic profile explain more variance in clone responses than in human responses, indicating that clones map demographics to outcomes too mechanically?
+Section 3 tests this directly, using only the control condition. It asks two questions: (a) do clone group means match human group means for each demographic group? and (b) do demographic variables predict clone outcomes too strongly — does the demographic profile explain more variance in clone responses than in human responses, indicating that clones map demographics to outcomes too mechanically? Both analyses are run separately for all outcomes; the preregistration illustrates them with the primary outcome (`trust_multidimensional`).
 
 ### Demographic Baseline Calibration
 
