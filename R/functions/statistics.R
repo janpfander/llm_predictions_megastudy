@@ -963,35 +963,39 @@ compare_demographic_baselines <- function(human_data, llm_data,
   })
 }
 
-# Regress outcome on demographics + condition FE in each dataset separately.
-# Clone R² >> human R² signals over-reliance on demographic stereotypes.
+# Regress outcome on each demographic moderator + condition FE separately.
+# Clone R² >> human R² per moderator signals over-reliance on demographic stereotypes.
 compare_demographic_predictability <- function(human_data, llm_data,
                                                 outcome,
                                                 predictors,
                                                 condition_var = "condition") {
-  model_formula <- as.formula(
-    paste(outcome, "~", paste(c(predictors, condition_var), collapse = " + "))
-  )
+  results <- map(predictors, function(mod) {
+    formula <- as.formula(paste(outcome, "~", mod, "+", condition_var))
+    fit_h   <- lm(formula, data = human_data)
+    fit_l   <- lm(formula, data = llm_data)
 
-  fit_h <- lm(model_formula, data = human_data)
-  fit_l <- lm(model_formula, data = llm_data)
+    rsq <- tibble(
+      moderator = mod,
+      source    = c("human", "llm"),
+      r_squared = c(broom::glance(fit_h)$r.squared, broom::glance(fit_l)$r.squared)
+    )
 
-  r_squared <- tibble(
-    source    = c("human", "llm"),
-    r_squared = c(broom::glance(fit_h)$r.squared, broom::glance(fit_l)$r.squared)
-  )
+    coefs_h <- broom::tidy(fit_h, conf.int = TRUE) |>
+      filter(str_detect(term, fixed(mod))) |>
+      select(term, est_h = estimate, lo_h = conf.low, hi_h = conf.high)
 
-  # str_detect handles factor dummy terms (e.g. "partyRepublican" matches "party")
-  coefs_h <- broom::tidy(fit_h, conf.int = TRUE) |>
-    filter(str_detect(term, paste(predictors, collapse = "|"))) |>
-    select(term, est_h = estimate, lo_h = conf.low, hi_h = conf.high)
+    coefs_l <- broom::tidy(fit_l, conf.int = TRUE) |>
+      filter(str_detect(term, fixed(mod))) |>
+      select(term, est_l = estimate, lo_l = conf.low, hi_l = conf.high)
 
-  coefs_l <- broom::tidy(fit_l, conf.int = TRUE) |>
-    filter(str_detect(term, paste(predictors, collapse = "|"))) |>
-    select(term, est_l = estimate, lo_l = conf.low, hi_l = conf.high)
+    coefs <- inner_join(coefs_h, coefs_l, by = "term") |>
+      mutate(moderator = mod)
+
+    list(r_squared = rsq, coefficients = coefs)
+  })
 
   list(
-    r_squared    = r_squared,
-    coefficients = inner_join(coefs_h, coefs_l, by = "term")
+    r_squared    = map_dfr(results, "r_squared"),
+    coefficients = map_dfr(results, "coefficients")
   )
 }

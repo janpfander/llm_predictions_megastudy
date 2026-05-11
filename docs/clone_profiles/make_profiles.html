@@ -273,11 +273,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"degree"</span>, <span class="st">"income16"</span>, <span class="st">"class"</span>,</span>
 <span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"region"</span>,</span>
 <span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"partyid"</span>, <span class="st">"polviews"</span>,</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relig"</span>, <span class="st">"srcbelt"</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relig"</span></span>
 <span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables where NA is acceptable (handled downstream)</span></span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>optional_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"hompop"</span>, <span class="st">"reborn"</span>, <span class="st">"reliten"</span>, <span class="st">"consci"</span>)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>optional_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"hompop"</span>, <span class="st">"reborn"</span>, <span class="st">"reliten"</span>, <span class="st">"consci"</span>, <span class="st">"srcbelt"</span>)</span>
 <span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>numeric_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"hompop"</span>, <span class="st">"wtssps"</span>)</span>
 <span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>factor_vars  <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(selected_vars, <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"id"</span>, numeric_vars))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -322,42 +322,48 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(factor_vars),  <span class="sc">~</span> haven<span class="sc">::</span><span class="fu">as_factor</span>(.x)))</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>gss_missing_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"don't know"</span>, <span class="st">"no answer"</span>, <span class="st">"skipped on web"</span>, <span class="st">"iap"</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.factor), <span class="sc">~</span> {</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    chr <span class="ot">&lt;-</span> <span class="fu">as.character</span>(.x)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    chr[<span class="fu">tolower</span>(chr) <span class="sc">%in%</span> gss_missing_labels] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="fu">factor</span>(chr, <span class="at">levels =</span> <span class="fu">setdiff</span>(<span class="fu">levels</span>(.x), gss_missing_labels))</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  }))</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Roll up Asian sub-categories</span></span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>asian_categories <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"asian indian"</span>, <span class="st">"chinese"</span>, <span class="st">"filipino"</span>, <span class="st">"japanese"</span>,</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"korean"</span>, <span class="st">"vietnamese"</span>, <span class="st">"other asian"</span></span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>gss_missing_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"don't know"</span>, <span class="st">"no answer"</span>, <span class="st">"skipped on web"</span>, <span class="st">"iap"</span>,</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"refused"</span>, <span class="st">"not imputable"</span>, <span class="st">"dk, na, iap"</span>,</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"uncodeable"</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"not available in this release"</span>, <span class="st">"not available in this year"</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>  <span class="st">"see codebook"</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.factor), <span class="sc">~</span> {</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    chr <span class="ot">&lt;-</span> <span class="fu">as.character</span>(.x)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    chr[<span class="fu">tolower</span>(chr) <span class="sc">%in%</span> gss_missing_labels] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">factor</span>(chr, <span class="at">levels =</span> <span class="fu">setdiff</span>(<span class="fu">levels</span>(.x), gss_missing_labels))</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>  }))</span>
 <span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
-<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">as.character</span>(racecen1),</span>
-<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>      racecen1 <span class="sc">%in%</span> asian_categories                                               <span class="sc">~</span> <span class="st">"asian"</span>,</span>
-<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(racecen1) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(hispanic) <span class="sc">&amp;</span> <span class="fu">as.character</span>(hispanic) <span class="sc">!=</span> <span class="st">"not hispanic"</span> <span class="sc">~</span> <span class="st">"hispanic"</span>,</span>
-<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                                                                           <span class="sc">~</span> racecen1</span>
-<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">factor</span>(racecen1)</span>
-<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
-<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="sc">|&gt;</span></span>
-<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
-<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>                   <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(.x), <span class="at">na.rm =</span> <span class="cn">FALSE</span>),</span>
-<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_na_share"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">everything</span>(),</span>
-<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>                      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
-<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_to =</span> <span class="st">"na_share"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variable =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(variable, <span class="st">"_na_share"</span>),</span>
-<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>         <span class="at">na_share =</span> scales<span class="sc">::</span><span class="fu">percent</span>(na_share, <span class="at">accuracy =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Roll up Asian sub-categories</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>asian_categories <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">"asian indian"</span>, <span class="st">"chinese"</span>, <span class="st">"filipino"</span>, <span class="st">"japanese"</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">"korean"</span>, <span class="st">"vietnamese"</span>, <span class="st">"other asian"</span></span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">as.character</span>(racecen1),</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>      racecen1 <span class="sc">%in%</span> asian_categories                                               <span class="sc">~</span> <span class="st">"asian"</span>,</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(racecen1) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(hispanic) <span class="sc">&amp;</span> <span class="fu">as.character</span>(hispanic) <span class="sc">!=</span> <span class="st">"not hispanic"</span> <span class="sc">~</span> <span class="st">"hispanic"</span>,</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                                                                           <span class="sc">~</span> racecen1</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">factor</span>(racecen1)</span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="sc">|&gt;</span></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>                   <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(.x), <span class="at">na.rm =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_na_share"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">everything</span>(),</span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a>                      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_to =</span> <span class="st">"na_share"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variable =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(variable, <span class="st">"_na_share"</span>),</span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>         <span class="at">na_share =</span> scales<span class="sc">::</span><span class="fu">percent</span>(na_share, <span class="at">accuracy =</span> <span class="fl">0.1</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 19 × 2
    variable na_share
@@ -370,16 +376,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  6 racecen1 0.9%    
  7 hispanic 0.9%    
  8 degree   0.2%    
- 9 income16 8.6%    
+ 9 income16 11.6%   
 10 hompop   27.2%   
 11 class    0.8%    
 12 region   0.0%    
-13 srcbelt  0.4%    
+13 srcbelt  25.4%   
 14 partyid  1.1%    
 15 polviews 3.3%    
 16 relig    1.5%    
 17 reborn   12.8%   
-18 reliten  28.0%   
+18 reliten  58.5%   
 19 consci   35.0%   </code></pre>
 </div>
 </div>
@@ -403,17 +409,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code># A tibble: 4 × 3
   year          n pct_of_raw 
   &lt;dbl+lbl&gt; &lt;int&gt; &lt;table[1d]&gt;
-1 2018       2116 90.1       
-2 2021       3248 80.6       
-3 2022       2841 80.2       
-4 2024       2769 83.7       </code></pre>
+1 2018       2039 86.8       
+2 2021       3237 80.3       
+3 2022       2832 79.9       
+4 2024       2717 82.1       </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">glue</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Total eligible pool: {nrow(gss_complete)} respondents "</span>,</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"({round(100 * nrow(gss_complete) / nrow(gss_sel), 1)}% of {nrow(gss_sel)} multi-year rows)</span><span class="sc">\n</span><span class="st">"</span></span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Total eligible pool: 10974 respondents (82.9% of 13233 multi-year rows)</code></pre>
+<pre><code>Total eligible pool: 10825 respondents (81.8% of 13233 multi-year rows)</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Safety check: if pool is still under 9000, extend to 2014</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(gss_complete) <span class="sc">&lt;</span> <span class="dv">9000</span>) {</span>
@@ -434,13 +440,14 @@ NA rates on optional variables (kept respondents):</code></pre>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"pct_na"</span>) <span class="sc">|&gt;</span></span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 2
+<pre><code># A tibble: 5 × 2
   variable pct_na
   &lt;chr&gt;     &lt;dbl&gt;
 1 hompop     26  
-2 reborn     11.2
-3 reliten    27.1
-4 consci     34.6</code></pre>
+2 reborn     11.3
+3 reliten    57.6
+4 consci     34.6
+5 srcbelt    25.6</code></pre>
 </div>
 </div>
 </section>
@@ -494,7 +501,7 @@ NA rates on optional variables (kept respondents):</code></pre>
 <span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>     <span class="st">"drawn from {nrow(gss_complete)} eligible respondents across "</span>,</span>
 <span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>     <span class="st">"{n_distinct(profiles$year)} GSS waves."</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Profile pool built: N = 9000 unique individuals drawn from 10974 eligible respondents across 4 GSS waves.</code></pre>
+<pre><code>Profile pool built: N = 9000 unique individuals drawn from 10825 eligible respondents across 4 GSS waves.</code></pre>
 </div>
 </div>
 </section>
@@ -516,10 +523,10 @@ NA rates on optional variables (kept respondents):</code></pre>
 <pre><code># A tibble: 4 × 3
   year          n   pct
   &lt;dbl+lbl&gt; &lt;int&gt; &lt;dbl&gt;
-1 2018       1911  21.2
-2 2021       2667  29.6
-3 2022       2176  24.2
-4 2024       2246  25  </code></pre>
+1 2018       1867  20.7
+2 2021       2687  29.9
+3 2022       2214  24.6
+4 2024       2232  24.8</code></pre>
 </div>
 </div>
 </section>
@@ -567,66 +574,66 @@ NA rates on optional variables (kept respondents):</code></pre>
 <pre><code>
 ---- sex ----
 # A tibble: 2 × 4
-  sex    prop_gss2024 prop_pool   diff
-  &lt;fct&gt;         &lt;dbl&gt;     &lt;dbl&gt;  &lt;dbl&gt;
-1 male          0.500     0.472 -0.028
-2 female        0.500     0.528  0.028
+  sex    prop_gss2024 prop_pool    diff
+  &lt;fct&gt;         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+1 male          0.503     0.473 -0.0301
+2 female        0.497     0.527  0.0301
 
 ---- racecen1 ----
 # A tibble: 7 × 4
   racecen1                         prop_gss2024 prop_pool    diff
   &lt;fct&gt;                                   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 american indian or alaska native       0.0146    0.0124 -0.0021
-2 asian                                  0.0645    0.0416 -0.0229
-3 black or african american              0.126     0.139   0.0133
-4 hispanic                               0.0573    0.0457 -0.0117
-5 other pacific islander                 0.0047    0.0022 -0.0024
-6 some other race                        0.0092    0.0081 -0.0011
-7 white                                  0.724     0.751   0.0269
+1 american indian or alaska native       0.0148    0.0132 -0.0016
+2 asian                                  0.0629    0.0398 -0.0231
+3 black or african american              0.128     0.137   0.0091
+4 hispanic                               0.0573    0.0454 -0.0119
+5 other pacific islander                 0.0047    0.0023 -0.0024
+6 some other race                        0.0094    0.0089 -0.0005
+7 white                                  0.723     0.754   0.0304
 
 ---- degree ----
 # A tibble: 5 × 4
   degree                   prop_gss2024 prop_pool    diff
   &lt;fct&gt;                           &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 less than high school          0.0907    0.0782 -0.0125
-2 high school                    0.467     0.455  -0.0125
-3 associate/junior college       0.0913    0.0931  0.0018
-4 bachelor's                     0.212     0.223   0.0118
-5 graduate                       0.139     0.150   0.0112
+1 less than high school          0.0887    0.0772 -0.0115
+2 high school                    0.469     0.451  -0.0173
+3 associate/junior college       0.0923    0.0951  0.0028
+4 bachelor's                     0.212     0.227   0.0152
+5 graduate                       0.138     0.149   0.0108
 
 ---- partyid ----
 # A tibble: 8 × 4
   partyid                            prop_gss2024 prop_pool    diff
   &lt;fct&gt;                                     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 strong democrat                          0.153     0.175   0.022 
-2 not very strong democrat                 0.108     0.141   0.033 
-3 independent, close to democrat           0.111     0.121   0.0103
-4 independent (neither, no response)       0.235     0.195  -0.0395
-5 independent, close to republican         0.0892    0.0946  0.0054
-6 not very strong republican               0.122     0.112  -0.0105
-7 strong republican                        0.156     0.133  -0.0222
-8 other party                              0.0266    0.0281  0.0015
+1 strong democrat                          0.155     0.180   0.0243
+2 not very strong democrat                 0.110     0.138   0.0282
+3 independent, close to democrat           0.112     0.122   0.0101
+4 independent (neither, no response)       0.232     0.192  -0.0397
+5 independent, close to republican         0.0895    0.0964  0.0069
+6 not very strong republican               0.119     0.112  -0.0067
+7 strong republican                        0.156     0.131  -0.0241
+8 other party                              0.027     0.0281  0.0011
 
 ---- polviews ----
 # A tibble: 7 × 4
   polviews                     prop_gss2024 prop_pool    diff
   &lt;fct&gt;                               &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 extremely liberal                  0.0389    0.0504  0.0115
-2 liberal                            0.134     0.142   0.0081
-3 slightly liberal                   0.115     0.120   0.0048
-4 moderate, middle of the road       0.362     0.357  -0.0051
-5 slightly conservative              0.116     0.125   0.0088
-6 conservative                       0.167     0.156  -0.0106
-7 extremely conservative             0.0667    0.0492 -0.0174
+1 extremely liberal                  0.0396    0.0511  0.0115
+2 liberal                            0.136     0.144   0.0083
+3 slightly liberal                   0.117     0.122   0.0055
+4 moderate, middle of the road       0.360     0.354  -0.0064
+5 slightly conservative              0.116     0.125   0.0091
+6 conservative                       0.167     0.157  -0.0104
+7 extremely conservative             0.0643    0.0468 -0.0175
 
 ---- region ----
 # A tibble: 4 × 4
   region    prop_gss2024 prop_pool    diff
   &lt;fct&gt;            &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 northeast        0.178     0.154 -0.0239
-2 midwest          0.214     0.235  0.0215
-3 south            0.381     0.389  0.0081
-4 west             0.228     0.222 -0.0057</code></pre>
+1 northeast        0.178     0.159 -0.0191
+2 midwest          0.213     0.232  0.0187
+3 south            0.380     0.384  0.0045
+4 west             0.229     0.225 -0.0041</code></pre>
 </div>
 </div>
 </section>
@@ -1199,11 +1206,11 @@ Years   : 2018, 2021, 2022, 2024</code></pre>
 <span id="cb37-84"><a href="#cb37-84" aria-hidden="true" tabindex="-1"></a>  <span class="st">"degree"</span>, <span class="st">"income16"</span>, <span class="st">"class"</span>,</span>
 <span id="cb37-85"><a href="#cb37-85" aria-hidden="true" tabindex="-1"></a>  <span class="st">"region"</span>,</span>
 <span id="cb37-86"><a href="#cb37-86" aria-hidden="true" tabindex="-1"></a>  <span class="st">"partyid"</span>, <span class="st">"polviews"</span>,</span>
-<span id="cb37-87"><a href="#cb37-87" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relig"</span>, <span class="st">"srcbelt"</span></span>
+<span id="cb37-87"><a href="#cb37-87" aria-hidden="true" tabindex="-1"></a>  <span class="st">"relig"</span></span>
 <span id="cb37-88"><a href="#cb37-88" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb37-89"><a href="#cb37-89" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-90"><a href="#cb37-90" aria-hidden="true" tabindex="-1"></a><span class="co"># Variables where NA is acceptable (handled downstream)</span></span>
-<span id="cb37-91"><a href="#cb37-91" aria-hidden="true" tabindex="-1"></a>optional_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"hompop"</span>, <span class="st">"reborn"</span>, <span class="st">"reliten"</span>, <span class="st">"consci"</span>)</span>
+<span id="cb37-91"><a href="#cb37-91" aria-hidden="true" tabindex="-1"></a>optional_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"hompop"</span>, <span class="st">"reborn"</span>, <span class="st">"reliten"</span>, <span class="st">"consci"</span>, <span class="st">"srcbelt"</span>)</span>
 <span id="cb37-92"><a href="#cb37-92" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-93"><a href="#cb37-93" aria-hidden="true" tabindex="-1"></a>numeric_vars <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"age"</span>, <span class="st">"hompop"</span>, <span class="st">"wtssps"</span>)</span>
 <span id="cb37-94"><a href="#cb37-94" aria-hidden="true" tabindex="-1"></a>factor_vars  <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(selected_vars, <span class="fu">c</span>(<span class="st">"year"</span>, <span class="st">"id"</span>, numeric_vars))</span>
@@ -1241,200 +1248,204 @@ Years   : 2018, 2021, 2022, 2024</code></pre>
 <span id="cb37-126"><a href="#cb37-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(factor_vars),  <span class="sc">~</span> haven<span class="sc">::</span><span class="fu">as_factor</span>(.x)))</span>
 <span id="cb37-127"><a href="#cb37-127" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb37-128"><a href="#cb37-128" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-129"><a href="#cb37-129" aria-hidden="true" tabindex="-1"></a>gss_missing_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"don't know"</span>, <span class="st">"no answer"</span>, <span class="st">"skipped on web"</span>, <span class="st">"iap"</span>)</span>
-<span id="cb37-130"><a href="#cb37-130" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-131"><a href="#cb37-131" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
-<span id="cb37-132"><a href="#cb37-132" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.factor), <span class="sc">~</span> {</span>
-<span id="cb37-133"><a href="#cb37-133" aria-hidden="true" tabindex="-1"></a>    chr <span class="ot">&lt;-</span> <span class="fu">as.character</span>(.x)</span>
-<span id="cb37-134"><a href="#cb37-134" aria-hidden="true" tabindex="-1"></a>    chr[<span class="fu">tolower</span>(chr) <span class="sc">%in%</span> gss_missing_labels] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
-<span id="cb37-135"><a href="#cb37-135" aria-hidden="true" tabindex="-1"></a>    <span class="fu">factor</span>(chr, <span class="at">levels =</span> <span class="fu">setdiff</span>(<span class="fu">levels</span>(.x), gss_missing_labels))</span>
-<span id="cb37-136"><a href="#cb37-136" aria-hidden="true" tabindex="-1"></a>  }))</span>
-<span id="cb37-137"><a href="#cb37-137" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-138"><a href="#cb37-138" aria-hidden="true" tabindex="-1"></a><span class="co"># Roll up Asian sub-categories</span></span>
-<span id="cb37-139"><a href="#cb37-139" aria-hidden="true" tabindex="-1"></a>asian_categories <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
-<span id="cb37-140"><a href="#cb37-140" aria-hidden="true" tabindex="-1"></a>  <span class="st">"asian indian"</span>, <span class="st">"chinese"</span>, <span class="st">"filipino"</span>, <span class="st">"japanese"</span>,</span>
-<span id="cb37-141"><a href="#cb37-141" aria-hidden="true" tabindex="-1"></a>  <span class="st">"korean"</span>, <span class="st">"vietnamese"</span>, <span class="st">"other asian"</span></span>
-<span id="cb37-142"><a href="#cb37-142" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-129"><a href="#cb37-129" aria-hidden="true" tabindex="-1"></a>gss_missing_labels <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb37-130"><a href="#cb37-130" aria-hidden="true" tabindex="-1"></a>  <span class="st">"don't know"</span>, <span class="st">"no answer"</span>, <span class="st">"skipped on web"</span>, <span class="st">"iap"</span>,</span>
+<span id="cb37-131"><a href="#cb37-131" aria-hidden="true" tabindex="-1"></a>  <span class="st">"refused"</span>, <span class="st">"not imputable"</span>, <span class="st">"dk, na, iap"</span>,</span>
+<span id="cb37-132"><a href="#cb37-132" aria-hidden="true" tabindex="-1"></a>  <span class="st">"uncodeable"</span>,</span>
+<span id="cb37-133"><a href="#cb37-133" aria-hidden="true" tabindex="-1"></a>  <span class="st">"not available in this release"</span>, <span class="st">"not available in this year"</span>,</span>
+<span id="cb37-134"><a href="#cb37-134" aria-hidden="true" tabindex="-1"></a>  <span class="st">"see codebook"</span></span>
+<span id="cb37-135"><a href="#cb37-135" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-136"><a href="#cb37-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-137"><a href="#cb37-137" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
+<span id="cb37-138"><a href="#cb37-138" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">where</span>(is.factor), <span class="sc">~</span> {</span>
+<span id="cb37-139"><a href="#cb37-139" aria-hidden="true" tabindex="-1"></a>    chr <span class="ot">&lt;-</span> <span class="fu">as.character</span>(.x)</span>
+<span id="cb37-140"><a href="#cb37-140" aria-hidden="true" tabindex="-1"></a>    chr[<span class="fu">tolower</span>(chr) <span class="sc">%in%</span> gss_missing_labels] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb37-141"><a href="#cb37-141" aria-hidden="true" tabindex="-1"></a>    <span class="fu">factor</span>(chr, <span class="at">levels =</span> <span class="fu">setdiff</span>(<span class="fu">levels</span>(.x), gss_missing_labels))</span>
+<span id="cb37-142"><a href="#cb37-142" aria-hidden="true" tabindex="-1"></a>  }))</span>
 <span id="cb37-143"><a href="#cb37-143" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-144"><a href="#cb37-144" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
-<span id="cb37-145"><a href="#cb37-145" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb37-146"><a href="#cb37-146" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">as.character</span>(racecen1),</span>
-<span id="cb37-147"><a href="#cb37-147" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">case_when</span>(</span>
-<span id="cb37-148"><a href="#cb37-148" aria-hidden="true" tabindex="-1"></a>      racecen1 <span class="sc">%in%</span> asian_categories                                               <span class="sc">~</span> <span class="st">"asian"</span>,</span>
-<span id="cb37-149"><a href="#cb37-149" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(racecen1) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(hispanic) <span class="sc">&amp;</span> <span class="fu">as.character</span>(hispanic) <span class="sc">!=</span> <span class="st">"not hispanic"</span> <span class="sc">~</span> <span class="st">"hispanic"</span>,</span>
-<span id="cb37-150"><a href="#cb37-150" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                                                                           <span class="sc">~</span> racecen1</span>
-<span id="cb37-151"><a href="#cb37-151" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb37-152"><a href="#cb37-152" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">factor</span>(racecen1)</span>
-<span id="cb37-153"><a href="#cb37-153" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb37-154"><a href="#cb37-154" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-155"><a href="#cb37-155" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
-<span id="cb37-156"><a href="#cb37-156" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="sc">|&gt;</span></span>
-<span id="cb37-157"><a href="#cb37-157" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
-<span id="cb37-158"><a href="#cb37-158" aria-hidden="true" tabindex="-1"></a>                   <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(.x), <span class="at">na.rm =</span> <span class="cn">FALSE</span>),</span>
-<span id="cb37-159"><a href="#cb37-159" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_na_share"</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb37-160"><a href="#cb37-160" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">everything</span>(),</span>
-<span id="cb37-161"><a href="#cb37-161" aria-hidden="true" tabindex="-1"></a>                      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
-<span id="cb37-162"><a href="#cb37-162" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_to =</span> <span class="st">"na_share"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb37-163"><a href="#cb37-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variable =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(variable, <span class="st">"_na_share"</span>),</span>
-<span id="cb37-164"><a href="#cb37-164" aria-hidden="true" tabindex="-1"></a>         <span class="at">na_share =</span> scales<span class="sc">::</span><span class="fu">percent</span>(na_share, <span class="at">accuracy =</span> <span class="fl">0.1</span>))</span>
-<span id="cb37-165"><a href="#cb37-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-166"><a href="#cb37-166" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-167"><a href="#cb37-167" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 3. Remove missing data for required variables</span></span>
-<span id="cb37-168"><a href="#cb37-168" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-169"><a href="#cb37-169" aria-hidden="true" tabindex="-1"></a><span class="in">```{r drop-missing}</span></span>
-<span id="cb37-170"><a href="#cb37-170" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-171"><a href="#cb37-171" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-172"><a href="#cb37-172" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
-<span id="cb37-173"><a href="#cb37-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(<span class="fu">all_of</span>(required_vars))</span>
+<span id="cb37-144"><a href="#cb37-144" aria-hidden="true" tabindex="-1"></a><span class="co"># Roll up Asian sub-categories</span></span>
+<span id="cb37-145"><a href="#cb37-145" aria-hidden="true" tabindex="-1"></a>asian_categories <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb37-146"><a href="#cb37-146" aria-hidden="true" tabindex="-1"></a>  <span class="st">"asian indian"</span>, <span class="st">"chinese"</span>, <span class="st">"filipino"</span>, <span class="st">"japanese"</span>,</span>
+<span id="cb37-147"><a href="#cb37-147" aria-hidden="true" tabindex="-1"></a>  <span class="st">"korean"</span>, <span class="st">"vietnamese"</span>, <span class="st">"other asian"</span></span>
+<span id="cb37-148"><a href="#cb37-148" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-149"><a href="#cb37-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-150"><a href="#cb37-150" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
+<span id="cb37-151"><a href="#cb37-151" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb37-152"><a href="#cb37-152" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">as.character</span>(racecen1),</span>
+<span id="cb37-153"><a href="#cb37-153" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">case_when</span>(</span>
+<span id="cb37-154"><a href="#cb37-154" aria-hidden="true" tabindex="-1"></a>      racecen1 <span class="sc">%in%</span> asian_categories                                               <span class="sc">~</span> <span class="st">"asian"</span>,</span>
+<span id="cb37-155"><a href="#cb37-155" aria-hidden="true" tabindex="-1"></a>      <span class="fu">is.na</span>(racecen1) <span class="sc">&amp;</span> <span class="sc">!</span><span class="fu">is.na</span>(hispanic) <span class="sc">&amp;</span> <span class="fu">as.character</span>(hispanic) <span class="sc">!=</span> <span class="st">"not hispanic"</span> <span class="sc">~</span> <span class="st">"hispanic"</span>,</span>
+<span id="cb37-156"><a href="#cb37-156" aria-hidden="true" tabindex="-1"></a>      <span class="cn">TRUE</span>                                                                           <span class="sc">~</span> racecen1</span>
+<span id="cb37-157"><a href="#cb37-157" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb37-158"><a href="#cb37-158" aria-hidden="true" tabindex="-1"></a>    <span class="at">racecen1 =</span> <span class="fu">factor</span>(racecen1)</span>
+<span id="cb37-159"><a href="#cb37-159" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-160"><a href="#cb37-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-161"><a href="#cb37-161" aria-hidden="true" tabindex="-1"></a><span class="co"># check</span></span>
+<span id="cb37-162"><a href="#cb37-162" aria-hidden="true" tabindex="-1"></a>gss_sel <span class="sc">|&gt;</span></span>
+<span id="cb37-163"><a href="#cb37-163" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">everything</span>(),</span>
+<span id="cb37-164"><a href="#cb37-164" aria-hidden="true" tabindex="-1"></a>                   <span class="sc">~</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(.x), <span class="at">na.rm =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb37-165"><a href="#cb37-165" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.names =</span> <span class="st">"{.col}_na_share"</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb37-166"><a href="#cb37-166" aria-hidden="true" tabindex="-1"></a>  tidyr<span class="sc">::</span><span class="fu">pivot_longer</span>(<span class="fu">everything</span>(),</span>
+<span id="cb37-167"><a href="#cb37-167" aria-hidden="true" tabindex="-1"></a>                      <span class="at">names_to =</span> <span class="st">"variable"</span>,</span>
+<span id="cb37-168"><a href="#cb37-168" aria-hidden="true" tabindex="-1"></a>                      <span class="at">values_to =</span> <span class="st">"na_share"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-169"><a href="#cb37-169" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">variable =</span> stringr<span class="sc">::</span><span class="fu">str_remove</span>(variable, <span class="st">"_na_share"</span>),</span>
+<span id="cb37-170"><a href="#cb37-170" aria-hidden="true" tabindex="-1"></a>         <span class="at">na_share =</span> scales<span class="sc">::</span><span class="fu">percent</span>(na_share, <span class="at">accuracy =</span> <span class="fl">0.1</span>))</span>
+<span id="cb37-171"><a href="#cb37-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-172"><a href="#cb37-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-173"><a href="#cb37-173" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 3. Remove missing data for required variables</span></span>
 <span id="cb37-174"><a href="#cb37-174" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-175"><a href="#cb37-175" aria-hidden="true" tabindex="-1"></a><span class="co"># Per-year complete-case audit</span></span>
-<span id="cb37-176"><a href="#cb37-176" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Complete cases by year (after required-var filter):</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb37-177"><a href="#cb37-177" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="sc">|&gt;</span></span>
-<span id="cb37-178"><a href="#cb37-178" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year) <span class="sc">|&gt;</span></span>
-<span id="cb37-179"><a href="#cb37-179" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct_of_raw =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">table</span>(gss_multi<span class="sc">$</span>year)[<span class="fu">as.character</span>(year)], <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb37-180"><a href="#cb37-180" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
-<span id="cb37-181"><a href="#cb37-181" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-182"><a href="#cb37-182" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">glue</span>(</span>
-<span id="cb37-183"><a href="#cb37-183" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Total eligible pool: {nrow(gss_complete)} respondents "</span>,</span>
-<span id="cb37-184"><a href="#cb37-184" aria-hidden="true" tabindex="-1"></a>  <span class="st">"({round(100 * nrow(gss_complete) / nrow(gss_sel), 1)}% of {nrow(gss_sel)} multi-year rows)</span><span class="sc">\n</span><span class="st">"</span></span>
-<span id="cb37-185"><a href="#cb37-185" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb37-186"><a href="#cb37-186" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a><span class="co"># Safety check: if pool is still under 9000, extend to 2014</span></span>
-<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(gss_complete) <span class="sc">&lt;</span> <span class="dv">9000</span>) {</span>
-<span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(</span>
-<span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pool of "</span>, <span class="fu">nrow</span>(gss_complete), <span class="st">" complete cases is below the target N = 9000. "</span>,</span>
-<span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Extending to 2014. Re-run from Step 1 with target_years &lt;- c(2014, 2016, 2018, 2022, 2024)."</span></span>
-<span id="cb37-192"><a href="#cb37-192" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb37-193"><a href="#cb37-193" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-195"><a href="#cb37-195" aria-hidden="true" tabindex="-1"></a><span class="co"># Per-variable NA rates among kept respondents (optional variables only)</span></span>
-<span id="cb37-196"><a href="#cb37-196" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">NA rates on optional variables (kept respondents):</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="sc">|&gt;</span></span>
-<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(optional_vars), <span class="sc">~</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(.x)), <span class="dv">1</span>))) <span class="sc">|&gt;</span></span>
-<span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"pct_na"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb37-200"><a href="#cb37-200" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
-<span id="cb37-201"><a href="#cb37-201" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-202"><a href="#cb37-202" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-203"><a href="#cb37-203" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 4. Within-year weight normalization</span></span>
-<span id="cb37-204"><a href="#cb37-204" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-205"><a href="#cb37-205" aria-hidden="true" tabindex="-1"></a>Each year's <span class="in">`wtssps`</span> values sum to that year's effective sample size, which differs</span>
-<span id="cb37-206"><a href="#cb37-206" aria-hidden="true" tabindex="-1"></a>across waves. Normalizing within year ensures each wave contributes equal total weight</span>
-<span id="cb37-207"><a href="#cb37-207" aria-hidden="true" tabindex="-1"></a>to the sampling lottery, while preserving the relative ordering of respondents within</span>
-<span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a>each year.</span>
-<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r normalize-weights}</span></span>
-<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="ot">&lt;-</span> gss_complete <span class="sc">|&gt;</span></span>
-<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
-<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">w_pooled =</span> wtssps <span class="sc">/</span> <span class="fu">sum</span>(wtssps, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity check: each year's normalized weights should sum to 1.0</span></span>
-<span id="cb37-218"><a href="#cb37-218" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sum of normalized weights by year (should be 1.0 each):</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="sc">|&gt;</span></span>
-<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
-<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">w_sum =</span> <span class="fu">round</span>(<span class="fu">sum</span>(w_pooled, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">6</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
-<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 5. Weighted sampling without replacement (N = 9,000)</span></span>
-<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a><span class="in">```{r sample}</span></span>
+<span id="cb37-175"><a href="#cb37-175" aria-hidden="true" tabindex="-1"></a><span class="in">```{r drop-missing}</span></span>
+<span id="cb37-176"><a href="#cb37-176" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="ot">&lt;-</span> gss_sel <span class="sc">|&gt;</span></span>
+<span id="cb37-177"><a href="#cb37-177" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(<span class="fu">all_of</span>(required_vars))</span>
+<span id="cb37-178"><a href="#cb37-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-179"><a href="#cb37-179" aria-hidden="true" tabindex="-1"></a><span class="co"># Per-year complete-case audit</span></span>
+<span id="cb37-180"><a href="#cb37-180" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Complete cases by year (after required-var filter):</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb37-181"><a href="#cb37-181" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="sc">|&gt;</span></span>
+<span id="cb37-182"><a href="#cb37-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb37-183"><a href="#cb37-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct_of_raw =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">table</span>(gss_multi<span class="sc">$</span>year)[<span class="fu">as.character</span>(year)], <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb37-184"><a href="#cb37-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
+<span id="cb37-185"><a href="#cb37-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-186"><a href="#cb37-186" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">glue</span>(</span>
+<span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a>  <span class="st">"</span><span class="sc">\n</span><span class="st">Total eligible pool: {nrow(gss_complete)} respondents "</span>,</span>
+<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a>  <span class="st">"({round(100 * nrow(gss_complete) / nrow(gss_sel), 1)}% of {nrow(gss_sel)} multi-year rows)</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a><span class="co"># Safety check: if pool is still under 9000, extend to 2014</span></span>
+<span id="cb37-192"><a href="#cb37-192" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">nrow</span>(gss_complete) <span class="sc">&lt;</span> <span class="dv">9000</span>) {</span>
+<span id="cb37-193"><a href="#cb37-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">warning</span>(</span>
+<span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Pool of "</span>, <span class="fu">nrow</span>(gss_complete), <span class="st">" complete cases is below the target N = 9000. "</span>,</span>
+<span id="cb37-195"><a href="#cb37-195" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Extending to 2014. Re-run from Step 1 with target_years &lt;- c(2014, 2016, 2018, 2022, 2024)."</span></span>
+<span id="cb37-196"><a href="#cb37-196" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a><span class="co"># Per-variable NA rates among kept respondents (optional variables only)</span></span>
+<span id="cb37-200"><a href="#cb37-200" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">NA rates on optional variables (kept respondents):</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb37-201"><a href="#cb37-201" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="sc">|&gt;</span></span>
+<span id="cb37-202"><a href="#cb37-202" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(optional_vars), <span class="sc">~</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> <span class="fu">mean</span>(<span class="fu">is.na</span>(.x)), <span class="dv">1</span>))) <span class="sc">|&gt;</span></span>
+<span id="cb37-203"><a href="#cb37-203" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="fu">everything</span>(), <span class="at">names_to =</span> <span class="st">"variable"</span>, <span class="at">values_to =</span> <span class="st">"pct_na"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-204"><a href="#cb37-204" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
+<span id="cb37-205"><a href="#cb37-205" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-206"><a href="#cb37-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-207"><a href="#cb37-207" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 4. Within-year weight normalization</span></span>
+<span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a>Each year's <span class="in">`wtssps`</span> values sum to that year's effective sample size, which differs</span>
+<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a>across waves. Normalizing within year ensures each wave contributes equal total weight</span>
+<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a>to the sampling lottery, while preserving the relative ordering of respondents within</span>
+<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a>each year.</span>
+<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a><span class="in">```{r normalize-weights}</span></span>
+<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="ot">&lt;-</span> gss_complete <span class="sc">|&gt;</span></span>
+<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb37-218"><a href="#cb37-218" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">w_pooled =</span> wtssps <span class="sc">/</span> <span class="fu">sum</span>(wtssps, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a><span class="co"># Sanity check: each year's normalized weights should sum to 1.0</span></span>
+<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sum of normalized weights by year (should be 1.0 each):</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a>gss_complete <span class="sc">|&gt;</span></span>
+<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">w_sum =</span> <span class="fu">round</span>(<span class="fu">sum</span>(w_pooled, <span class="at">na.rm =</span> <span class="cn">TRUE</span>), <span class="dv">6</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
+<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb37-228"><a href="#cb37-228" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a>target_n <span class="ot">&lt;-</span> <span class="dv">9000</span></span>
+<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 5. Weighted sampling without replacement (N = 9,000)</span></span>
 <span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a><span class="co"># Guard: pool must be large enough for without-replacement sampling</span></span>
-<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
-<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Pool too small for without-replacement sampling — extend target_years to include 2014"</span> <span class="ot">=</span></span>
-<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>(gss_complete) <span class="sc">&gt;=</span> target_n</span>
-<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a>profiles <span class="ot">&lt;-</span> gss_complete <span class="sc">|&gt;</span></span>
-<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> target_n, <span class="at">weight_by =</span> w_pooled, <span class="at">replace =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
-<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>w_pooled) <span class="sc">|&gt;</span></span>
-<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">profile_id =</span> <span class="fu">sprintf</span>(<span class="st">"p%05d"</span>, <span class="fu">row_number</span>())) <span class="sc">|&gt;</span></span>
-<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(profile_id, <span class="fu">everything</span>())</span>
-<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Profile pool built: N = {nrow(profiles)} unique individuals "</span>,</span>
-<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a>     <span class="st">"drawn from {nrow(gss_complete)} eligible respondents across "</span>,</span>
-<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a>     <span class="st">"{n_distinct(profiles$year)} GSS waves."</span>)</span>
-<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 6. Validate the profile pool</span></span>
-<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a><span class="fu">## Year balance</span></span>
+<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a><span class="in">```{r sample}</span></span>
+<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a>target_n <span class="ot">&lt;-</span> <span class="dv">9000</span></span>
+<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a><span class="co"># Guard: pool must be large enough for without-replacement sampling</span></span>
+<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Pool too small for without-replacement sampling — extend target_years to include 2014"</span> <span class="ot">=</span></span>
+<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nrow</span>(gss_complete) <span class="sc">&gt;=</span> target_n</span>
+<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a>profiles <span class="ot">&lt;-</span> gss_complete <span class="sc">|&gt;</span></span>
+<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice_sample</span>(<span class="at">n =</span> target_n, <span class="at">weight_by =</span> w_pooled, <span class="at">replace =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span></span>
+<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>w_pooled) <span class="sc">|&gt;</span></span>
+<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">profile_id =</span> <span class="fu">sprintf</span>(<span class="st">"p%05d"</span>, <span class="fu">row_number</span>())) <span class="sc">|&gt;</span></span>
+<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(profile_id, <span class="fu">everything</span>())</span>
+<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a><span class="fu">glue</span>(<span class="st">"Profile pool built: N = {nrow(profiles)} unique individuals "</span>,</span>
+<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a>     <span class="st">"drawn from {nrow(gss_complete)} eligible respondents across "</span>,</span>
+<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a>     <span class="st">"{n_distinct(profiles$year)} GSS waves."</span>)</span>
+<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a>Normalized within-year weights means each year contributes equal total sampling</span>
-<span id="cb37-253"><a href="#cb37-253" aria-hidden="true" tabindex="-1"></a>probability. In expectation, the sample should be split roughly equally across years</span>
-<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a>(~2,250 per year for a 4-year pool).</span>
+<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 6. Validate the profile pool</span></span>
+<span id="cb37-253"><a href="#cb37-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a><span class="fu">## Year balance</span></span>
 <span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a><span class="in">```{r validate-years}</span></span>
-<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample composition by GSS year:</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a>profiles <span class="sc">|&gt;</span></span>
-<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year) <span class="sc">|&gt;</span></span>
-<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
-<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
-<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a><span class="fu">## Uniqueness check</span></span>
-<span id="cb37-266"><a href="#cb37-266" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-267"><a href="#cb37-267" aria-hidden="true" tabindex="-1"></a><span class="in">```{r validate-unique}</span></span>
+<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a>Normalized within-year weights means each year contributes equal total sampling</span>
+<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a>probability. In expectation, the sample should be split roughly equally across years</span>
+<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a>(~2,250 per year for a 4-year pool).</span>
+<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a><span class="in">```{r validate-years}</span></span>
+<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Sample composition by GSS year:</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a>profiles <span class="sc">|&gt;</span></span>
+<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(year) <span class="sc">|&gt;</span></span>
+<span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">pct =</span> <span class="fu">round</span>(<span class="dv">100</span> <span class="sc">*</span> n <span class="sc">/</span> <span class="fu">sum</span>(n), <span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
+<span id="cb37-266"><a href="#cb37-266" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>()</span>
+<span id="cb37-267"><a href="#cb37-267" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a>n_unique_pairs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(<span class="fu">distinct</span>(profiles, year, id))</span>
-<span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">glue</span>(</span>
-<span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Unique (year, id) pairs: {n_unique_pairs} of {nrow(profiles)} "</span>,</span>
-<span id="cb37-272"><a href="#cb37-272" aria-hidden="true" tabindex="-1"></a>  <span class="st">"({if (n_unique_pairs == nrow(profiles)) 'PASS — no duplicates' else 'FAIL — duplicates present'})</span><span class="sc">\n</span><span class="st">"</span></span>
-<span id="cb37-273"><a href="#cb37-273" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb37-274"><a href="#cb37-274" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-275"><a href="#cb37-275" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-276"><a href="#cb37-276" aria-hidden="true" tabindex="-1"></a><span class="fu">## Marginal distributions vs. weighted 2024 GSS</span></span>
-<span id="cb37-277"><a href="#cb37-277" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-278"><a href="#cb37-278" aria-hidden="true" tabindex="-1"></a>We use the 2024 wave (most recent) as the reference population. The pooled sample</span>
-<span id="cb37-279"><a href="#cb37-279" aria-hidden="true" tabindex="-1"></a>should approximate 2024-weighted GSS marginals on key variables; deviations are</span>
-<span id="cb37-280"><a href="#cb37-280" aria-hidden="true" tabindex="-1"></a>expected because older waves represent slightly different demographic compositions.</span>
+<span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a><span class="fu">## Uniqueness check</span></span>
+<span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r validate-unique}</span></span>
+<span id="cb37-272"><a href="#cb37-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-273"><a href="#cb37-273" aria-hidden="true" tabindex="-1"></a>n_unique_pairs <span class="ot">&lt;-</span> <span class="fu">nrow</span>(<span class="fu">distinct</span>(profiles, year, id))</span>
+<span id="cb37-274"><a href="#cb37-274" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">glue</span>(</span>
+<span id="cb37-275"><a href="#cb37-275" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Unique (year, id) pairs: {n_unique_pairs} of {nrow(profiles)} "</span>,</span>
+<span id="cb37-276"><a href="#cb37-276" aria-hidden="true" tabindex="-1"></a>  <span class="st">"({if (n_unique_pairs == nrow(profiles)) 'PASS — no duplicates' else 'FAIL — duplicates present'})</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb37-277"><a href="#cb37-277" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb37-278"><a href="#cb37-278" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-279"><a href="#cb37-279" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-280"><a href="#cb37-280" aria-hidden="true" tabindex="-1"></a><span class="fu">## Marginal distributions vs. weighted 2024 GSS</span></span>
 <span id="cb37-281"><a href="#cb37-281" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-282"><a href="#cb37-282" aria-hidden="true" tabindex="-1"></a><span class="in">```{r validate-marginals}</span></span>
-<span id="cb37-283"><a href="#cb37-283" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-284"><a href="#cb37-284" aria-hidden="true" tabindex="-1"></a>gss_2024 <span class="ot">&lt;-</span> gss_complete <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2024</span>)</span>
+<span id="cb37-282"><a href="#cb37-282" aria-hidden="true" tabindex="-1"></a>We use the 2024 wave (most recent) as the reference population. The pooled sample</span>
+<span id="cb37-283"><a href="#cb37-283" aria-hidden="true" tabindex="-1"></a>should approximate 2024-weighted GSS marginals on key variables; deviations are</span>
+<span id="cb37-284"><a href="#cb37-284" aria-hidden="true" tabindex="-1"></a>expected because older waves represent slightly different demographic compositions.</span>
 <span id="cb37-285"><a href="#cb37-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-286"><a href="#cb37-286" aria-hidden="true" tabindex="-1"></a>validate_marginal <span class="ot">&lt;-</span> <span class="cf">function</span>(var) {</span>
-<span id="cb37-287"><a href="#cb37-287" aria-hidden="true" tabindex="-1"></a>  src <span class="ot">&lt;-</span> gss_2024 <span class="sc">|&gt;</span></span>
-<span id="cb37-288"><a href="#cb37-288" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(.data[[var]], <span class="at">wt =</span> wtssps) <span class="sc">|&gt;</span></span>
-<span id="cb37-289"><a href="#cb37-289" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">prop_gss2024 =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
-<span id="cb37-290"><a href="#cb37-290" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>n)</span>
-<span id="cb37-291"><a href="#cb37-291" aria-hidden="true" tabindex="-1"></a>  prof <span class="ot">&lt;-</span> profiles <span class="sc">|&gt;</span></span>
-<span id="cb37-292"><a href="#cb37-292" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(.data[[var]]) <span class="sc">|&gt;</span></span>
-<span id="cb37-293"><a href="#cb37-293" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">prop_pool =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb37-286"><a href="#cb37-286" aria-hidden="true" tabindex="-1"></a><span class="in">```{r validate-marginals}</span></span>
+<span id="cb37-287"><a href="#cb37-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-288"><a href="#cb37-288" aria-hidden="true" tabindex="-1"></a>gss_2024 <span class="ot">&lt;-</span> gss_complete <span class="sc">|&gt;</span> <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2024</span>)</span>
+<span id="cb37-289"><a href="#cb37-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-290"><a href="#cb37-290" aria-hidden="true" tabindex="-1"></a>validate_marginal <span class="ot">&lt;-</span> <span class="cf">function</span>(var) {</span>
+<span id="cb37-291"><a href="#cb37-291" aria-hidden="true" tabindex="-1"></a>  src <span class="ot">&lt;-</span> gss_2024 <span class="sc">|&gt;</span></span>
+<span id="cb37-292"><a href="#cb37-292" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(.data[[var]], <span class="at">wt =</span> wtssps) <span class="sc">|&gt;</span></span>
+<span id="cb37-293"><a href="#cb37-293" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">prop_gss2024 =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
 <span id="cb37-294"><a href="#cb37-294" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>n)</span>
-<span id="cb37-295"><a href="#cb37-295" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(src, prof, <span class="at">by =</span> var) <span class="sc">|&gt;</span></span>
-<span id="cb37-296"><a href="#cb37-296" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">diff =</span> <span class="fu">round</span>(prop_pool <span class="sc">-</span> prop_gss2024, <span class="dv">4</span>),</span>
-<span id="cb37-297"><a href="#cb37-297" aria-hidden="true" tabindex="-1"></a>           <span class="at">prop_gss2024 =</span> <span class="fu">round</span>(prop_gss2024, <span class="dv">4</span>),</span>
-<span id="cb37-298"><a href="#cb37-298" aria-hidden="true" tabindex="-1"></a>           <span class="at">prop_pool    =</span> <span class="fu">round</span>(prop_pool, <span class="dv">4</span>))</span>
-<span id="cb37-299"><a href="#cb37-299" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb37-300"><a href="#cb37-300" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-301"><a href="#cb37-301" aria-hidden="true" tabindex="-1"></a>vars_to_check <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sex"</span>, <span class="st">"racecen1"</span>, <span class="st">"degree"</span>, <span class="st">"partyid"</span>, <span class="st">"polviews"</span>, <span class="st">"region"</span>)</span>
-<span id="cb37-302"><a href="#cb37-302" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-303"><a href="#cb37-303" aria-hidden="true" tabindex="-1"></a><span class="fu">walk</span>(vars_to_check, \(v) {</span>
-<span id="cb37-304"><a href="#cb37-304" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">----"</span>, v, <span class="st">"----</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb37-305"><a href="#cb37-305" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">validate_marginal</span>(v))</span>
-<span id="cb37-306"><a href="#cb37-306" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb37-307"><a href="#cb37-307" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb37-308"><a href="#cb37-308" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-309"><a href="#cb37-309" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 7. Save output</span></span>
-<span id="cb37-310"><a href="#cb37-310" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-311"><a href="#cb37-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r save}</span></span>
+<span id="cb37-295"><a href="#cb37-295" aria-hidden="true" tabindex="-1"></a>  prof <span class="ot">&lt;-</span> profiles <span class="sc">|&gt;</span></span>
+<span id="cb37-296"><a href="#cb37-296" aria-hidden="true" tabindex="-1"></a>    <span class="fu">count</span>(.data[[var]]) <span class="sc">|&gt;</span></span>
+<span id="cb37-297"><a href="#cb37-297" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">prop_pool =</span> n <span class="sc">/</span> <span class="fu">sum</span>(n)) <span class="sc">|&gt;</span></span>
+<span id="cb37-298"><a href="#cb37-298" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>n)</span>
+<span id="cb37-299"><a href="#cb37-299" aria-hidden="true" tabindex="-1"></a>  <span class="fu">full_join</span>(src, prof, <span class="at">by =</span> var) <span class="sc">|&gt;</span></span>
+<span id="cb37-300"><a href="#cb37-300" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">diff =</span> <span class="fu">round</span>(prop_pool <span class="sc">-</span> prop_gss2024, <span class="dv">4</span>),</span>
+<span id="cb37-301"><a href="#cb37-301" aria-hidden="true" tabindex="-1"></a>           <span class="at">prop_gss2024 =</span> <span class="fu">round</span>(prop_gss2024, <span class="dv">4</span>),</span>
+<span id="cb37-302"><a href="#cb37-302" aria-hidden="true" tabindex="-1"></a>           <span class="at">prop_pool    =</span> <span class="fu">round</span>(prop_pool, <span class="dv">4</span>))</span>
+<span id="cb37-303"><a href="#cb37-303" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb37-304"><a href="#cb37-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-305"><a href="#cb37-305" aria-hidden="true" tabindex="-1"></a>vars_to_check <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"sex"</span>, <span class="st">"racecen1"</span>, <span class="st">"degree"</span>, <span class="st">"partyid"</span>, <span class="st">"polviews"</span>, <span class="st">"region"</span>)</span>
+<span id="cb37-306"><a href="#cb37-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-307"><a href="#cb37-307" aria-hidden="true" tabindex="-1"></a><span class="fu">walk</span>(vars_to_check, \(v) {</span>
+<span id="cb37-308"><a href="#cb37-308" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">----"</span>, v, <span class="st">"----</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb37-309"><a href="#cb37-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">validate_marginal</span>(v))</span>
+<span id="cb37-310"><a href="#cb37-310" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb37-311"><a href="#cb37-311" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb37-312"><a href="#cb37-312" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-313"><a href="#cb37-313" aria-hidden="true" tabindex="-1"></a>out_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"clone_profiles"</span>, <span class="st">"profiles.csv"</span>)</span>
-<span id="cb37-314"><a href="#cb37-314" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(profiles, out_path)</span>
-<span id="cb37-315"><a href="#cb37-315" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-316"><a href="#cb37-316" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">glue</span>(</span>
-<span id="cb37-317"><a href="#cb37-317" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Saved: {out_path}</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb37-318"><a href="#cb37-318" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  Rows    : {nrow(profiles)}</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb37-319"><a href="#cb37-319" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  Columns : {ncol(profiles)}</span><span class="sc">\n</span><span class="st">"</span>,</span>
-<span id="cb37-320"><a href="#cb37-320" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  Years   : {paste(sort(unique(profiles$year)), collapse = ', ')}</span><span class="sc">\n</span><span class="st">"</span></span>
-<span id="cb37-321"><a href="#cb37-321" aria-hidden="true" tabindex="-1"></a>))</span>
-<span id="cb37-322"><a href="#cb37-322" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb37-313"><a href="#cb37-313" aria-hidden="true" tabindex="-1"></a><span class="fu"># Step 7. Save output</span></span>
+<span id="cb37-314"><a href="#cb37-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-315"><a href="#cb37-315" aria-hidden="true" tabindex="-1"></a><span class="in">```{r save}</span></span>
+<span id="cb37-316"><a href="#cb37-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-317"><a href="#cb37-317" aria-hidden="true" tabindex="-1"></a>out_path <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"clone_profiles"</span>, <span class="st">"profiles.csv"</span>)</span>
+<span id="cb37-318"><a href="#cb37-318" aria-hidden="true" tabindex="-1"></a><span class="fu">write_csv</span>(profiles, out_path)</span>
+<span id="cb37-319"><a href="#cb37-319" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-320"><a href="#cb37-320" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">glue</span>(</span>
+<span id="cb37-321"><a href="#cb37-321" aria-hidden="true" tabindex="-1"></a>  <span class="st">"Saved: {out_path}</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb37-322"><a href="#cb37-322" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  Rows    : {nrow(profiles)}</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb37-323"><a href="#cb37-323" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  Columns : {ncol(profiles)}</span><span class="sc">\n</span><span class="st">"</span>,</span>
+<span id="cb37-324"><a href="#cb37-324" aria-hidden="true" tabindex="-1"></a>  <span class="st">"  Years   : {paste(sort(unique(profiles$year)), collapse = ', ')}</span><span class="sc">\n</span><span class="st">"</span></span>
+<span id="cb37-325"><a href="#cb37-325" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb37-326"><a href="#cb37-326" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">
