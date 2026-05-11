@@ -2,7 +2,7 @@
 title: "Predicting the effects of behavioral interventions on humans with LLMs"
 
 abstract: |
-    We test the potential of predicting human behavior in survey experiments with behavioral clones—large language model (LLM) generated artificial agents mimicking human participants. To evaluate this potential, we predict the outcomes of a large-scale field experiment (N = ~22,000) to be conducted in the United States. The experiment will test 20 text-based interventions designed to increase trust in climate scientists, assessing a broad range of secondary, outcomes including self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization). Before the human study is fielded, we will simulate it with behavioral clones using demographically representative U.S. participant profiles. We will lock the simulated dataset and analysis code. Once human data are available, we will compare clone-based predictions to human results for average treatment effect and subgroup heterogeneity. We will also compare how well the LLMS produce outcome distributions, and whether they overemphasize stereotype responses. Our study will provide a large-scale, credible benchmark test of LLMs' potential---and limitations---as tools for simulating human subjects in social science research. All analyses in this preregistration are demonstrated on simulated placeholder data with identical structure to the real datasets; no human outcome data have been observed at the time of registration.
+    We test the potential of predicting human behavior in survey experiments with behavioral clones—large language model (LLM) generated artificial agents mimicking human participants. To evaluate this potential, we predict the outcomes of a large-scale field experiment (N = ~22,000) to be conducted in the United States. The experiment will test 20 text-based interventions designed to increase trust in climate scientists, assessing a broad range of secondary, outcomes including self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization). Before the human study is fielded, we will simulate it with behavioral clones using demographically representative U.S. participant profiles. We will lock the simulated dataset and analysis code. Once human data are available, we will compare clone-based predictions to human results for average treatment effect and subgroup heterogeneity. We will also compare how well the LLMS produce outcome distributions, and whether they overemphasize demographic associations (in other words, whether they stereotype). Our study will provide a large-scale, credible benchmark test of LLMs' potential---and limitations---as tools for simulating human subjects in social science research. All analyses in this preregistration are demonstrated on simulated placeholder data with identical structure to the real datasets; no human outcome data have been observed at the time of registration.
 
 # bibliography: ../references.bib
 #csl: https://www.zotero.org/styles/apa
@@ -61,6 +61,9 @@ source(here("R/functions/reporting.R"))
 human_data <- readRDS(here("data/simulation_preregistration/human_data_preregistration.rds"))
 llm_data   <- readRDS(here("data/simulation_preregistration/llm_data_preregistration.rds"))
 
+# interventions
+interventions <- read_csv(here("data/interventions.csv"))
+
 # actual data later
 # human_data  <- readRDS("data/cleaned_llm.rds")
 # llm_data <- readRDS("data/cleaned_llm.rds")
@@ -82,7 +85,7 @@ Recent studies have demonstrated promising results for LLMs in simulating public
 
 Currently, interpreting these mixed findings is difficult, as most existing studies face at least one of the following limitations. First, some studies rely on already published experiments, raising concerns that LLMs may have been trained on the very data they are asked to simulate. These studies might only test LLMs capacity to reproduce, but not to predict. Second, even studies that plausibly rely on unpublished data are rarely preregistered. Given that LLM performance is highly sensitive to model choice and prompting, preregistered predictions are crucial for credible evaluation. Third, some studies operate at the experiment level, providing LLMs with a full description of the study and requesting a single aggregate prediction. While informative about average effects, this approach precludes the analysis of individual-level heterogeneity.
 
-In this project, we aim to provide a robust test of how well LLMs can simulate human behavior in survey experiments. We address limitations of previous studies by leveraging a unique opportunity to evaluate LLM simulations in the context of a large-scale field experiment. I am currently leading a study involving approximately 21,000 participants from the United States (US), testing 20 text-based interventions designed to increase trust in climate scientists. The study assesses a broad range of outcomes, including self-reported attitudes (e.g., trust in scientists) and behavioral measures (e.g., donations to a scientific organization). Before running the study with human participants, we will use multiple LLMs and prompting strategies to simulate individual-level survey responses representative of the US population. We will then collect the human data and test how closely they match the data simulated by the LLMs. This design allows for a large-scale, credible benchmark test of LLMs' potential---and limitations---as tools for simulating human subjects in social science research.
+In this project, we aim to provide a robust test of how well LLMs can simulate human behavior in survey experiments. We address limitations of previous studies by leveraging a unique opportunity to evaluate LLM simulations in the context of a large-scale field experiment, involving approximately 21,000 participants from the United States (US), testing 20 text-based interventions designed to increase trust in climate scientists. The study assesses a broad range of outcomes, including self-reported attitudes (e.g., trust in scientists) and behavioral measures (e.g., donations to a scientific organization). Before running the study with human participants, we will use multiple LLMs and prompting strategies to simulate individual-level survey responses representative of the US population. We will then collect the human data and test how closely they match the data simulated by the LLMs. This design allows for a large-scale, credible benchmark test of LLMs' potential---and limitations---as tools for simulating human subjects in social science research.
 
 ## Research Questions
 
@@ -98,7 +101,85 @@ The main outcome of the megastudy is trust in climate scientists, but several se
 
 ### Human data
 
+The human dataset comes from a large-scale between-subjects field experiment conducted in the United States (N ≈ 22,000). Participants were randomly assigned to one of 20 text-based interventions designed to increase trust in climate scientists, or to a control condition. The study is preregistered separately (OSF link TBD).
+
+#### Interventions
+
+@tbl-interventions provides a summary of the different interventions tested in the megastudy. 
+
+```{r}
+#| label: build-tbl-interventions
+
+# build table data with category headers manually
+
+intervention_table_data <- interventions |>
+  select(title, summary, tag) |>
+  mutate(
+    tag = factor(tag, levels = c(
+      "Collaboration and peer-review",
+      "Scientific methods and results",
+      "Applications and impact",
+      "Others' endorsement",
+      "Values",
+      "LLM-chatbot",
+      "Other"
+    ))
+  ) |>
+  arrange(tag) |>
+  mutate(number = as.character(row_number())) |> 
+  group_by(tag) |>
+  group_modify(~ bind_rows(
+    tibble(title = as.character(.y$tag), summary = ""),
+    .x
+  )) |>
+  ungroup() |>
+  mutate(` ` = ifelse(title %in% levels(tag), "", number)) |>
+  select(` `, title, summary) |> 
+  rename(`Intervention Title` = title, 
+         Summary = summary)
+
+# identify header rows
+header_rows <- which(intervention_table_data$` ` == "")
+
+intervention_table <- intervention_table_data |>
+  tt(width = c(0.05, 0.25, 0.70)) |>
+  format_tt(escape = TRUE) |>
+  style_tt(align = "l", alignv = "t") |>
+  style_tt(i = 0, bold = TRUE) |>
+  style_tt(i = header_rows, bold = TRUE, j = 2, colspan = 2) |>
+  style_tt(fontsize = 0.85)
+```
+
+```{r}
+#| label: tbl-interventions
+#| tbl-cap: "Overview of interventions included in the megastudy."
+#| eval: !expr "!knitr::is_latex_output()"
+
+intervention_table
+```
+
+```{r}
+#| eval: !expr "knitr::is_latex_output()"
+
+intervention_table |> 
+  theme_latex(multipage = TRUE, rowhead = 1,
+              outer = "caption={Overview of interventions included in the megastudy.}, label={tbl-interventions}")
+```
+
+#### Outcomes
+
+Outcomes are organized in three tiers reflecting theoretical proximity to the primary target of the interventions:
+
+- **Primary**: `trust_multidimensional` — a composite measure of trust in climate scientists averaging four subdimensions (competence, integrity, benevolence, openness), each assessed with three items (12 items total, scored 0–100). This is the pre-specified main endpoint.
+- **Secondary** (five outcomes): overall trust (`trust_post`), distrust (`distrust_post`), perceptions of science funding (`funding_perceptions`), perceived appropriate policy role of scientists (`policy_role_mean`), and institutional trust (`inst_trust_mean`).
+- **Tertiary** (five outcomes): climate belief (`belief_post`), climate concern (`concern_mean`), general climate policy support (`policy_general`), specific climate policy support (`policy_specific_mean`), and pro-climate behavior intentions (`behavior_mean`).
+- **Binary**: newsletter sign-up (`newsletter_signup`) — a behavioral outcome recording whether the participant subscribed to a climate science newsletter. Analyzed separately with logistic regression; excluded from distribution analyses.
+
+ATE analyses cover all 13 outcomes. Analyses that break results down by outcome — response distribution comparisons (Section 1) and subgroup heterogeneity (Section 2) — use an illustrative subset of four outcomes spanning the tiers: multidimensional trust (primary), donation to AMS (secondary), funding perceptions (secondary), and general climate policy support (tertiary). Subgroup analyses use six demographic moderators: gender, age band, race, education, income, and partisan identity.
+
 ### LLM generated data
+
+#### Profiles
 
 Clone profiles were constructed by drawing 9,000 individuals from four recent waves of the General Social Survey (GSS; 2018, 2021, 2022, 2024). Within-year normalized sampling weights were applied so that each wave contributes equal sampling probability to the pool, while preserving within-year relative weights. Each profile was assigned to exactly one experimental condition (between-subjects, matching the human study design). Profiles encode the following demographic characteristics: age, sex, race/ethnicity (racial self-identification and Hispanic origin), educational attainment, household income, household size, self-identified social class, U.S. region, partisan identification, political ideology, religious affiliation, religious intensity, and scientific consensus acceptance. Each clone then completed the survey experiment under the same conditions as human participants.
 
@@ -174,6 +255,14 @@ demo_tbl |>
   format_tt(escape = TRUE)
 ```
 
+#### Prompt
+
+[tbd]
+
+#### Simulation
+
+[tbd]
+
 ## Measures
 
 ```{r}
@@ -244,14 +333,14 @@ Two helper functions operationalize the comparison metrics. They are applied sym
 
 ### Comparison metrics
 
-`compare_estimates()` is used throughout — for ATEs (RQ1), moderator interaction estimates (RQ3), and secondary analyses. It takes two tidy model result tibbles and a `join_by` argument specifying the key columns, and computes six metrics:
+`compare_estimates()` is used throughout — for ATEs (RQ1), moderator interaction estimates (RQ3), and secondary analyses. It computes six metrics, reported in increasing order of strictness. The rationale for this ordering is to locate precisely *where* clone performance breaks down: a clone dataset might pass the weakest test (getting directions right) while failing a stricter one (magnitude equivalence), and knowing at which rung the ladder breaks is more informative than any single pass/fail verdict.
 
-- **Spearman ρ** — rank correlation of point estimates. Answers: do clones rank the 20 interventions in the same order as humans? A value of 1 means perfect rank agreement; 0 means no correspondence.
-- **Pearson r** — linear correlation of point estimates. Sensitive to outliers but captures linear proportionality.
-- **RMSE** — root mean squared error. Captures average magnitude error in the same units as the outcome.
-- **Directional agreement** — % of estimates with the same sign. Answers: do clones at least get the direction of each effect right?
-- **Inferential agreement** — % of estimates with the same BH-adjusted conclusion (significantly positive, significantly negative, or non-significant at α = .05). Answers: would a researcher using clones reach the same inferential conclusion as one using human data?
-- **TOST (%)** — % of individual estimate pairs that pass an equivalence test with preregistered bound Δ_k = 0.5 × |estimate_human_k|. Equivalence is declared (two one-sided tests, α = .05) when the clone estimate falls within ±50% of the human estimate. Note: when human estimates are near zero, Δ_k shrinks accordingly, making equivalence harder to achieve.
+- **Directional agreement (%)** — *least strict.* % of estimates with the same sign as the human estimate. Chance performance is 50%. Answers: do clones at least identify the direction of each effect?
+- **Spearman ρ** — rank correlation of point estimates. Answers: do clones rank interventions in the same order as humans? Insensitive to scale or offset; a clone that inflates all effects equally would still score ρ = 1.
+- **Pearson r** — linear correlation of point estimates. Captures proportionality between clone and human estimates but not absolute level.
+- **Inferential agreement (%)** — % of estimates with the same BH-adjusted conclusion (significantly positive, significantly negative, or non-significant at α = .05). Requires getting both magnitude and uncertainty right; answers whether a researcher using clones would reach the same inferential decision as one using human data.
+- **RMSE** — root mean squared error in outcome units. Captures average absolute magnitude error; scale-dependent and therefore not comparable across outcomes.
+- **TOST (%)** — *most strict.* % of individual estimate pairs passing an equivalence test with bound Δ_k = 0.5 × |ATE_human_k|. Equivalence is declared (two one-sided tests, α = .05) when the clone estimate falls within ±50% of the human estimate. Note: near-zero human ATEs shrink Δ_k proportionally, making equivalence harder to achieve.
 
 ```{r, results='asis'}
 #| label: fn-compare-estimates
@@ -260,11 +349,11 @@ print_a_function_from_file("compare_estimates")
 
 ### Distribution comparison metrics
 
-`compare_distributions()` compares response distributions for a single condition and outcome using three metrics:
+`compare_distributions()` compares response distributions for a single condition and outcome using three metrics, again in increasing order of strictness:
 
-- **OVL (overlapping coefficient)** — proportion of area where the two kernel density estimates overlap; 0 = no overlap, 1 = identical distributions; primary metric for RQ2
-- **KS D-statistic** — maximum absolute difference between the two empirical CDFs; 0 = identical
-- **Variance ratio** — LLM clone variance divided by human variance; 1 = equal spread
+- **Variance ratio** (clone / human variance) — *least strict.* Captures only one aspect of distributional similarity — relative spread. A ratio of 1 means equal dispersion; does not assess shape.
+- **OVL (overlapping coefficient)** — proportion of the total area shared between the two kernel density estimates; 1 = identical distributions, 0 = no overlap. Summarises overall shape similarity.
+- **KS D-statistic** — *most strict.* Maximum absolute gap between the two empirical CDFs at any point on the response scale; 0 = indistinguishable CDFs everywhere. Sensitive to local departures that OVL might average away.
 
 ```{r, results='asis'}
 #| label: fn-compare-distributions
@@ -274,16 +363,32 @@ print_a_function_from_file("compute_ovl")
 
 ### Calibration regression
 
-Correlation between human and clone ATEs tells us only whether the two effect-size vectors *covary* — whether interventions that produce large effects in humans also produce large effects in clones. It is invariant to additive shifts and to multiplicative rescaling: clones could inflate every effect by a factor of two, or depress every effect by a constant, and Pearson (or Spearman) correlation would still be 1. For a megastudy, rank agreement is necessary but not sufficient. If clone ATEs are to be used to anchor power calculations, prioritise interventions for follow-up, or substitute for human pilot estimates, they must lie on the same *scale* as human ATEs, not merely correlate with them. Calibration regression decomposes scale agreement into two failure modes — additive bias and proportional miscalibration — that correlation by construction cannot detect.
+Correlation between human and clone ATEs tells us only whether the two effect-size vectors *covary* — whether interventions that produce large effects in humans also produce large effects in clones. However, correlation does not capture baseline differences or multiplicative scaling: clones could underestimate the control-condition baseline and inflate every effect by a factor of two while still yielding Pearson r = 1. Calibration regression separates these two failure modes — additive bias and proportionality.
 
 `run_calibration()` regresses human ATEs on LLM clone ATEs: `ATE_human = α + β × ATE_clone`. The intercept α captures additive bias: α > 0 means clones systematically underestimate human ATEs (an offset must be added to recover them), α < 0 means they overestimate. The slope β captures proportionality: β = 1 is perfect scaling (clone effects move 1:1 with human effects), β > 1 means clone effects are compressed relative to humans (too small in absolute magnitude), β < 1 means they are exaggerated. We report 95% confidence intervals for both parameters and R² as the share of human-ATE variance linearly recoverable from clone ATEs.
 
-We then test calibration at two levels of strictness. The **joint F-test of (α = 0, β = 1)** is the omnibus test of perfect calibration: it asks whether clone ATEs can be read directly as estimates of human ATEs, with no correction at all. The **slope-only F-test of (β = 1)** asks the weaker but, for our purposes, more diagnostic question — whether clone effects are *proportionally* calibrated, i.e. whether a one-unit difference in a clone ATE corresponds to a one-unit difference in a human ATE, while permitting a constant additive offset α. The slope-only test is meaningful in addition to the joint test for three reasons. First, most downstream uses of clone data are invariant to additive bias: between-intervention contrasts, rank orderings, top-K decisions, and effect-spread-based power calculations all difference out a constant α, so β = 1 is what those uses actually require. Second, an additive bias is the easiest miscalibration to correct post-hoc — a single human anchor condition is enough — whereas a slope distortion reflects a deeper failure in how clones translate to humans and cannot be removed without re-estimating β itself. Third, when the joint test rejects, comparing the joint p-value to the slope-only p-value localises the failure: a rejected joint test together with a non-rejected β = 1 implies the problem is offset (relatively benign and correctable), whereas a rejected β = 1 implies proportional miscalibration and a more substantive limit on what clone ATEs can be used for.
+We then test calibration at two levels of strictness. The **joint F-test of (α = 0, β = 1)** is the omnibus test of perfect calibration: it asks whether clone ATEs can be read directly as estimates of human ATEs, with no correction at all. A significant result means the null of perfect calibration is rejected — clone ATEs are not a direct substitute for human ATEs. The **slope-only F-test of (β = 1)** asks the weaker diagnostical question whether clone effects are *proportionally* calibrated, i.e. whether a one-unit difference in a clone ATE corresponds to a one-unit difference in a human ATE, while permitting a constant additive offset α. This additional test is meaningful because proportional calibration is the more practically relevant criterion: in real-world applications, additive bias is relatively easy to correct with a single human anchor condition, whereas a slope distortion reflects a deeper failure in how clones translate to humans and cannot be removed without re-estimating β. 
 
 ```{r, results='asis'}
 #| label: fn-calibration
 
 print_a_function_from_file("run_calibration")
+```
+
+### Demographic baseline and predictability metrics
+
+`compare_demographic_baselines()` computes, for each moderator, the Pearson correlation and RMSE between human and clone cell means in the control condition. `compare_demographic_predictability()` fits separate OLS regressions of the outcome on each moderator plus condition fixed effects, returning R² and dummy-coded coefficients for humans and clones.
+
+```{r, results='asis'}
+#| label: fn-demographic-baselines
+
+print_a_function_from_file("compare_demographic_baselines")
+```
+
+```{r, results='asis'}
+#| label: fn-demographic-predictability
+
+print_a_function_from_file("compare_demographic_predictability")
 ```
 
 ## 1. Average Treatment Effects
@@ -292,7 +397,7 @@ print_a_function_from_file("run_calibration")
 
 For each intervention, the average treatment effect (ATE) is the difference in mean outcome between participants assigned to that intervention and those in the control condition. We estimate ATEs by running `run_main_treatment_model()` — OLS with HC2 heteroskedasticity-robust standard errors and BH-adjusted p-values — on human and LLM clone data separately for each preregistered outcome. For `newsletter_signup` (binary), we use `run_main_treatment_model_binary()`, which returns marginal effects on the probability scale.
 
-Good prediction means the clones rank the interventions in the same order as humans (high Spearman ρ), and that individual ATE pairs fall within a preregistered tolerance band (high TOST %). We first report metrics pooled across all outcomes — `r (length(outcomes_continuous) + length(outcomes_binary)) * 20` estimate pairs in total — to maximize statistical power, then break down by outcome and zoom in on the primary outcome. All models are fit first.
+We report the six comparison metrics in increasing order of strictness, from directional agreement (do clones identify the correct direction of each effect?) to TOST equivalence testing (does each clone ATE fall within a preregistered tolerance of the corresponding human ATE?). We first report metrics pooled across all outcomes — `r (length(outcomes_continuous) + length(outcomes_binary)) * 20` estimate pairs in total — to maximize statistical power, then break down by outcome and zoom in on the primary outcome. All models are fit first.
 
 ```{r}
 #| label: rq1-all
@@ -428,9 +533,11 @@ ate_metrics <- bind_rows(pooled_row, ate_metrics)
 
 #### All outcomes
 
-The scatter below shows all `r nrow(pooled_ates)` estimate pairs — one per intervention × outcome combination — colored by outcome tier. Points above the diagonal indicate clone overestimation; points below indicate underestimation. Because estimates from different outcomes are on different scales, the spread also reflects scale variation across outcomes.
+@fig-rq1-pooled shows all `r nrow(pooled_ates)` estimate pairs — one per intervention × outcome combination — colored by outcome tier. Points above the diagonal indicate clone overestimation; points below indicate underestimation. 
 
-The comparison table below includes a pooled summary row at the top, followed by per-outcome rows grouped by tier. RMSE is left blank for the pooled row because it is not comparable across outcomes on different scales; all other metrics are scale-invariant. The calibration regression (second table) and faceted scatter (third figure) are per-outcome only.
+@tbl-rq1 includes a pooled summary row at the top, followed by per-outcome rows grouped by tier. RMSE is left blank for the pooled row because it is not comparable across outcomes on different scales; all other metrics are scale-invariant. The calibration regression (second table) and faceted scatter (third figure) are per-outcome only.
+
+@tbl-rq1-calibration and @fig-rq1-all show the results of the calibration regression analysis for each outcome. 
 
 ```{r}
 #| label: fig-rq1-pooled
@@ -519,44 +626,11 @@ map_dfr(outcomes_continuous, function(out) {
   plot_theme
 ```
 
-#### Primary outcome (focused)
-
-The primary outcome, multidimensional trust in climate scientists, is the pre-specified main endpoint — a composite averaging four subdimensions (competence, integrity, benevolence, openness). We show its ATE scatter separately to allow easy reading of individual intervention labels. The calibration regression fits `ATE_human = α + β × ATE_clone`: α = 0 means no systematic bias; β = 1 means clone effects are proportionally accurate. We test β = 1 via a formal F-test.
-
-```{r}
-#| label: fig-rq1-primary
-#| fig-cap: "Human vs. LLM clone ATEs for the primary outcome (multidimensional trust). Each point is one of the 20 interventions. Blue line: OLS regression through the points. Faint dashed line: perfect calibration (slope = 1). Dotted lines mark zero."
-
-inner_join(
-  h_primary |> select(condition, estimate_h = estimate),
-  l_primary |> select(condition, estimate_l = estimate),
-  by = "condition"
-) |>
-  ggplot(aes(x = estimate_h, y = estimate_l)) +
-  geom_abline(slope = 1, intercept = 0, linetype = "dashed",
-              color = "grey60", linewidth = 0.5, alpha = 0.35) +
-  geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
-  geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
-  geom_smooth(method = "lm", se = FALSE, color = "#2980B9", linewidth = 0.7) +
-  geom_point(size = 2.5, alpha = 0.8, color = "grey20") +
-  geom_text(aes(label = str_remove(condition, "intervention_")),
-            size = 2.5, vjust = -0.8, color = "grey40") +
-  labs(x = "Human ATE (OLS estimate)", y = "LLM clone ATE (OLS estimate)") +
-  plot_theme
-```
-
-```{r}
-#| label: rq1-primary-calibration
-#| tbl-cap: "Calibration regression for the primary outcome. α: intercept (systematic bias). β: slope (proportionality; 1 = perfect). p(β=1): F-test of perfect calibration."
-
-run_calibration(h_primary, l_primary)
-```
-
 ### Response Distributions
 
 Even if clones match the average treatment effect for each intervention, they may diverge from humans in how responses are distributed: two groups with the same mean can differ in spread, skewness, or tail shape. We ask whether clones reproduce the full response distribution in the control condition — not just the mean — across all continuous outcomes. (`newsletter_signup` is excluded because kernel density estimates are not meaningful for a binary outcome.)
 
-We compare distributions using three metrics. The **overlapping coefficient (OVL)** is the proportion of area shared between the two kernel density estimates: it equals 1 when distributions are identical and 0 when they share no support. Intuitively, imagine overlaying the two smoothed histograms — OVL is the fraction of the total area covered by both. The **Kolmogorov–Smirnov D-statistic** is the largest vertical gap between the two empirical cumulative distribution functions at any response value: 0 means the CDFs are indistinguishable everywhere, and larger values indicate a point on the scale where the distributions diverge substantially. The **variance ratio** (clone variance / human variance) captures relative spread: a ratio of 1 is ideal, > 1 means clones are more dispersed than humans, and < 1 means clones give more uniform responses.
+We compare distributions using the same three metrics defined in the methods section, reported in increasing order of strictness. The **variance ratio** (clone / human variance) is the least demanding criterion — it checks only whether spread is calibrated, ignoring shape. The **overlapping coefficient (OVL)** raises the bar to overall shape similarity: it is the proportion of area shared between the two kernel density estimates, equal to 1 when distributions are identical and approaching 0 when they barely overlap. Intuitively, OVL is the overlap area between two smoothed histograms, expressed as a fraction of their total combined area. The **Kolmogorov–Smirnov D-statistic** measures the largest vertical gap between the two cumulative distributions at any point — imagine sliding along the x-axis and tracking how far apart the two curves are; the 'D' statistic is the biggest gap. A value of 0 means the two distributions are indistinguishable everywhere, while larger values flag that at some response value, the two groups diverge sharply.
 
 ```{r}
 #| label: rq2-compute
@@ -599,7 +673,7 @@ map_dfr(outcomes_illustrative, function(out) {
   geom_density(alpha = 0.35, linewidth = 0.4) +
   scale_fill_manual(values  = source_colors, name = NULL) +
   scale_color_manual(values = source_colors, name = NULL) +
-  facet_wrap(~ outcome, scales = "free", ncol = 3) +
+  facet_wrap(~ outcome, scales = "free", ncol = 2) +
   labs(x = "Response", y = "Density") +
   plot_theme +
   theme(legend.position = "top")
@@ -627,7 +701,7 @@ dist_control |>
 
 Interventions may work differently for different demographic groups — for example, a message about scientific consensus might shift trust more strongly among Republicans than Democrats, or more among younger than older respondents. We ask whether clones reproduce these subgroup differences, or whether they produce a one-size-fits-all response that averages across demographic groups.
 
-For each of six categorical moderators (gender, age band, race, education, income, and partisan identity), we estimate condition × moderator interactions using `run_moderator_model()` separately on human and clone data for all continuous outcomes. Each interaction term captures how much more (or less) effective a given intervention is for one demographic group compared to the reference group. We compare the full set of interaction estimates between humans and clones using `compare_estimates()` (with `join_by = c("condition", "moderator_level")`). We first report metrics pooled across all illustrative outcomes and moderators, then break down by outcome.
+For each of six categorical moderators (gender, age band, race, education, income, and partisan identity), we estimate condition × moderator interactions using `run_moderator_model()` separately on human and clone data for all continuous outcomes. Each interaction term captures how much more (or less) effective a given intervention is for one demographic group compared to the reference group. We compare the full set of interaction estimates between humans and clones using `compare_estimates()`, reporting the six metrics in the same least-to-most-strict order as in Section 1 (directional agreement through TOST equivalence). We first report metrics pooled across all illustrative outcomes and moderators, then break down by outcome.
 
 ```{r}
 #| label: rq3-models
@@ -812,11 +886,11 @@ subgroup_dist |>
             locations = cells_row_groups())
 ```
 
-## 3. Demographic Stereotyping
+## 3. Demographic Baseline Calibration
 
-Sections 1 and 2 operate on aggregated estimates — average treatment effects, interaction effects, and marginal distributions. Section 3 asks a different question: are individual clone responses calibrated to the demographic profile they were assigned? A clone given a profile of, say, a young Black woman with low income should give responses that match what real young Black women with low income give — not just what the average American gives.
+Section 2 already provides a partial test of demographic stereotyping: if clones exaggerate heterogeneity in treatment effects across subgroups, that is evidence of over-reliance on demographic cues. But there is a second, orthogonal question namely whether clones get the baseline right: For example, the conles could still assign far too low trust to Black respondents or far too high trust to conservatives before any treatment is applied. This is a distinct failure mode — demographic stereotyping at the level of the outcome rather than the effect.
 
-All analyses use the primary outcome (`trust_multidimensional`) and the control condition.
+Section 3 tests this directly, using only the control condition and the primary outcome (`trust_multidimensional`). It asks two questions: (a) do clone group means match human group means for each demographic group? and (b) do demographic variables predict clone outcomes too strongly — does the demographic profile explain more variance in clone responses than in human responses, indicating that clones map demographics to outcomes too mechanically?
 
 ### Demographic Baseline Calibration
 
@@ -845,7 +919,7 @@ baseline_cal |>
 
 ### Demographic Predictability
 
-We regress the primary outcome on all six demographic moderators plus condition fixed effects separately for humans and clones. If clones over-rely on demographic stereotypes — mapping demographic variables to outcomes too mechanically — they will show a much higher R² than humans: demographics explain more of the variance in clone responses than in human responses. We also compare individual regression coefficients to identify which demographic predictors are over- or underweighted by the clones.
+For each of the six demographic moderators we fit a separate OLS regression of the primary outcome on that moderator plus condition fixed effects, on human and clone data independently. Running these regressions separately avoids conflating correlated predictors (race, income, and education are themselves related) and gives a clean per-moderator answer: how much does, say, partisan identity alone explain outcome variance in humans versus clones? If clones over-rely on demographic stereotypes, their R² will be substantially higher than humans' for one or more moderators. We also compare the individual dummy-coded coefficients to identify which groups are over- or underweighted.
 
 ```{r}
 #| label: rq4b-compute
@@ -859,18 +933,18 @@ pred_test <- compare_demographic_predictability(
 
 ```{r}
 #| label: tbl-rq4b-rsq
-#| tbl-cap: "R² from regressing the primary outcome on demographics + condition FE, separately for humans and clones. Clone R² >> human R² signals demographic stereotyping."
+#| tbl-cap: "R² from regressing the primary outcome on each demographic moderator + condition FE, separately for humans and clones. Clone R² >> human R² for a given moderator signals over-reliance on that demographic variable."
 
 pred_test$r_squared |>
-  mutate(source = if_else(source == "human", "Human", "LLM clone")) |>
+  pivot_wider(names_from = source, values_from = r_squared) |>
+  rename(Moderator = moderator, `Human R²` = human, `Clone R²` = llm) |>
   gt() |>
-  cols_label(source = "Source", r_squared = "R²") |>
-  fmt_number(columns = r_squared, decimals = 3)
+  fmt_number(columns = c(`Human R²`, `Clone R²`), decimals = 3)
 ```
 
 ```{r}
 #| label: fig-rq4b-coefs
-#| fig-cap: "Demographic regression coefficients for the primary outcome in humans (x-axis) vs. LLM clones (y-axis). Each point is one dummy-coded level of a moderator. The dashed line marks perfect agreement."
+#| fig-cap: "Demographic regression coefficients for the primary outcome in humans (x-axis) vs. LLM clones (y-axis), faceted by moderator. Each point is one dummy-coded level. The dashed line marks perfect agreement (slope = 1)."
 
 pred_test$coefficients |>
   ggplot(aes(x = est_h, y = est_l)) +
@@ -880,6 +954,7 @@ pred_test$coefficients |>
   geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
   geom_point(size = 2, alpha = 0.8, color = "grey20") +
   geom_text(aes(label = term), size = 2.2, vjust = -0.8, color = "grey40") +
+  facet_wrap(~ moderator, scales = "free") +
   labs(x = "Human coefficient", y = "LLM clone coefficient") +
   plot_theme
 ```

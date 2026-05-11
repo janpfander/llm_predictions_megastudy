@@ -84,11 +84,11 @@ required_vars <- c(
   "degree", "income16", "class",
   "region",
   "partyid", "polviews",
-  "relig", "srcbelt"
+  "relig"
 )
 
 # Variables where NA is acceptable (handled downstream)
-optional_vars <- c("hompop", "reborn", "reliten", "consci")
+optional_vars <- c("hompop", "reborn", "reliten", "consci", "srcbelt")
 
 numeric_vars <- c("age", "hompop", "wtssps")
 factor_vars  <- setdiff(selected_vars, c("year", "id", numeric_vars))
@@ -126,7 +126,13 @@ gss_sel <- gss_multi |>
   mutate(across(all_of(factor_vars),  ~ haven::as_factor(.x)))
 
 
-gss_missing_labels <- c("don't know", "no answer", "skipped on web", "iap")
+gss_missing_labels <- c(
+  "don't know", "no answer", "skipped on web", "iap",
+  "refused", "not imputable", "dk, na, iap",
+  "uncodeable",
+  "not available in this release", "not available in this year",
+  "see codebook"
+)
 
 gss_sel <- gss_sel |>
   mutate(across(where(is.factor), ~ {
@@ -167,8 +173,6 @@ gss_sel |>
 # Step 3. Remove missing data for required variables
 
 ```{r drop-missing}
-
-
 gss_complete <- gss_sel |>
   drop_na(all_of(required_vars))
 
