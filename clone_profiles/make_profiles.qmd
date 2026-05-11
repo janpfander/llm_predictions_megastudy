@@ -14,14 +14,11 @@ format:
     number-sections: true
 execute:
   echo: true
-  eval: false
   warning: false
   message: false
 ---
 
 ```{r setup}
-#| eval: false
-
 # Required packages
 # install.packages(c("tidyverse", "haven", "labelled", "fs", "glue", "here"))
 # remotes::install_github("kjhealy/gssr")
@@ -65,19 +62,17 @@ genuinely different individuals surveyed in different years.
 Same 19 GSS variables as `build_realistic_clone_profiles.qmd`, minus prompt output.
 
 ```{r variable-setup}
-#| eval: false
-
 selected_vars <- c(
   # weighting and identifiers
   "year", "id", "wtssps",
   # core demographics
-  "age", "sex", "race", "hispanic",
+  "age", "sex", "racecen1", "hispanic",
   "degree", "income16", "hompop", "class",
   "region", "srcbelt",
   # politics
   "partyid", "polviews",
   # religion
-  "relig", "reborn", "reliten", 
+  "relig", "reborn", "reliten",
   # opinion
   "consci"
 )
@@ -85,7 +80,7 @@ selected_vars <- c(
 # Variables where NA means "drop respondent"
 required_vars <- c(
   "wtssps",
-  "age", "sex", "race", "hispanic",
+  "age", "sex", "racecen1", "hispanic",
   "degree", "income16", "class",
   "region",
   "partyid", "polviews",
@@ -106,8 +101,6 @@ filter to our target years. This is more efficient than four separate `gss_get_y
 calls.
 
 ```{r load-gss}
-#| eval: false
-
 # The initial target: 4 most recent true cross-sectional waves
 target_years <- c(2018, 2021, 2022, 2024)
 
@@ -126,15 +119,13 @@ cat(glue("\nTotal raw respondents across {length(target_years)} years: {nrow(gss
 # Step 2. Select, type-convert, and recode GSS missing labels
 
 ```{r clean-vars}
-#| eval: false
 
 # Convert weight and numeric vars; attach factor labels to all others
 gss_sel <- gss_multi |>
   mutate(across(all_of(numeric_vars), ~ as.numeric(haven::zap_labels(.x)))) |>
   mutate(across(all_of(factor_vars),  ~ haven::as_factor(.x)))
 
-# GSS encodes missingness as named factor levels rather than real NAs.
-# Recode the four common "missing" labels to proper NA.
+
 gss_missing_labels <- c("don't know", "no answer", "skipped on web", "iap")
 
 gss_sel <- gss_sel |>
@@ -143,6 +134,23 @@ gss_sel <- gss_sel |>
     chr[tolower(chr) %in% gss_missing_labels] <- NA
     factor(chr, levels = setdiff(levels(.x), gss_missing_labels))
   }))
+
+# Roll up Asian sub-categories
+asian_categories <- c(
+  "asian indian", "chinese", "filipino", "japanese",
+  "korean", "vietnamese", "other asian"
+)
+
+gss_sel <- gss_sel |>
+  mutate(
+    racecen1 = as.character(racecen1),
+    racecen1 = case_when(
+      racecen1 %in% asian_categories                                               ~ "asian",
+      is.na(racecen1) & !is.na(hispanic) & as.character(hispanic) != "not hispanic" ~ "hispanic",
+      TRUE                                                                           ~ racecen1
+    ),
+    racecen1 = factor(racecen1)
+  )
 
 # check
 gss_sel |>
@@ -159,7 +167,7 @@ gss_sel |>
 # Step 3. Remove missing data for required variables
 
 ```{r drop-missing}
-#| eval: false
+
 
 gss_complete <- gss_sel |>
   drop_na(all_of(required_vars))
@@ -200,7 +208,6 @@ to the sampling lottery, while preserving the relative ordering of respondents w
 each year.
 
 ```{r normalize-weights}
-#| eval: false
 
 gss_complete <- gss_complete |>
   group_by(year) |>
@@ -218,7 +225,6 @@ gss_complete |>
 # Step 5. Weighted sampling without replacement (N = 9,000)
 
 ```{r sample}
-#| eval: false
 
 target_n <- 9000
 
@@ -248,7 +254,6 @@ probability. In expectation, the sample should be split roughly equally across y
 (~2,250 per year for a 4-year pool).
 
 ```{r validate-years}
-#| eval: false
 
 cat("Sample composition by GSS year:\n")
 profiles |>
@@ -260,7 +265,6 @@ profiles |>
 ## Uniqueness check
 
 ```{r validate-unique}
-#| eval: false
 
 n_unique_pairs <- nrow(distinct(profiles, year, id))
 cat(glue(
@@ -276,7 +280,6 @@ should approximate 2024-weighted GSS marginals on key variables; deviations are
 expected because older waves represent slightly different demographic compositions.
 
 ```{r validate-marginals}
-#| eval: false
 
 gss_2024 <- gss_complete |> filter(year == 2024)
 
@@ -295,7 +298,7 @@ validate_marginal <- function(var) {
            prop_pool    = round(prop_pool, 4))
 }
 
-vars_to_check <- c("sex", "race", "degree", "partyid", "polviews", "region")
+vars_to_check <- c("sex", "racecen1", "degree", "partyid", "polviews", "region")
 
 walk(vars_to_check, \(v) {
   cat("\n----", v, "----\n")
@@ -306,7 +309,6 @@ walk(vars_to_check, \(v) {
 # Step 7. Save output
 
 ```{r save}
-#| eval: false
 
 out_path <- here("clone_profiles", "profiles.csv")
 write_csv(profiles, out_path)
@@ -318,3 +320,4 @@ cat(glue(
   "  Years   : {paste(sort(unique(profiles$year)), collapse = ', ')}\n"
 ))
 ```
+

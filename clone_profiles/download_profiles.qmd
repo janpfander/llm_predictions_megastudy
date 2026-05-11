@@ -1,0 +1,7 @@
+---
+title: "Clone profiles"
+---
+
+The file below contains 9,000 demographically representative U.S. profiles drawn from four General Social Survey waves (2018, 2021, 2022, 2024) using within-year normalized sampling weights. Each profile is assigned to exactly one experimental condition (between-subjects) and encodes the following characteristics: age, sex, race/ethnicity, Hispanic origin, educational attainment, household income, household size, self-identified social class, U.S. region, community type, partisan identification, political ideology, religious affiliation, religious intensity, and scientific consensus acceptance. These profiles serve as inputs for LLM clone simulation; prompt construction is handled separately.
+
+[Download profiles.csv](profiles.csv){.btn .btn-primary download="profiles.csv"}
