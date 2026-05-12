@@ -61,6 +61,14 @@ source(here("R/functions/reporting.R"))
 human_data <- readRDS(here("data/simulation_preregistration/human_data_preregistration.rds"))
 llm_data   <- readRDS(here("data/simulation_preregistration/llm_data_preregistration.rds"))
 
+# Preregistered random split of human sample into two halves.
+# human_data_1 is the reference half used in all primary analyses.
+# human_data_2 is the baseline comparator (human-human ceiling for all metrics).
+set.seed(42)
+split_ids    <- sample(unique(human_data$id), size = floor(length(unique(human_data$id)) / 2))
+human_data_1 <- human_data |> filter(id %in% split_ids)
+human_data_2 <- human_data |> filter(!id %in% split_ids)
+
 # interventions
 interventions <- read_csv(here("data/interventions.csv"))
 
@@ -102,6 +110,8 @@ The main outcome of the megastudy is trust in climate scientists, but several se
 ### Human data
 
 The human dataset comes from a large-scale between-subjects field experiment conducted in the United States (N ≈ 22,000). Participants were randomly assigned to one of 20 text-based interventions designed to increase trust in climate scientists, or to a control condition. The study is preregistered separately (OSF link TBD).
+
+To provide a reference baseline for interpreting LLM performance, we split the human sample into two equal halves using a preregistered random split (`set.seed(42)`). **Human 1** (the reference half) is used in all primary analyses and serves as the ground-truth against which both LLMs and the second human half are compared. **Human 2** provides a human-human reference: the similarity between the two halves quantifies how well human data predict other human data, which is the upper bound for any predictive method. All comparison tables and the pooled scatter plot report metrics for both comparisons side by side.
 
 #### Interventions
 
@@ -405,18 +415,21 @@ We report the six comparison metrics in increasing order of strictness, from dir
 # Run and store all models (avoids re-fitting in later chunks)
 ate_model_results <- map(outcomes_continuous, function(out) {
   list(
-    h = run_main_treatment_model(human_data, outcome = out),
-    l = run_main_treatment_model(llm_data,   outcome = out)
+    h  = run_main_treatment_model(human_data_1, outcome = out),
+    l  = run_main_treatment_model(llm_data,     outcome = out),
+    h2 = run_main_treatment_model(human_data_2, outcome = out)
   )
 }) |> set_names(outcomes_continuous)
 
 # Binary outcome: marginal effects on probability scale
-h_bin <- run_main_treatment_model_binary(human_data, "newsletter_signup")
-l_bin <- run_main_treatment_model_binary(llm_data,   "newsletter_signup")
+h_bin  <- run_main_treatment_model_binary(human_data_1, "newsletter_signup")
+l_bin  <- run_main_treatment_model_binary(llm_data,     "newsletter_signup")
+h2_bin <- run_main_treatment_model_binary(human_data_2, "newsletter_signup")
 
 # References to primary outcome models for the primary subsection below
-h_primary <- ate_model_results[["trust_multidimensional"]]$h
-l_primary <- ate_model_results[["trust_multidimensional"]]$l
+h_primary  <- ate_model_results[["trust_multidimensional"]]$h
+l_primary  <- ate_model_results[["trust_multidimensional"]]$l
+h2_primary <- ate_model_results[["trust_multidimensional"]]$h2
 
 # Extract ATE pairs with SE and adjusted p-value from a model result tibble
 prep_ate <- function(df) {
@@ -444,6 +457,34 @@ pooled_ates <- bind_rows(
       rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj),
     prep_ate(l_bin$marginal_effects) |>
       rename(estimate_l = estimate, se_l = se, p_adj_l = p_adj),
+    by = "condition"
+  ) |> mutate(outcome = "newsletter_signup")
+) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary                          ~ "Primary",
+      outcome %in% c(outcomes_secondary, outcomes_binary) ~ "Secondary",
+      TRUE                                                ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
+
+# Human 1 vs. Human 2 ATE pairs (same structure as pooled_ates)
+pooled_ates_h2 <- bind_rows(
+  map_dfr(outcomes_continuous, function(out) {
+    inner_join(
+      prep_ate(ate_model_results[[out]]$h) |>
+        rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj),
+      prep_ate(ate_model_results[[out]]$h2) |>
+        rename(estimate_h2 = estimate, se_h2 = se, p_adj_h2 = p_adj),
+      by = "condition"
+    ) |> mutate(outcome = out)
+  }),
+  inner_join(
+    prep_ate(h_bin$marginal_effects) |>
+      rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj),
+    prep_ate(h2_bin$marginal_effects) |>
+      rename(estimate_h2 = estimate, se_h2 = se, p_adj_h2 = p_adj),
     by = "condition"
   ) |> mutate(outcome = "newsletter_signup")
 ) |>
@@ -495,6 +536,26 @@ calib_metrics <- bind_rows(
     outcome_label = outcome_label_map[outcome]
   )
 
+# Calibration regression for Human 1 vs. Human 2 (baseline ceiling)
+calib_metrics_h2 <- map_dfr(outcomes_continuous, function(out) {
+  run_calibration(ate_model_results[[out]]$h, ate_model_results[[out]]$h2) |>
+    mutate(outcome = out)
+})
+
+calib_metrics_h2 <- bind_rows(
+  calib_metrics_h2,
+  run_calibration(h_bin$marginal_effects, h2_bin$marginal_effects) |>
+    mutate(outcome = "newsletter_signup")
+) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary                          ~ "Primary",
+      outcome %in% c(outcomes_secondary, outcomes_binary) ~ "Secondary",
+      TRUE                                                ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
+
 # Pooled summary row — prepended to ate_metrics so it appears at the top of tbl-rq1
 pooled_row <- pooled_ates |>
   mutate(
@@ -528,6 +589,61 @@ pooled_row <- pooled_ates |>
   ) |>
   mutate(outcome = "pooled", tier = "All outcomes", outcome_label = "All outcomes")
 
+# Per-outcome summary metrics for Human 1 vs. Human 2 (baseline ceiling)
+ate_metrics_h2 <- map_dfr(outcomes_continuous, function(out) {
+  compare_estimates(ate_model_results[[out]]$h, ate_model_results[[out]]$h2) |>
+    mutate(outcome = out)
+})
+
+ate_metrics_h2 <- bind_rows(
+  ate_metrics_h2,
+  compare_estimates(h_bin$marginal_effects, h2_bin$marginal_effects) |>
+    mutate(outcome = "newsletter_signup")
+) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary                          ~ "Primary",
+      outcome %in% c(outcomes_secondary, outcomes_binary) ~ "Secondary",
+      TRUE                                                ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
+
+# Pooled row for Human 1 vs. Human 2
+pooled_row_h2 <- pooled_ates_h2 |>
+  mutate(
+    delta      = 0.5 * abs(estimate_h),
+    diff       = estimate_h - estimate_h2,
+    se_diff    = sqrt(se_h^2 + se_h2^2),
+    p_lower    = pnorm((diff + delta) / se_diff, lower.tail = FALSE),
+    p_upper    = pnorm((diff - delta) / se_diff),
+    p_tost     = pmax(p_lower, p_upper),
+    equivalent = p_tost < 0.05,
+    same_sign  = sign(estimate_h) == sign(estimate_h2),
+    infer_h    = case_when(
+      !is.na(p_adj_h)  & p_adj_h  < 0.05 & estimate_h  > 0 ~ "sig_positive",
+      !is.na(p_adj_h)  & p_adj_h  < 0.05 & estimate_h  < 0 ~ "sig_negative",
+      TRUE ~ "not_significant"
+    ),
+    infer_h2   = case_when(
+      !is.na(p_adj_h2) & p_adj_h2 < 0.05 & estimate_h2 > 0 ~ "sig_positive",
+      !is.na(p_adj_h2) & p_adj_h2 < 0.05 & estimate_h2 < 0 ~ "sig_negative",
+      TRUE ~ "not_significant"
+    )
+  ) |>
+  summarise(
+    spearman_rho    = cor(estimate_h, estimate_h2, method = "spearman",
+                          use = "pairwise.complete.obs"),
+    pearson_r       = cor(estimate_h, estimate_h2, use = "pairwise.complete.obs"),
+    rmse            = NA_real_,
+    directional_pct = mean(same_sign,  na.rm = TRUE) * 100,
+    inferential_pct = mean(infer_h == infer_h2, na.rm = TRUE) * 100,
+    tost_pct        = mean(equivalent, na.rm = TRUE) * 100
+  ) |>
+  mutate(outcome = "pooled", tier = "All outcomes", outcome_label = "All outcomes")
+
+ate_metrics_h2 <- bind_rows(pooled_row_h2, ate_metrics_h2)
+
 ate_metrics <- bind_rows(pooled_row, ate_metrics)
 ```
 
@@ -535,43 +651,70 @@ ate_metrics <- bind_rows(pooled_row, ate_metrics)
 
 @fig-rq1-pooled shows all `r nrow(pooled_ates)` estimate pairs — one per intervention × outcome combination — colored by outcome tier. Points above the diagonal indicate clone overestimation; points below indicate underestimation. 
 
-@tbl-rq1 includes a pooled summary row at the top, followed by per-outcome rows grouped by tier. RMSE is left blank for the pooled row because it is not comparable across outcomes on different scales; all other metrics are scale-invariant. The calibration regression (second table) and faceted scatter (third figure) are per-outcome only.
+@tbl-rq1 includes a pooled summary row at the top, followed by per-outcome rows grouped by tier. RMSE is left blank for the pooled row because it is not comparable across outcomes on different scales; all other metrics are scale-invariant. Both comparison pairs (Human 1 vs. LLM and Human 1 vs. Human 2) are reported side by side; the Human 2 columns serve as a human-human ceiling for interpreting LLM performance.
 
-@tbl-rq1-calibration and @fig-rq1-all show the results of the calibration regression analysis for each outcome. 
+@tbl-rq1-calibration shows calibration regression results for both comparisons (Human 1 vs. LLM and Human 1 vs. Human 2). @fig-rq1-all shows the per-outcome scatter for Human 1 vs. LLM only.
 
 ```{r}
 #| label: fig-rq1-pooled
-#| fig-cap: "Human vs. LLM clone ATEs pooled across all outcomes. Each point is one intervention × outcome pair (N = 240). The dashed line is perfect agreement; dotted lines mark zero. Color indicates outcome tier."
+#| fig-cap: "ATEs pooled across all outcomes for both comparisons. Left panel: Human 1 vs. LLM clones. Right panel: Human 1 vs. Human 2 (baseline ceiling). Each point is one intervention × outcome pair (N = 240 per panel). The dashed line is perfect agreement; dotted lines mark zero. Color indicates outcome tier."
+#| fig-width: 12
 
 tier_colors <- c("Primary" = "#C0392B", "Secondary" = "#2980B9", "Tertiary" = "#7F8C8D")
 
-pooled_ates |>
-  ggplot(aes(x = estimate_h, y = estimate_l, color = tier)) +
+bind_rows(
+  pooled_ates    |> mutate(estimate_pred = estimate_l,  comparison = "Human 1 vs. LLM"),
+  pooled_ates_h2 |> mutate(estimate_pred = estimate_h2, comparison = "Human 1 vs. Human 2")
+) |>
+  ggplot(aes(x = estimate_h, y = estimate_pred, color = tier)) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed",
               color = "grey60", linewidth = 0.5) +
   geom_hline(yintercept = 0, linetype = "dotted", color = "grey80") +
   geom_vline(xintercept = 0, linetype = "dotted", color = "grey80") +
   geom_point(size = 2, alpha = 0.65) +
   scale_color_manual(values = tier_colors, name = "Outcome tier") +
-  labs(x = "Human ATE", y = "LLM clone ATE") +
+  facet_wrap(~ comparison, ncol = 2) +
+  labs(x = "Human 1 ATE", y = "Predicted ATE") +
   plot_theme +
   theme(legend.position = "top")
 ```
 
 ```{r}
 #| label: tbl-rq1
-#| tbl-cap: "RQ1 comparison metrics. The 'All outcomes' row pools all estimate pairs across outcomes; RMSE (—) is omitted there because outcomes differ in scale. Per-outcome rows each have N = 20 intervention pairs. TOST: % of pairs achieving equivalence (Δ = 50% of human ATE)."
+#| tbl-cap: "RQ1 comparison metrics. The 'All outcomes' row pools all estimate pairs across outcomes; RMSE (—) is omitted because outcomes differ in scale. Per-outcome rows each have N = 20 intervention pairs. Left columns: Human 1 vs. LLM clone; right columns: Human 1 vs. Human 2 (baseline ceiling). TOST: % of pairs achieving equivalence (Δ = 50% of human ATE)."
 
 ate_metrics |>
+  rename_with(~ paste0(.x, "_llm"),
+              .cols = c(spearman_rho, pearson_r, rmse,
+                        directional_pct, inferential_pct, tost_pct)) |>
+  left_join(
+    ate_metrics_h2 |>
+      rename_with(~ paste0(.x, "_h2"),
+                  .cols = c(spearman_rho, pearson_r, rmse,
+                             directional_pct, inferential_pct, tost_pct)) |>
+      select(outcome, ends_with("_h2")),
+    by = "outcome"
+  ) |>
   arrange(match(tier, c("All outcomes", "Primary", "Secondary", "Tertiary")), outcome_label) |>
   select(Tier = tier, Outcome = outcome_label,
-         `Spearman ρ` = spearman_rho, `Pearson r` = pearson_r, RMSE = rmse,
-         `Directional (%)` = directional_pct, `Inferential (%)` = inferential_pct,
-         `TOST (%)` = tost_pct) |>
+         spearman_rho_llm, pearson_r_llm, rmse_llm,
+         directional_pct_llm, inferential_pct_llm, tost_pct_llm,
+         spearman_rho_h2, pearson_r_h2, rmse_h2,
+         directional_pct_h2, inferential_pct_h2, tost_pct_h2) |>
   gt(groupname_col = "Tier") |>
-  fmt_number(columns = c(`Spearman ρ`, `Pearson r`, RMSE), decimals = 3) |>
-  sub_missing(columns = "RMSE", missing_text = "—") |>
-  fmt_number(columns = c(`Directional (%)`, `Inferential (%)`, `TOST (%)`), decimals = 1) |>
+  cols_label(
+    spearman_rho_llm    = "Spearman ρ", pearson_r_llm    = "Pearson r", rmse_llm    = "RMSE",
+    directional_pct_llm = "Dir. (%)",   inferential_pct_llm = "Infer. (%)", tost_pct_llm = "TOST (%)",
+    spearman_rho_h2     = "Spearman ρ", pearson_r_h2     = "Pearson r", rmse_h2     = "RMSE",
+    directional_pct_h2  = "Dir. (%)",   inferential_pct_h2  = "Infer. (%)", tost_pct_h2  = "TOST (%)"
+  ) |>
+  tab_spanner(label = "Human 1 vs. LLM", columns = ends_with("_llm")) |>
+  tab_spanner(label = "Human 1 vs. Human 2", columns = ends_with("_h2")) |>
+  fmt_number(columns = c(spearman_rho_llm, pearson_r_llm, rmse_llm,
+                          spearman_rho_h2,  pearson_r_h2,  rmse_h2), decimals = 3) |>
+  sub_missing(columns = c(rmse_llm, rmse_h2), missing_text = "—") |>
+  fmt_number(columns = c(directional_pct_llm, inferential_pct_llm, tost_pct_llm,
+                          directional_pct_h2,  inferential_pct_h2,  tost_pct_h2), decimals = 1) |>
   tab_style(
     style     = cell_text(weight = "bold"),
     locations = cells_row_groups()
@@ -580,22 +723,40 @@ ate_metrics |>
 
 ```{r}
 #| label: tbl-rq1-calibration
-#| tbl-cap: "Calibration regression by outcome. α: intercept (systematic bias, with 95% CI). β: slope (proportionality; 1 = perfect, with 95% CI). R²: variance explained. p(β=1): F-test of perfect calibration."
+#| tbl-cap: "Calibration regression by outcome. α: intercept (systematic bias, with 95% CI). β: slope (proportionality; 1 = perfect, with 95% CI). R²: variance explained. p(β=1): F-test of proportional calibration. Left columns: Human 1 vs. LLM; right columns: Human 1 vs. Human 2 (baseline ceiling)."
 
 calib_metrics |>
+  left_join(
+    calib_metrics_h2 |>
+      select(outcome,
+             alpha_h2 = alpha, alpha_lo_h2 = alpha_lo, alpha_hi_h2 = alpha_hi,
+             beta_h2  = beta,  beta_lo_h2  = beta_lo,  beta_hi_h2  = beta_hi,
+             r_squared_h2 = r_squared, p_beta_1_h2 = p_beta_1),
+    by = "outcome"
+  ) |>
   arrange(match(tier, c("Primary", "Secondary", "Tertiary")), outcome_label) |>
   mutate(
-    beta_ci  = paste0("[", round(beta_lo,  2), ", ", round(beta_hi,  2), "]"),
-    alpha_ci = paste0("[", round(alpha_lo, 2), ", ", round(alpha_hi, 2), "]")
+    beta_ci      = paste0("[", round(beta_lo,     2), ", ", round(beta_hi,     2), "]"),
+    alpha_ci     = paste0("[", round(alpha_lo,    2), ", ", round(alpha_hi,    2), "]"),
+    beta_ci_h2   = paste0("[", round(beta_lo_h2,  2), ", ", round(beta_hi_h2,  2), "]"),
+    alpha_ci_h2  = paste0("[", round(alpha_lo_h2, 2), ", ", round(alpha_hi_h2, 2), "]")
   ) |>
   select(Tier = tier, Outcome = outcome_label,
-         alpha, alpha_ci, beta, beta_ci, r_squared, p_beta_1) |>
+         alpha, alpha_ci, beta, beta_ci, r_squared, p_beta_1,
+         alpha_h2, alpha_ci_h2, beta_h2, beta_ci_h2, r_squared_h2, p_beta_1_h2) |>
   gt(groupname_col = "Tier") |>
-  cols_label(alpha = "α", alpha_ci = "95% CI (α)",
-             beta = "β", beta_ci = "95% CI (β)",
-             r_squared = "R²", p_beta_1 = "p (β=1)") |>
-  fmt_number(columns = c(alpha, beta, r_squared), decimals = 3) |>
-  fmt_number(columns = p_beta_1, decimals = 3) |>
+  cols_label(
+    alpha = "α", alpha_ci = "95% CI (α)", beta = "β", beta_ci = "95% CI (β)",
+    r_squared = "R²", p_beta_1 = "p (β=1)",
+    alpha_h2 = "α", alpha_ci_h2 = "95% CI (α)", beta_h2 = "β", beta_ci_h2 = "95% CI (β)",
+    r_squared_h2 = "R²", p_beta_1_h2 = "p (β=1)"
+  ) |>
+  tab_spanner(label = "Human 1 vs. LLM",
+              columns = c(alpha, alpha_ci, beta, beta_ci, r_squared, p_beta_1)) |>
+  tab_spanner(label = "Human 1 vs. Human 2",
+              columns = c(alpha_h2, alpha_ci_h2, beta_h2, beta_ci_h2, r_squared_h2, p_beta_1_h2)) |>
+  fmt_number(columns = c(alpha, beta, r_squared, alpha_h2, beta_h2, r_squared_h2), decimals = 3) |>
+  fmt_number(columns = c(p_beta_1, p_beta_1_h2), decimals = 3) |>
   tab_style(
     style     = cell_text(weight = "bold"),
     locations = cells_row_groups()
@@ -638,7 +799,21 @@ We compare distributions using the same three metrics defined in the methods sec
 control_val <- levels(human_data$condition)[1]
 
 dist_control <- map_dfr(outcomes_illustrative, function(out) {
-  compare_distributions(human_data, llm_data, out, control_val) |>
+  compare_distributions(human_data_1, llm_data, out, control_val) |>
+    mutate(outcome = out)
+}) |>
+  mutate(
+    tier = case_when(
+      outcome == outcomes_primary     ~ "Primary",
+      outcome %in% outcomes_secondary ~ "Secondary",
+      TRUE                            ~ "Tertiary"
+    ),
+    outcome_label = outcome_label_map[outcome]
+  )
+
+# Human 1 vs. Human 2 baseline ceiling for distribution comparison
+dist_control_h2 <- map_dfr(outcomes_illustrative, function(out) {
+  compare_distributions(human_data_1, human_data_2, out, control_val) |>
     mutate(outcome = out)
 }) |>
   mutate(
@@ -660,7 +835,7 @@ source_colors <- c("Human" = "grey30", "LLM clone" = met.brewer("Juarez", n = 10
 
 map_dfr(outcomes_illustrative, function(out) {
   bind_rows(
-    human_data |> filter(condition == control_val) |>
+    human_data_1 |> filter(condition == control_val) |>
       select(value = all_of(out)) |>
       mutate(source = "Human",     outcome = outcome_label_map[out]),
     llm_data   |> filter(condition == control_val) |>
@@ -681,14 +856,22 @@ map_dfr(outcomes_illustrative, function(out) {
 
 ```{r}
 #| label: tbl-rq2
-#| tbl-cap: "Response distribution metrics in the control condition, by outcome. OVL: overlapping coefficient (1 = identical). KS D: Kolmogorov–Smirnov D-statistic (0 = identical CDFs). Variance ratio: clone / human variance (1 = equal spread)."
+#| tbl-cap: "Response distribution metrics in the control condition, by outcome. OVL: overlapping coefficient (1 = identical). KS D: Kolmogorov–Smirnov D-statistic (0 = identical CDFs). Variance ratio: clone / human variance (1 = equal spread). Left columns: Human 1 vs. LLM; right columns: Human 1 vs. Human 2 (baseline ceiling)."
 
 dist_control |>
+  left_join(
+    dist_control_h2 |> select(outcome, ovl_h2 = ovl, ks_d_h2 = ks_d, vr_h2 = variance_ratio),
+    by = "outcome"
+  ) |>
   arrange(match(tier, c("Primary", "Secondary", "Tertiary")), outcome_label) |>
   select(Tier = tier, Outcome = outcome_label,
-         OVL = ovl, `KS D` = ks_d, `Variance ratio` = variance_ratio) |>
+         ovl, ks_d, variance_ratio, ovl_h2, ks_d_h2, vr_h2) |>
   gt(groupname_col = "Tier") |>
-  fmt_number(columns = c(OVL, `KS D`, `Variance ratio`), decimals = 3) |>
+  cols_label(ovl = "OVL", ks_d = "KS D", variance_ratio = "Var. ratio",
+             ovl_h2 = "OVL", ks_d_h2 = "KS D", vr_h2 = "Var. ratio") |>
+  tab_spanner(label = "Human 1 vs. LLM",       columns = c(ovl, ks_d, variance_ratio)) |>
+  tab_spanner(label = "Human 1 vs. Human 2",   columns = c(ovl_h2, ks_d_h2, vr_h2)) |>
+  fmt_number(columns = c(ovl, ks_d, variance_ratio, ovl_h2, ks_d_h2, vr_h2), decimals = 3) |>
   tab_style(
     style     = cell_text(weight = "bold"),
     locations = cells_row_groups()
@@ -709,7 +892,7 @@ For each of six categorical moderators (gender, age band, race, education, incom
 # Nested: outcome → moderator → model (illustrative subset)
 mod_results_all_h <- map(set_names(outcomes_illustrative), function(out) {
   map(set_names(moderators_cat), function(mod) {
-    run_moderator_model(human_data, outcome = out, moderator = mod)
+    run_moderator_model(human_data_1, outcome = out, moderator = mod)
   })
 })
 mod_results_all_l <- map(set_names(outcomes_illustrative), function(out) {
@@ -717,10 +900,16 @@ mod_results_all_l <- map(set_names(outcomes_illustrative), function(out) {
     run_moderator_model(llm_data, outcome = out, moderator = mod)
   })
 })
+mod_results_all_h2 <- map(set_names(outcomes_illustrative), function(out) {
+  map(set_names(moderators_cat), function(mod) {
+    run_moderator_model(human_data_2, outcome = out, moderator = mod)
+  })
+})
 
 # Primary-outcome references for the scatter plot below
-mod_results_h <- mod_results_all_h[["trust_multidimensional"]]
-mod_results_l <- mod_results_all_l[["trust_multidimensional"]]
+mod_results_h  <- mod_results_all_h[["trust_multidimensional"]]
+mod_results_l  <- mod_results_all_l[["trust_multidimensional"]]
+mod_results_h2 <- mod_results_all_h2[["trust_multidimensional"]]
 ```
 
 ```{r}
@@ -768,23 +957,86 @@ rq3_metrics_by_outcome <- map_dfr(outcomes_illustrative, function(out) {
     )
   })
 })
+
+# Human 1 vs. Human 2 baseline ceiling for subgroup effects
+rq3_pooled_interactions_h2 <- map_dfr(outcomes_illustrative, function(out) {
+  map_dfr(moderators_cat, function(mod) {
+    inner_join(
+      mod_results_all_h[[out]][[mod]]$interaction_effects |>
+        select(condition, moderator_level, estimate_h = estimate),
+      mod_results_all_h2[[out]][[mod]]$interaction_effects |>
+        select(condition, moderator_level, estimate_h2 = estimate),
+      by = c("condition", "moderator_level")
+    ) |> mutate(outcome = out, moderator = mod)
+  })
+})
+
+rq3_pooled_row_h2 <- rq3_pooled_interactions_h2 |>
+  summarise(
+    spearman_rho    = cor(estimate_h, estimate_h2, method = "spearman",
+                          use = "pairwise.complete.obs"),
+    pearson_r       = cor(estimate_h, estimate_h2, use = "pairwise.complete.obs"),
+    directional_pct = mean(sign(estimate_h) == sign(estimate_h2), na.rm = TRUE) * 100
+  ) |>
+  mutate(outcome_label = "All outcomes", tier = "All outcomes")
+
+rq3_metrics_by_outcome_h2 <- map_dfr(outcomes_illustrative, function(out) {
+  map_dfr(moderators_cat, function(mod) {
+    compare_estimates(
+      mod_results_all_h[[out]][[mod]]$interaction_effects,
+      mod_results_all_h2[[out]][[mod]]$interaction_effects,
+      join_by = c("condition", "moderator_level")
+    ) |> mutate(
+      outcome       = out,
+      moderator     = mod,
+      outcome_label = outcome_label_map[out],
+      tier = case_when(
+        out == outcomes_primary     ~ "Primary",
+        out %in% outcomes_secondary ~ "Secondary",
+        TRUE                        ~ "Tertiary"
+      )
+    )
+  })
+})
 ```
 
-Pooled across all outcomes and moderators, Spearman ρ = `r round(rq3_pooled_row$spearman_rho, 3)`, Pearson r = `r round(rq3_pooled_row$pearson_r, 3)`, directional agreement = `r round(rq3_pooled_row$directional_pct, 1)`%.
+Pooled across all outcomes and moderators, Human 1 vs. LLM: Spearman ρ = `r round(rq3_pooled_row$spearman_rho, 3)`, Pearson r = `r round(rq3_pooled_row$pearson_r, 3)`, directional agreement = `r round(rq3_pooled_row$directional_pct, 1)`%. Human 1 vs. Human 2 (baseline ceiling): Spearman ρ = `r round(rq3_pooled_row_h2$spearman_rho, 3)`, Pearson r = `r round(rq3_pooled_row_h2$pearson_r, 3)`, directional agreement = `r round(rq3_pooled_row_h2$directional_pct, 1)`%.
 
 ```{r}
 #| label: tbl-rq3
-#| tbl-cap: "Interaction estimate comparison metrics by outcome and moderator. Outcomes are grouped by tier; rows are moderators. Spearman ρ: rank correlation across all condition × moderator level pairs. RMSE is in outcome units."
+#| tbl-cap: "Interaction estimate comparison metrics by outcome and moderator. Outcomes are grouped by tier; rows are moderators. Spearman ρ: rank correlation across all condition × moderator level pairs. RMSE is in outcome units. Left columns: Human 1 vs. LLM; right columns: Human 1 vs. Human 2 (baseline ceiling)."
 
 rq3_metrics_by_outcome |>
+  rename_with(~ paste0(.x, "_llm"),
+              .cols = c(spearman_rho, pearson_r, rmse,
+                        directional_pct, inferential_pct, tost_pct)) |>
+  left_join(
+    rq3_metrics_by_outcome_h2 |>
+      rename_with(~ paste0(.x, "_h2"),
+                  .cols = c(spearman_rho, pearson_r, rmse,
+                             directional_pct, inferential_pct, tost_pct)) |>
+      select(outcome, moderator, ends_with("_h2")),
+    by = c("outcome", "moderator")
+  ) |>
   arrange(match(tier, c("Primary", "Secondary", "Tertiary")), outcome_label, moderator) |>
   select(Tier = tier, Outcome = outcome_label, Moderator = moderator,
-         `Spearman ρ` = spearman_rho, `Pearson r` = pearson_r, RMSE = rmse,
-         `Directional (%)` = directional_pct,
-         `Inferential (%)` = inferential_pct, `TOST (%)` = tost_pct) |>
+         spearman_rho_llm, pearson_r_llm, rmse_llm,
+         directional_pct_llm, inferential_pct_llm, tost_pct_llm,
+         spearman_rho_h2, pearson_r_h2, rmse_h2,
+         directional_pct_h2, inferential_pct_h2, tost_pct_h2) |>
   gt(groupname_col = "Tier") |>
-  fmt_number(columns = c(`Spearman ρ`, `Pearson r`, RMSE), decimals = 3) |>
-  fmt_number(columns = c(`Directional (%)`, `Inferential (%)`, `TOST (%)`), decimals = 1) |>
+  cols_label(
+    spearman_rho_llm    = "Spearman ρ", pearson_r_llm    = "Pearson r", rmse_llm    = "RMSE",
+    directional_pct_llm = "Dir. (%)",   inferential_pct_llm = "Infer. (%)", tost_pct_llm = "TOST (%)",
+    spearman_rho_h2     = "Spearman ρ", pearson_r_h2     = "Pearson r", rmse_h2     = "RMSE",
+    directional_pct_h2  = "Dir. (%)",   inferential_pct_h2  = "Infer. (%)", tost_pct_h2  = "TOST (%)"
+  ) |>
+  tab_spanner(label = "Human 1 vs. LLM",     columns = ends_with("_llm")) |>
+  tab_spanner(label = "Human 1 vs. Human 2", columns = ends_with("_h2")) |>
+  fmt_number(columns = c(spearman_rho_llm, pearson_r_llm, rmse_llm,
+                          spearman_rho_h2,  pearson_r_h2,  rmse_h2), decimals = 3) |>
+  fmt_number(columns = c(directional_pct_llm, inferential_pct_llm, tost_pct_llm,
+                          directional_pct_h2,  inferential_pct_h2,  tost_pct_h2), decimals = 1) |>
   tab_style(
     style     = cell_text(weight = "bold"),
     locations = cells_row_groups()
@@ -828,10 +1080,28 @@ Mirroring the distribution analysis in Section 1, we compare response distributi
 subgroup_dist <- map_dfr(moderators_cat, function(mod) {
   groups <- levels(human_data[[mod]])
   map_dfr(groups, function(grp) {
-    x <- human_data |>
+    x <- human_data_1 |>
       filter(condition == control_val, .data[[mod]] == grp) |>
       pull(trust_multidimensional) |> na.omit()
     y <- llm_data |>
+      filter(condition == control_val, .data[[mod]] == grp) |>
+      pull(trust_multidimensional) |> na.omit()
+    if (length(x) < 10 | length(y) < 10) return(NULL)
+    tibble(moderator = mod, group = grp,
+           ovl = compute_ovl(x, y),
+           ks_d = suppressWarnings(ks.test(x, y)$statistic),
+           variance_ratio = var(y) / var(x))
+  })
+})
+
+# Human 1 vs. Human 2 baseline ceiling for within-subgroup distributions
+subgroup_dist_h2 <- map_dfr(moderators_cat, function(mod) {
+  groups <- levels(human_data[[mod]])
+  map_dfr(groups, function(grp) {
+    x <- human_data_1 |>
+      filter(condition == control_val, .data[[mod]] == grp) |>
+      pull(trust_multidimensional) |> na.omit()
+    y <- human_data_2 |>
       filter(condition == control_val, .data[[mod]] == grp) |>
       pull(trust_multidimensional) |> na.omit()
     if (length(x) < 10 | length(y) < 10) return(NULL)
@@ -852,10 +1122,10 @@ map_dfr(moderators_cat, function(mod) {
   groups <- levels(human_data[[mod]])
   map_dfr(groups, function(grp) {
     bind_rows(
-      human_data |> filter(condition == control_val, .data[[mod]] == grp) |>
+      human_data_1 |> filter(condition == control_val, .data[[mod]] == grp) |>
         select(value = trust_multidimensional) |>
         mutate(source = "Human",     panel = paste0(mod, ": ", grp)),
-      llm_data   |> filter(condition == control_val, .data[[mod]] == grp) |>
+      llm_data     |> filter(condition == control_val, .data[[mod]] == grp) |>
         select(value = trust_multidimensional) |>
         mutate(source = "LLM clone", panel = paste0(mod, ": ", grp))
     )
@@ -874,14 +1144,21 @@ map_dfr(moderators_cat, function(mod) {
 
 ```{r}
 #| label: tbl-rq4c
-#| tbl-cap: "Within-subgroup distribution comparison in the control condition. OVL: overlapping coefficient (1 = identical). KS D: Kolmogorov–Smirnov statistic. Variance ratio: clone / human."
+#| tbl-cap: "Within-subgroup distribution comparison in the control condition. OVL: overlapping coefficient (1 = identical). KS D: Kolmogorov–Smirnov statistic. Variance ratio: second group / Human 1 variance. Left columns: Human 1 vs. LLM; right columns: Human 1 vs. Human 2 (baseline ceiling)."
 
 subgroup_dist |>
+  left_join(
+    subgroup_dist_h2 |> select(moderator, group, ovl_h2 = ovl, ks_d_h2 = ks_d, vr_h2 = variance_ratio),
+    by = c("moderator", "group")
+  ) |>
   arrange(moderator, group) |>
   gt(groupname_col = "moderator") |>
-  cols_label(group = "Group", ovl = "OVL", ks_d = "KS D",
-             variance_ratio = "Variance ratio") |>
-  fmt_number(columns = c(ovl, ks_d, variance_ratio), decimals = 3) |>
+  cols_label(group = "Group",
+             ovl = "OVL", ks_d = "KS D", variance_ratio = "Var. ratio",
+             ovl_h2 = "OVL", ks_d_h2 = "KS D", vr_h2 = "Var. ratio") |>
+  tab_spanner(label = "Human 1 vs. LLM",     columns = c(ovl, ks_d, variance_ratio)) |>
+  tab_spanner(label = "Human 1 vs. Human 2", columns = c(ovl_h2, ks_d_h2, vr_h2)) |>
+  fmt_number(columns = c(ovl, ks_d, variance_ratio, ovl_h2, ks_d_h2, vr_h2), decimals = 3) |>
   tab_style(style = cell_text(weight = "bold"),
             locations = cells_row_groups())
 ```
@@ -901,7 +1178,14 @@ For each moderator, we compute mean outcomes within each demographic group in th
 
 # Cell-mean comparison in the control condition, one moderator at a time
 baseline_cal <- compare_demographic_baselines(
-  human_data, llm_data,
+  human_data_1, llm_data,
+  outcome    = "trust_multidimensional",
+  moderators = moderators_cat
+)
+
+# Human 1 vs. Human 2 baseline ceiling for demographic calibration
+baseline_cal_h2 <- compare_demographic_baselines(
+  human_data_1, human_data_2,
   outcome    = "trust_multidimensional",
   moderators = moderators_cat
 )
@@ -909,12 +1193,19 @@ baseline_cal <- compare_demographic_baselines(
 
 ```{r}
 #| label: tbl-rq4a
-#| tbl-cap: "Demographic baseline calibration. For each moderator, cell means in the control condition are compared between humans and clones. r: Pearson correlation of cell means. RMSE: root mean squared error. N cells: number of demographic groups."
+#| tbl-cap: "Demographic baseline calibration. For each moderator, cell means in the control condition are compared. r: Pearson correlation of cell means. RMSE: root mean squared error. N cells: number of demographic groups. Left columns: Human 1 vs. LLM; right columns: Human 1 vs. Human 2 (baseline ceiling)."
 
 baseline_cal |>
-  select(Moderator = moderator, r, RMSE = rmse, `N cells` = n_cells) |>
+  left_join(
+    baseline_cal_h2 |> select(moderator, r_h2 = r, rmse_h2 = rmse),
+    by = "moderator"
+  ) |>
+  select(Moderator = moderator, r, RMSE = rmse, `N cells` = n_cells, r_h2, rmse_h2) |>
   gt() |>
-  fmt_number(columns = c(r, RMSE), decimals = 3)
+  cols_label(r_h2 = "r", rmse_h2 = "RMSE") |>
+  tab_spanner(label = "Human 1 vs. LLM",     columns = c(r, RMSE)) |>
+  tab_spanner(label = "Human 1 vs. Human 2", columns = c(r_h2, rmse_h2)) |>
+  fmt_number(columns = c(r, RMSE, r_h2, rmse_h2), decimals = 3)
 ```
 
 ### Demographic Predictability
@@ -925,7 +1216,14 @@ For each of the six demographic moderators we fit a separate OLS regression of t
 #| label: rq4b-compute
 
 pred_test <- compare_demographic_predictability(
-  human_data, llm_data,
+  human_data_1, llm_data,
+  outcome    = "trust_multidimensional",
+  predictors = moderators_cat
+)
+
+# Human 1 vs. Human 2 baseline ceiling for demographic predictability
+pred_test_h2 <- compare_demographic_predictability(
+  human_data_1, human_data_2,
   outcome    = "trust_multidimensional",
   predictors = moderators_cat
 )
@@ -933,13 +1231,19 @@ pred_test <- compare_demographic_predictability(
 
 ```{r}
 #| label: tbl-rq4b-rsq
-#| tbl-cap: "R² from regressing the primary outcome on each demographic moderator + condition FE, separately for humans and clones. Clone R² >> human R² for a given moderator signals over-reliance on that demographic variable."
+#| tbl-cap: "R² from regressing the primary outcome on each demographic moderator + condition FE. Clone R² >> Human R² signals over-reliance on demographic cues. Human 2 R² provides the baseline ceiling (sampling variation in human predictability)."
 
 pred_test$r_squared |>
   pivot_wider(names_from = source, values_from = r_squared) |>
-  rename(Moderator = moderator, `Human R²` = human, `Clone R²` = llm) |>
+  left_join(
+    pred_test_h2$r_squared |>
+      filter(source == "llm") |>
+      select(moderator, `Human 2 R²` = r_squared),
+    by = "moderator"
+  ) |>
+  rename(Moderator = moderator, `Human 1 R²` = human, `LLM R²` = llm) |>
   gt() |>
-  fmt_number(columns = c(`Human R²`, `Clone R²`), decimals = 3)
+  fmt_number(columns = c(`Human 1 R²`, `LLM R²`, `Human 2 R²`), decimals = 3)
 ```
 
 ```{r}
