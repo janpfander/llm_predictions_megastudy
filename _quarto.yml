@@ -5,6 +5,7 @@ project:
     - "*.qmd"
     - "!manuscript.qmd"
     - "!clean_llm.qmd"
+    - "!clone_profiles/demographic_check.qmd"
 
 freeze: auto 
 

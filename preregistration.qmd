@@ -101,23 +101,23 @@ In this project, we aim to provide a robust test of how well LLMs can simulate h
 
 The main outcome of the megastudy is trust in climate scientists, but several secondary and tertiary outcomes are preregistered. Analyses are organized in three sections that mirror one another: we first examine average effects, then subgroup differences, and finally demographic calibration at the individual level.
 
-**Section 1 — Average Treatment Effects.** We ask (a) how well LLM clones predict the average treatment effect (ATE) of each intervention across all outcomes, and (b) whether clones reproduce the full response distribution — not just the mean — in the control condition, across all continuous outcomes.
+**Section 1 — Average Treatment Effects.** We ask (a) how well LLM clones predict the average treatment effect (ATE) of each intervention across all outcomes, and (b) to which extent clones produce similar response distributions for the different outcomes (in  the control condition).
 
-**Section 2 — Subgroup Effects.** We ask (a) whether clones recover differences in intervention effects across six demographic moderators (gender, age, race, education, income, partisan identity) for all outcomes, and (b) whether within-subgroup response distributions in the control condition match between humans and clones for the primary outcome.
+**Section 2 — Subgroup Effects.** We ask (a) how closely clones predict differences in intervention effects across six demographic moderators (gender, age, race, education, income, partisan identity) for all outcomes, and (b) how closely within-subgroup response distributions in the control condition match between humans and clones for the primary outcome.
 
-**Section 3 — Demographic Baseline Calibration.** We ask whether clone baseline outcome levels are calibrated to the assigned demographic profile, independent of treatment effects: (a) do clones reproduce the correct group mean for each demographic group in the control condition, and (b) do demographic variables predict clone outcomes with the same magnitude as in humans, or do clones over-rely on demographic cues? Analyses are run separately for all outcomes; results are illustrated with the primary outcome (`trust_multidimensional`).
+**Section 3 — Demographic Baseline Calibration.** Independent of treatment effects, we ask whether clone baseline outcome levels are calibrated to the assigned demographic profile: (a) do clones reproduce the correct group mean for each demographic group in the control condition, and (b) do demographic variables predict clone outcomes with the same magnitude as in humans, or do clones over-rely on demographic cues? Analyses are run separately for all outcomes; results are illustrated with the primary outcome (`trust_multidimensional`).
 
 ## Data
 
 ### Human data
 
-The human dataset comes from a large-scale between-subjects field experiment conducted in the United States (N ≈ 22,000). Participants were randomly assigned to one of 20 text-based interventions designed to increase trust in climate scientists, or to a control condition. The study is preregistered separately (OSF link TBD).
+The human dataset will come from a large-scale between-subjects field experiment to be conducted in the United States (N ≈ 22,000). Participants will be randomly assigned to one of 20 text-based interventions designed to increase trust in climate scientists, or to a control condition. The human study is preregistered separately ([https://doi.org/10.5281/zenodo.20160212](https://doi.org/10.5281/zenodo.20160212)). **No human data has been colleced at the moment of registering this study.**
 
 To provide a reference baseline for interpreting LLM performance, we split the human sample into two equal halves using a preregistered random split (`set.seed(42)`). **Human 1** (the reference half) is used in all primary analyses and serves as the ground-truth against which both LLMs and the second human half are compared. **Human 2** provides a human-human reference: the similarity between the two halves quantifies how well human data predict other human data, which is the upper bound for any predictive method. All comparison tables and the pooled scatter plot report metrics for both comparisons side by side.
 
 #### Interventions
 
-@tbl-interventions provides a summary of the different interventions tested in the megastudy. In this project, we only generate LLM clone responses for non-interactive interventions. As a result, we only test 16 interventions (none of the three LLM-chatbot interventions, neither the 'Value similarity' quiz intervention). 
+@tbl-interventions provides a summary of the different interventions tested in the megastudy. In this project, we only generate LLM clone responses for non-interactive interventions. As a result, we only test 16 interventions (none of the three LLM-chatbot interventions, neither the 'Value similarity' quiz intervention).
 
 ```{r}
 #| label: build-tbl-interventions
@@ -183,7 +183,7 @@ intervention_table |>
 Outcomes are organized in three tiers reflecting theoretical proximity to the primary target of the interventions:
 
 - **Primary**: `trust_multidimensional` — a composite measure of trust in climate scientists averaging four subdimensions (competence, integrity, benevolence, openness), each assessed with three items (12 items total, scored 0–100). This is the pre-specified main endpoint.
-- **Secondary** (five outcomes): overall trust (`trust_post`), distrust (`distrust_post`), perceptions of science funding (`funding_perceptions`), perceived appropriate policy role of scientists (`policy_role_mean`), and institutional trust (`inst_trust_mean`).
+- **Secondary** (five outcomes): single-item trust (`trust_post`), single-item distrust (`distrust_post`), perceptions of science funding (`funding_perceptions`), perceived appropriate policy role of scientists (`policy_role_mean`), and institutional trust (`inst_trust_mean`).
 - **Tertiary** (five outcomes): climate belief (`belief_post`), climate concern (`concern_mean`), general climate policy support (`policy_general`), specific climate policy support (`policy_specific_mean`), and pro-climate behavior intentions (`behavior_mean`).
 - **Binary**: newsletter sign-up (`newsletter_signup`) — a behavioral outcome recording whether the participant subscribed to a climate science newsletter. Analyzed separately with logistic regression; excluded from distribution analyses.
 
@@ -193,9 +193,9 @@ ATE analyses cover all 13 outcomes. Analyses that break results down by outcome 
 
 #### Profiles
 
-Clone profiles were constructed by drawing 9,000 individuals from four recent waves of the General Social Survey (GSS; 2018, 2021, 2022, 2024). Within-year normalized sampling weights were applied so that each wave contributes equal sampling probability to the pool, while preserving within-year relative weights. Each profile was assigned to exactly one experimental condition (between-subjects, matching the human study design). Profiles encode the following demographic characteristics: age, sex, race/ethnicity (racial self-identification and Hispanic origin), educational attainment, household income, household size, self-identified social class, U.S. region, partisan identification, political ideology, religious affiliation, religious intensity, and scientific consensus acceptance. Each clone then completed the survey experiment under the same conditions as human participants.
+Clone profiles were constructed by drawing 9,000 individuals from four recent waves of the General Social Survey (GSS; 2018, 2021, 2022, 2024). Within-year normalized sampling weights were applied so that each wave contributes equal sampling probability to the pool, while preserving within-year relative weights. Each profile was assigned to exactly one experimental condition (between-subjects, matching the human study design). The exact procedure is documented in the project repository.
 
-Two limitations of the current LLM dataset should be noted. First, the racial coding uses the GSS `race` variable, which distinguishes only White, Black, and Other; Asian respondents are subsumed under "Other." A revised profile generation script uses the more detailed Census-style `racecen1` variable, which enables a distinct Asian category, but the LLM responses in this study were generated from profiles using the original three-category variable. Second, the current profiles omit the GSS `srcbelt` variable, which encodes community type (urban, suburban, rural). Both limitations affect only the demographic detail of clone profiles, not the experimental design or outcome measurement.
+Profiles encode the following demographic characteristics: age, sex, race/ethnicity (racial self-identification and Hispanic origin), educational attainment, household income, household size, self-identified social class, U.S. region, partisan identification, political ideology, religious affiliation, religious intensity, and confidence in the scientific community. Each clone then completed the survey experiment under the same conditions as human participants.
 
 ```{r}
 #| label: tbl-profile-completeness
@@ -272,6 +272,7 @@ demo_tbl |>
 
 ::: {.content-visible when-format="html"}
 <pre style="white-space: pre-wrap;">"You are an expert in simulating participants in behavioral and social science studies. You will be given a detailed profile of a specific U.S. resident and asked to respond to survey questions exactly as that person would.\n\n### Participant Profile\n- Age: [AGE] (current year: 2026)\n- Sex: [SEX]\n- Race: [RACECEN1]\n- Highest educational degree: [DEGREE]\n- Household income (GSS bracket): [INCOME16]\n- Household size: [HOMPOP]\n- Self-described social class: [CLASS]\n- Census region: [REGION]\n- Living area: [SRCBELT]\n- Party identification: [PARTYID]\n- Political views (liberal-conservative): [POLVIEWS]\n- Religion: [RELIG]\n- Strength of religious affiliation: [RELITEN]\n- Identify as a born-again or Evangelical Christian: [REBORN]\n- Trust in the scientific community: [CONSCI]\n\nGive the answer this specific person would actually give, even if it is blunt, contradictory, or reflects limited information."</pre>
+
 :::
 
 ::: {.content-visible when-format="pdf"}
@@ -285,7 +286,14 @@ demo_tbl |>
 
 #### Simulation
 
-The simulation uses the Qualtrics file to walk the each LLM through the study as a participant would experience it, with minor deviations. For details, see github.com/yarakyrychenko/llm-participants. 
+The simulation uses the Qualtrics file of the human study to walk the each LLM through the study as a participant would experience it, with minor deviations. For details, see [github.com/yarakyrychenko/llm-participants](github.com/yarakyrychenko/llm-participants). 
+
+
+#### Data
+
+This preregistration demonstrates the full analysis workflow using data from a single model. At the time of preregistration, complete simulations exist for two models: OpenAI GPT-4o mini and Google Gemini 2.5 Flash Lite. The data for these two models is registered on Zenodo before data collection ([https://doi.org/10.5281/zenodo.20167059](https://doi.org/10.5281/zenodo.20167059)).
+
+Due to API request limitations, simulation data from other models are not available at the point of registration. These simulations need to be be conducted in smaller batches. However, the code for running these simulations is preregistered. For a time-stamped release of the code, see [https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0](https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0).
 
 ## Measures
 
@@ -1179,7 +1187,7 @@ subgroup_dist |>
 
 ## 3. Demographic Baseline Calibration
 
-Section 2 already provides a partial test of demographic stereotyping: if clones exaggerate heterogeneity in treatment effects across subgroups, that is evidence of over-reliance on demographic cues. But there is a second, orthogonal question namely whether clones get the baseline right: For example, the conles could still assign far too low trust to Black respondents or far too high trust to conservatives before any treatment is applied. This is a distinct failure mode — demographic stereotyping at the level of the outcome rather than the effect.
+Section 2 already provides a partial test of demographic stereotyping: if clones exaggerate heterogeneity in treatment effects across subgroups, that is evidence of over-reliance on demographic cues. But there is a second, orthogonal question namely whether clones get the baseline right: For example, the clones could still assign far too low trust to, say, Republicans or far too high trust to Democats before any treatment is applied. This woud be a distinct failure mode — demographic baseline stereotyping rather than effect stereotyping.
 
 Section 3 tests this directly, using only the control condition. It asks two questions: (a) do clone group means match human group means for each demographic group? and (b) do demographic variables predict clone outcomes too strongly — does the demographic profile explain more variance in clone responses than in human responses, indicating that clones map demographics to outcomes too mechanically? Both analyses are run separately for all outcomes; the preregistration illustrates them with the primary outcome (`trust_multidimensional`).
 
