@@ -16,5 +16,10 @@ manuscript*
 data/
 clone_profiles/demographic_check.qmd
 
+# analysis.R outputs are derived from gitignored real data; keep the script,
+# not the artifacts.
+analysis/results/
+analysis/figures/
+
 CONTEXT.md
 CLAUDE.md

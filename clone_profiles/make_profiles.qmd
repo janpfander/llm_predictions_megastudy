@@ -1,8 +1,5 @@
 ---
-title: "Building the 9,000-profile pool by pooling multiple GSS cross-sections"
-subtitle: "Alternative to single-year weight duplication"
-author: "[Your name]"
-date: today
+title: "Building the 9,000-profile pool by combining multiple GSS cross-sections"
 format:
   html:
     toc: true

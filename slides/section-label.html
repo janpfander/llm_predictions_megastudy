@@ -1,0 +1,40 @@
+<!-- Populates the #section-label element styled in custom.scss with the
+     nearest preceding `#` section title. Reveal.js has no CSS hook for
+     "current section", so this small script is unavoidable. -->
+<div id="section-label" style="display:none"></div>
+
+<script>
+(function () {
+  function update() {
+    var el = document.getElementById('section-label');
+    if (!el || !window.Reveal) return;
+    var cur = Reveal.getCurrentSlide();
+    if (!cur) return;
+    // The automatic title slide is #title-slide (no `.slide` class), so it is
+    // never in this list — every `.level1` here is a real `#` section.
+    var slides = Array.prototype.slice.call(
+      document.querySelectorAll('.reveal .slides section.slide'));
+    var idx = slides.indexOf(cur), title = '';
+    for (var i = idx; i >= 0; i--) {
+      if (slides[i].classList.contains('level1')) {
+        var h = slides[i].querySelector('h1');
+        title = h ? h.textContent.trim() : '';
+        break;
+      }
+    }
+    var hide = !title
+      || cur.classList.contains('level1')   // on a section divider itself
+      || cur.id === 'title-slide';
+    if (hide) { el.style.display = 'none'; }
+    else { el.textContent = title; el.style.display = ''; }
+  }
+  function init() {
+    if (window.Reveal && Reveal.isReady && Reveal.isReady()) {
+      Reveal.on('slidechanged', update);
+      Reveal.on('ready', update);
+      update();
+    } else { setTimeout(init, 50); }
+  }
+  window.addEventListener('load', init);
+})();
+</script>

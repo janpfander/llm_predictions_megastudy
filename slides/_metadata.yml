@@ -1,0 +1,11 @@
+# Date format
+date-format: "dddd, MMMM D, YYYY"
+
+
+# Default author
+author:
+  - name: Jan Pfänder
+    url: https://janpfander.github.io/
+      
+      
+link-external-newwindow: true

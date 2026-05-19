@@ -84,6 +84,13 @@
     "text": "Timeline\n\nData collection for the Megastudy starts ~in February 2026\nUntil then, we’d want to have\n\nrun the simulations,\nwritten a pre-registration on how exactly we want to compare the results of the simulated agents to the results of the human sample from the megastudy"
   },
   {
+    "objectID": "slides/talks.html",
+    "href": "slides/talks.html",
+    "title": "Talks",
+    "section": "",
+    "text": "Can LLM clones predict a behavioral megastudy?\n\n\nPreliminary results\n\n\nPreliminary results: how well do LLM behavioral clones predict the effects of trust-in-climate-scientists interventions on humans.\n\n\n\n\n\nMay 20, 2026\n\n\nJan Pfänder\n\n\n\n\n\nNo matching items"
+  },
+  {
     "objectID": "preregistration.html",
     "href": "preregistration.html",
     "title": "Predicting the effects of behavioral interventions on humans with LLMs",
@@ -149,28 +156,28 @@
   {
     "objectID": "clone_profiles/make_profiles.html",
     "href": "clone_profiles/make_profiles.html",
-    "title": "Building the 9,000-profile pool by pooling multiple GSS cross-sections",
+    "title": "Building the 9,000-profile pool by combining multiple GSS cross-sections",
     "section": "",
     "text": "# Required packages\n# install.packages(c(\"tidyverse\", \"haven\", \"labelled\", \"fs\", \"glue\", \"here\"))\n# remotes::install_github(\"kjhealy/gssr\")\n\nlibrary(tidyverse)\nlibrary(gssr)       # GSS data (cumulative gss_all + gss_get_yr)\nlibrary(haven)      # labelled data handling\nlibrary(labelled)   # label utilities\nlibrary(glue)       # string interpolation\nlibrary(here)       # project paths\nlibrary(fs)         # file paths\n\nset.seed(2026)"
   },
   {
     "objectID": "clone_profiles/make_profiles.html#year-balance",
     "href": "clone_profiles/make_profiles.html#year-balance",
-    "title": "Building the 9,000-profile pool by pooling multiple GSS cross-sections",
+    "title": "Building the 9,000-profile pool by combining multiple GSS cross-sections",
     "section": "8.1 Year balance",
     "text": "8.1 Year balance\nNormalized within-year weights means each year contributes equal total sampling probability. In expectation, the sample should be split roughly equally across years (~2,250 per year for a 4-year pool).\n\ncat(\"Sample composition by GSS year:\\n\")\n\nSample composition by GSS year:\n\nprofiles |&gt;\n  count(year) |&gt;\n  mutate(pct = round(100 * n / sum(n), 1)) |&gt;\n  print()\n\n# A tibble: 4 × 3\n  year          n   pct\n  &lt;dbl+lbl&gt; &lt;int&gt; &lt;dbl&gt;\n1 2018       1867  20.7\n2 2021       2687  29.9\n3 2022       2214  24.6\n4 2024       2232  24.8"
   },
   {
     "objectID": "clone_profiles/make_profiles.html#uniqueness-check",
     "href": "clone_profiles/make_profiles.html#uniqueness-check",
-    "title": "Building the 9,000-profile pool by pooling multiple GSS cross-sections",
+    "title": "Building the 9,000-profile pool by combining multiple GSS cross-sections",
     "section": "8.2 Uniqueness check",
     "text": "8.2 Uniqueness check\n\nn_unique_pairs &lt;- nrow(distinct(profiles, year, id))\ncat(glue(\n  \"Unique (year, id) pairs: {n_unique_pairs} of {nrow(profiles)} \",\n  \"({if (n_unique_pairs == nrow(profiles)) 'PASS — no duplicates' else 'FAIL — duplicates present'})\\n\"\n))\n\nUnique (year, id) pairs: 9000 of 9000 (PASS — no duplicates)"
   },
   {
     "objectID": "clone_profiles/make_profiles.html#marginal-distributions-vs.-weighted-2024-gss",
     "href": "clone_profiles/make_profiles.html#marginal-distributions-vs.-weighted-2024-gss",
-    "title": "Building the 9,000-profile pool by pooling multiple GSS cross-sections",
+    "title": "Building the 9,000-profile pool by combining multiple GSS cross-sections",
     "section": "8.3 Marginal distributions vs. weighted 2024 GSS",
     "text": "8.3 Marginal distributions vs. weighted 2024 GSS\nWe use the 2024 wave (most recent) as the reference population. The pooled sample should approximate 2024-weighted GSS marginals on key variables; deviations are expected because older waves represent slightly different demographic compositions.\n\ngss_2024 &lt;- gss_complete |&gt; filter(year == 2024)\n\nvalidate_marginal &lt;- function(var) {\n  src &lt;- gss_2024 |&gt;\n    count(.data[[var]], wt = wtssps) |&gt;\n    mutate(prop_gss2024 = n / sum(n)) |&gt;\n    select(-n)\n  prof &lt;- profiles |&gt;\n    count(.data[[var]]) |&gt;\n    mutate(prop_pool = n / sum(n)) |&gt;\n    select(-n)\n  full_join(src, prof, by = var) |&gt;\n    mutate(diff = round(prop_pool - prop_gss2024, 4),\n           prop_gss2024 = round(prop_gss2024, 4),\n           prop_pool    = round(prop_pool, 4))\n}\n\nvars_to_check &lt;- c(\"sex\", \"racecen1\", \"degree\", \"partyid\", \"polviews\", \"region\")\n\nwalk(vars_to_check, \\(v) {\n  cat(\"\\n----\", v, \"----\\n\")\n  print(validate_marginal(v))\n})\n\n\n---- sex ----\n# A tibble: 2 × 4\n  sex    prop_gss2024 prop_pool    diff\n  &lt;fct&gt;         &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1 male          0.503     0.473 -0.0301\n2 female        0.497     0.527  0.0301\n\n---- racecen1 ----\n# A tibble: 7 × 4\n  racecen1                         prop_gss2024 prop_pool    diff\n  &lt;fct&gt;                                   &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1 american indian or alaska native       0.0148    0.0132 -0.0016\n2 asian                                  0.0629    0.0398 -0.0231\n3 black or african american              0.128     0.137   0.0091\n4 hispanic                               0.0573    0.0454 -0.0119\n5 other pacific islander                 0.0047    0.0023 -0.0024\n6 some other race                        0.0094    0.0089 -0.0005\n7 white                                  0.723     0.754   0.0304\n\n---- degree ----\n# A tibble: 5 × 4\n  degree                   prop_gss2024 prop_pool    diff\n  &lt;fct&gt;                           &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1 less than high school          0.0887    0.0772 -0.0115\n2 high school                    0.469     0.451  -0.0173\n3 associate/junior college       0.0923    0.0951  0.0028\n4 bachelor's                     0.212     0.227   0.0152\n5 graduate                       0.138     0.149   0.0108\n\n---- partyid ----\n# A tibble: 8 × 4\n  partyid                            prop_gss2024 prop_pool    diff\n  &lt;fct&gt;                                     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1 strong democrat                          0.155     0.180   0.0243\n2 not very strong democrat                 0.110     0.138   0.0282\n3 independent, close to democrat           0.112     0.122   0.0101\n4 independent (neither, no response)       0.232     0.192  -0.0397\n5 independent, close to republican         0.0895    0.0964  0.0069\n6 not very strong republican               0.119     0.112  -0.0067\n7 strong republican                        0.156     0.131  -0.0241\n8 other party                              0.027     0.0281  0.0011\n\n---- polviews ----\n# A tibble: 7 × 4\n  polviews                     prop_gss2024 prop_pool    diff\n  &lt;fct&gt;                               &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1 extremely liberal                  0.0396    0.0511  0.0115\n2 liberal                            0.136     0.144   0.0083\n3 slightly liberal                   0.117     0.122   0.0055\n4 moderate, middle of the road       0.360     0.354  -0.0064\n5 slightly conservative              0.116     0.125   0.0091\n6 conservative                       0.167     0.157  -0.0104\n7 extremely conservative             0.0643    0.0468 -0.0175\n\n---- region ----\n# A tibble: 4 × 4\n  region    prop_gss2024 prop_pool    diff\n  &lt;fct&gt;            &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;\n1 northeast        0.178     0.159 -0.0191\n2 midwest          0.213     0.232  0.0187\n3 south            0.380     0.384  0.0045\n4 west             0.229     0.225 -0.0041"
   },
@@ -292,6 +299,48 @@
     "title": "Predicting the effects of behavioral interventions on humans with LLMs",
     "section": "",
     "text": "Abstract\nWe test the potential of predicting human behavior in survey experiments with behavioral clones—large language model (LLM) generated artificial agents mimicking human participants. To evaluate this potential, we predict the outcomes of a large-scale field experiment (N = ~22,000) to be conducted in the United States. The experiment will test 20 text-based interventions designed to increase trust in climate scientists, assessing a broad range of secondary, outcomes including self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization). Before the human study is fielded, we will simulate it with behavioral clones using demographically representative U.S. participant profiles. We will lock the simulated dataset and analysis code. Once human data are available, we will compare clone-based predictions to human results using a set of preregistered metrics spanning (i) inferential agreement and estimate convergence on treatment effects, (ii) outcome distributions, and (iii) subgroup heterogeneity. Our study will provide a large-scale, credible benchmark test of LLMs’ potential—and limitations—as tools for simulating human subjects in social science research. All analyses in this preregistration are demonstrated on simulated placeholder data with identical structure to the real datasets; no human outcome data have been observed at the time of registration."
+  },
+  {
+    "objectID": "slides/05_26_mpg_berlin.html#average-treatment-effects",
+    "href": "slides/05_26_mpg_berlin.html#average-treatment-effects",
+    "title": "Can LLM clones predict a behavioral megastudy?",
+    "section": "1 · Average treatment effects",
+    "text": "1 · Average treatment effects\n\n\nFigure 1: Association of ATEs between human and clone data. Each point = one intervention (out of 16) × one outcome (out of 13)"
+  },
+  {
+    "objectID": "slides/05_26_mpg_berlin.html#average-treatment-effects-1",
+    "href": "slides/05_26_mpg_berlin.html#average-treatment-effects-1",
+    "title": "Can LLM clones predict a behavioral megastudy?",
+    "section": "1 · Average treatment effects",
+    "text": "1 · Average treatment effects\n\n\nFigure 2: Association of ATEs between human and clone data. Each point = one intervention (out of 16) × one outcome (out of 13)"
+  },
+  {
+    "objectID": "slides/05_26_mpg_berlin.html#average-treatment-effects-2",
+    "href": "slides/05_26_mpg_berlin.html#average-treatment-effects-2",
+    "title": "Can LLM clones predict a behavioral megastudy?",
+    "section": "1 · Average treatment effects",
+    "text": "1 · Average treatment effects\n\n\nFigure 3: Association of ATEs between human and clone data. Each point = one intervention (out of 16) × one outcome (out of 13)"
+  },
+  {
+    "objectID": "slides/05_26_mpg_berlin.html#average-treatment-effects-3",
+    "href": "slides/05_26_mpg_berlin.html#average-treatment-effects-3",
+    "title": "Can LLM clones predict a behavioral megastudy?",
+    "section": "1 · Average treatment effects",
+    "text": "1 · Average treatment effects\n\n\nFigure 4: Association of ATEs between human and clone data. Each point = one intervention (out of 16) × one outcome (out of 13)"
+  },
+  {
+    "objectID": "slides/05_26_mpg_berlin.html#response-distributions-control",
+    "href": "slides/05_26_mpg_berlin.html#response-distributions-control",
+    "title": "Can LLM clones predict a behavioral megastudy?",
+    "section": "2 · Response distributions (control)",
+    "text": "2 · Response distributions (control)\n\n\nFigure 5: Outcome distributions (control group) between human and clone data for some illustrative outcomes."
+  },
+  {
+    "objectID": "slides/05_26_mpg_berlin.html#thank-you",
+    "href": "slides/05_26_mpg_berlin.html#thank-you",
+    "title": "Can LLM clones predict a behavioral megastudy?",
+    "section": "Thank you!",
+    "text": "Thank you!\n\n\n\n\n\n\n\n\n\n\n\nProject website\nhttps://janpfander.github.io/llm_predictions_megastudy/"
   },
   {
     "objectID": "submissions/behavioral_clones_2026.html",

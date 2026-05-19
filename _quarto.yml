@@ -4,7 +4,7 @@ project:
   render:
     - "*.qmd"
     - "!manuscript.qmd"
-    - "!clean_llm.qmd"
+    - "!cleaning.qmd"
     - "!clone_profiles/demographic_check.qmd"
 
 freeze: auto 
@@ -29,6 +29,8 @@ website:
             href: clone_profiles/download_profiles.qmd
           - text: "Generate profiles"
             href: clone_profiles/make_profiles.qmd
+      - text: "Talks"
+        href: slides/talks.qmd            
 format:
   html:
     theme: cosmo

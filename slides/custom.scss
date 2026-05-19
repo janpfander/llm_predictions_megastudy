@@ -1,0 +1,63 @@
+/*-- scss:defaults --*/
+
+// Accent colour, used for links and the bottom progress bar.
+$link-color: #2A76DD;
+
+/*-- scss:rules --*/
+
+// Progress bar: thicker and accent-coloured, pinned at the bottom.
+.reveal .progress {
+  height: 10px;
+  color: $link-color;
+}
+
+// Small persistent section title, top-right of content slides.
+// (Populated by section-label.html — pure CSS can't read "current section".)
+// NOT scoped under `.reveal`: Quarto's include-after-body injects this
+// element OUTSIDE the .reveal container, so a `.reveal #section-label`
+// selector would never match.
+#section-label {
+  position: fixed;
+  top: 14px;
+  left: 22px;
+  z-index: 60;
+  font-size: 1.5rem;
+  letter-spacing: 0.04em;
+  color: $link-color;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+@media print {
+  #section-label { display: none !important; }
+}
+
+// Headerless slides (made with `---`): reserve the vertical space a slide
+// title (`##` -> <h2>) would occupy, so body text starts at the same height
+// as on titled slides instead of jumping to the very top.
+// Excludes: the auto title slide, `#`-level section slides (<h1>), and the
+// invisible "stack" wrappers reveal creates for vertical sub-slides.
+// `:has()` is supported by every browser reveal.js runs in.
+.reveal .slides > section:not(.stack):not(#title-slide):not(:has(> h1, > h2, > h3)),
+.reveal .slides > section.stack > section:not(:has(> h1, > h2, > h3)) {
+  padding-top: calc(
+    var(--r-heading2-size, 1.6em) * var(--r-heading-line-height, 1.2) + 20px
+  );
+}
+
+// Partner logos on the automatic title slide (bottom corners).
+.reveal #title-slide .title-logo {
+  position: absolute;
+  bottom: 24px;
+  height: 70px;
+  margin: 0;
+}
+.reveal #title-slide .title-logo-left  { left: 4%; }
+.reveal #title-slide .title-logo-right { right: 4%; }
+
+
+table.compact {
+  width: 100%;
+  table-layout: auto;
+  font-size: 90%;
+}
