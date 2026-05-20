@@ -29,6 +29,8 @@ website:
             href: clone_profiles/download_profiles.qmd
           - text: "Generate profiles"
             href: clone_profiles/make_profiles.qmd
+      - text: "Simulations"
+        href: simulations.qmd
       - text: "Talks"
         href: slides/talks.qmd            
 format:
