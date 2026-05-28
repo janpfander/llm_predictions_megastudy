@@ -110,6 +110,14 @@ src_cols <- set_names(
 )
 ```
 
+::: {.callout-caution}
+This talk has been given initially on very preliminary data (N ~ 3,500). All figures on the the slides will keep on updating with more data coming in. 
+
+Currently, we're at N = `r prelim`
+:::
+
+---
+
 # Why this project? 
 
 ---
