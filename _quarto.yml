@@ -22,7 +22,11 @@ website:
       - text: "Home"
         href: index.qmd
       - text: "Preregistration"
-        href: preregistration.qmd
+        menu:
+          - text: "Original preregistration"
+            href: preregistration.qmd
+          - text: "Amendment — prediction tournament"
+            href: amendment_preregistration.qmd
       - text: "Clone profiles"
         menu:
           - text: "Download profiles"

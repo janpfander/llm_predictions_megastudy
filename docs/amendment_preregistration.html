@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-06-09">
+
+<title>A multi-team benchmark of AI approaches for predicting behavioral-experiment effects – LLM Predictions Megastudy</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-e2c07c50f1a5a1f2c38ab518d02d0cf5.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">LLM Predictions Megastudy</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-preregistration" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Preregistration</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-preregistration">    
+        <li>
+    <a class="dropdown-item" href="./preregistration.html">
+ <span class="dropdown-text">Original preregistration</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./amendment_preregistration.html">
+ <span class="dropdown-text">Amendment — prediction tournament</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-clone-profiles" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Clone profiles</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-clone-profiles">    
+        <li>
+    <a class="dropdown-item" href="./clone_profiles/download_profiles.html">
+ <span class="dropdown-text">Download profiles</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./clone_profiles/make_profiles.html">
+ <span class="dropdown-text">Generate profiles</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./simulations.html"> 
+<span class="menu-text">Simulations</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./slides/talks.html"> 
+<span class="menu-text">Talks</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#motivation" id="toc-motivation" class="nav-link active" data-scroll-target="#motivation">Motivation</a></li>
+  <li><a href="#tournament-design" id="toc-tournament-design" class="nav-link" data-scroll-target="#tournament-design">Tournament design</a></li>
+  <li><a href="#preregistration" id="toc-preregistration" class="nav-link" data-scroll-target="#preregistration">Preregistration</a></li>
+  <li><a href="#reporting-framework" id="toc-reporting-framework" class="nav-link" data-scroll-target="#reporting-framework">Reporting framework</a></li>
+  <li><a href="#submission-requirements" id="toc-submission-requirements" class="nav-link" data-scroll-target="#submission-requirements">Submission requirements</a></li>
+  <li><a href="#analysis-plan" id="toc-analysis-plan" class="nav-link" data-scroll-target="#analysis-plan">Analysis plan</a>
+  <ul>
+  <li><a href="#per-team-analysis-reused" id="toc-per-team-analysis-reused" class="nav-link" data-scroll-target="#per-team-analysis-reused">Per-team analysis (reused)</a></li>
+  <li><a href="#cross-team-comparison-new" id="toc-cross-team-comparison-new" class="nav-link" data-scroll-target="#cross-team-comparison-new">Cross-team comparison (new)</a></li>
+  </ul></li>
+  <li><a href="#links-and-registration" id="toc-links-and-registration" class="nav-link" data-scroll-target="#links-and-registration">Links and registration</a></li>
+  </ul>
+<div class="quarto-alternate-formats"><h2>Other Formats</h2><ul><li><a href="amendment_preregistration.pdf"><i class="bi bi-file-pdf"></i>PDF</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">A multi-team benchmark of AI approaches for predicting behavioral-experiment effects</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">June 9, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+<div>
+  <div class="abstract">
+    <div class="block-title">Abstract</div>
+    <p>This is an amendment to our preregistration <em>“Predicting the effects of behavioral interventions on humans with LLMs”</em>. Writing the initial pre-registration, we conceived of the project as a single-team simulation project. With this preregistration amendment, we intend to turn the project into a <strong>multi-team prediction tournament</strong>: we will invite independent research teams to each predict the same human results using whatever AI-based simulation approach they prefer. The motivation is to catalogue the diversity of current AI approaches to forecasting behavioral experiments and to test, on genuinely novel data, how well they perform. The initial preregistration remains valid. It describes in detail how intend to measure the (dis)similarity between the human sample and LLM generated samples of “behavioral clones, and we will stick to all analytic procedures layd out there. We will report the simulations that we, the core team, have provided as part of the initial preregistration as one team’s approach.</p>
+    <p>At the point of writing this amandement to the pre-registration, human data is partially collected (~10,000 of the ~22,000 responses). Crucially, none of the invited teams will be granted access to the human data. Before any human data are released, all teams will need to preregister their simulation approach, following a standardized reporting form. As part of this process, the teams will need to make their simulated data sets public.</p>
+  </div>
+</div>
+
+
+</header>
+
+
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># packages</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MetBrewer)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># custom functions (reused unchanged from the original preregistration)</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/statistics.R"</span>))</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/plots.R"</span>))</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/tables.R"</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/reporting.R"</span>))</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated (random) placeholder data</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>human_data     <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data/simulation_preregistration/human_data_preregistration.rds"</span>))</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>llm_data_teams <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data/simulation_preregistration/llm_data_preregistration_teams.rds"</span>))</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Same preregistered random split of the human sample as in the original</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="co"># preregistration. Human 1 is the reference half all submissions are scored</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="co"># against; Human 2 is the human-human ceiling.</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>split_ids    <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">unique</span>(human_data<span class="sc">$</span>id), <span class="at">size =</span> <span class="fu">floor</span>(<span class="fu">length</span>(<span class="fu">unique</span>(human_data<span class="sc">$</span>id)) <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>human_data_1 <span class="ot">&lt;-</span> human_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(id <span class="sc">%in%</span> split_ids)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>human_data_2 <span class="ot">&lt;-</span> human_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span>id <span class="sc">%in%</span> split_ids)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Important
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>This is an amendment.</strong> It builds on, and does not replace, the original preregistration (<a href="./preregistration.html">Preregistration</a>). All analytical procedures are kept in place. This document adds (i) the tournament design, (ii) a standardized reporting framework for describing each team’s approach, and (iii) a new cross-team comparison.</p>
+<p>All datasets used in this amandement are simulated random noise with the correct structure.</p>
+</div>
+</div>
+<section id="motivation" class="level2">
+<h2 class="anchored" data-anchor-id="motivation">Motivation</h2>
+<p>The original preregistration evaluates a single approach to simulating human survey responses with LLMs—our own behavioral clones, built from demographically representative U.S. profiles and a particular model and prompt. However, a single team’s result only represents one point in a large design space of simulating behavioral clones. A more systematic way of assessing how well behavioral clones can mimic human participants in survey experiments is to pool expertise and report different approaches. Since resarch on behavioral clone samples is very recent, there is additional value in outlining different approaches that researchers in the field take to optain human-like samples.</p>
+<p>We will therefore launch a call for a <strong>multi-team prediction tournament</strong>. Predicting a large survey experiment (N = ~22,000) designed to increase trust in climate scientists provides a unique benchmarking opportunity for such a tournament. The experiment tests the effects of 16 messages<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, and includes both self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization) as outcomes. Importantly, none of the interventions has ever been tested in that form. This matters, because the perhaps most discussed use-case of behavioral clones is simulating novel research paradigms that would otherwise be very costly to explore with human participants. The experiment is, at the point of writing, only partially conducted (~10,000 of the ~22,000 responses), and none of the data will be available to the teams participating in the tournament. This overcomes the issue of researcher degrees of freedom when assessing the capacities of behavioral clones <span class="citation" data-cites="cumminsThreatAnalyticFlexibility2025b">(<a href="#ref-cumminsThreatAnalyticFlexibility2025b" role="doc-biblioref">Cummins 2025</a>)</span>.</p>
+<p>The first goal of the tournement is not to crown a single champion team—per the original pre-registration, we will evaluate the approaches along different metrics, and it seems likey that some approaches will do better on some metrics, but worse on others. Instead, we would like to provide a <strong>collective benchmark</strong> of how close behavioral clones get to mimicking human respondents across the different metrics, so there will likely be multiple “winners”. Second, and perhaps more importantly, we aim to provide a <strong>catalogue</strong>: a structured, comparable description of how research teams are currently approaching AI prediction of behavioral experiments. Ideally, comparing the different approaches and their results will allow us to speculate on how some design choices (e.g., open- vs.&nbsp;closed-weight models, persona source, one-shot vs.&nbsp;full-survey presentation) may affect the accuracy of the behavioral clones in mimicking humans.</p>
+</section>
+<section id="tournament-design" class="level2">
+<h2 class="anchored" data-anchor-id="tournament-design">Tournament design</h2>
+<p>The central methodological guarantee of this tournament is that <strong>no participating team can observe the human target data</strong>. The human outcome data are collected and held exclusively by the core team. At the time of registering this amendment, only about 10,000 of the planned ~22,000 human responses have been collected, and none of the outcome data have been shared, published, or otherwise made available.</p>
+<p>All approaches must (i) be <strong>AI-based</strong>, i.e.&nbsp;not involve humans in the loop and (ii) produce <strong>individual-level behavioral clones</strong>: each submission is a dataset of synthetic respondents who each complete the experiment, conforming to the analysis schema (see <em>Submission requirements</em>). Experiment-level or aggregate-only predictions—a single effect estimate per condition, without underlying synthetic respondents—are out of scope, as are purely statistical models without an AI component.</p>
+<p>Teams are otherwise <strong>unrestricted</strong>: they may use any AI models, any prompting or persona strategy, and any external training data or prior studies they wish.</p>
+<p>We will send out invitation to researchers with a track record of working on behavioral clones. The procedure for each team is:</p>
+<ol type="1">
+<li><strong>Fill out a standardized reporting framework.</strong></li>
+<li><strong>Generate behavioral clones data.</strong></li>
+<li><strong>Preregister all</strong></li>
+</ol>
+</section>
+<section id="preregistration" class="level2">
+<h2 class="anchored" data-anchor-id="preregistration">Preregistration</h2>
+<p>Teams are required preregister (i) the standaradized reporting framework which describes their simulation approach, and (ii) the behavioral clones data that they generated.</p>
+<p>If possible, we encourage teams to also preregister their simulation code and other relevant materials.</p>
+<p>Because it offers a convenient option to create preregistrations from <a href="https://help.zenodo.org/docs/github/archive-software/github-upload/">generating a release on a linked github repository</a>, we will ask teams to register via <a href="https://zenodo.org/">Zenodo</a>.</p>
+</section>
+<section id="reporting-framework" class="level2">
+<h2 class="anchored" data-anchor-id="reporting-framework">Reporting framework</h2>
+<p>Every team describes its approach using the <strong>GUIDE-LLM</strong> reporting checklist <span class="citation" data-cites="feuerriegelReportingChecklistLLMs2026">(<a href="#ref-feuerriegelReportingChecklistLLMs2026" role="doc-biblioref">Feuerriegel et al. 2026</a>)</span>, a recently published standard for reporting LLM use in the behavioural and social sciences. Teams complete the full checklist as part of their preregistration; below we reproduce the items relevant to generating behavioural clones, adapt their wording to this tournament, and add a small number of <strong>tournament-specific items</strong> (marked ★) that are essential for comparability here but are not part of GUIDE-LLM. Items that concern human participants, participant-facing interventions, or sensitive-data privacy are generally <em>not applicable</em>, because every submission is a fully synthetic dataset generated without human subjects; teams may mark these “N/A”. Sharing runnable code and materials on top of this description is strongly encouraged (see <em>Preregistration</em>).</p>
+<p><strong>Approach identity and output ★</strong> <em>(tournament-specific)</em></p>
+<ul>
+<li>Team name and members.</li>
+<li>One-paragraph plain-language summary of the approach.</li>
+<li>Approach family within individual-level simulation (e.g., one LLM call per respondent vs.&nbsp;an agent that walks through the full survey; single model vs.&nbsp;multi-agent).</li>
+<li>Confirmation that the submission is an individual-level behavioural-clone dataset conforming to the analysis schema (see <em>Submission requirements</em>); number of synthetic respondents and how they map to conditions; coverage of outcomes and conditions (all, or a declared subset).</li>
+</ul>
+<p><strong>A. Scope of LLM use</strong></p>
+<ul>
+<li><strong>A.1 — Purpose.</strong> The stage(s) of the workflow where LLMs are used (here, at minimum, generating synthetic survey responses; note any additional use, e.g., constructing personas or post-processing outputs).</li>
+<li><strong>A.2 — Degree of automation.</strong> Confirm the pipeline is fully automated with no human in the loop (a tournament requirement); describe any exception and who provided oversight.</li>
+</ul>
+<p><strong>B. Model / system details</strong></p>
+<ul>
+<li><strong>B.1 — Model name(s).</strong> Exact model name(s) including provider, model size, version/ID, date of access, and a source link where applicable (e.g., <em>“GPT-4o-mini-2024-07-18 (OpenAI)”</em>, <em>“Llama-3.1-8B (Meta, via HuggingFace)”</em>). If several models were tested, name them and state which produced the submission and why.</li>
+<li><strong>B.2 — Access and context mode.</strong> How the model was accessed (API / web interface / local) and whether it was used in chat mode (ongoing conversation) or stateless mode (separate calls); exact API name and version.</li>
+<li><strong>B.3 — Configuration.</strong> Settings affecting output: temperature, top-k / top-p, max tokens, frequency / presence penalties, stop sequences, number of completions or runs per respondent, quantization (e.g., FP16 / INT8 / INT4), and any reasoning-effort settings.</li>
+<li><strong>B.4 — Customization.</strong> Any adaptation beyond standard inference: base model / fine-tuning (e.g., LoRA) / retrieval-augmentation (RAG) / automated prompt optimization / tool or function calling / web search / agentic workflows / post-training (RLHF, DPO) / other. Describe each one used.</li>
+<li><strong>B.5 — Persistent memory.</strong> Whether sessions carried persistent memory across interactions (yes / no / N/A).</li>
+</ul>
+<p><strong>C. Prompts</strong></p>
+<ul>
+<li><strong>C.1 — Exact prompts.</strong> Verbatim prompt text(s), including any in-context examples, or a link to them in the preregistered repository. Document whether prompts were iteratively refined, and whether refinements were pre-specified or made in response to interim outputs.</li>
+<li><strong>C.2 — System-wide instructions.</strong> Any system-level instructions guiding the model’s general behaviour.</li>
+</ul>
+<p><strong>Persona / profile construction ★</strong> <em>(tournament-specific)</em></p>
+<ul>
+<li>Source of the demographic profiles: GSS / ANES / Census / other survey / fully synthetic / none.</li>
+<li>Variables encoded in each persona, and how they are injected into the prompt.</li>
+<li>Number of personas and their assignment to conditions (between- vs.&nbsp;within-subjects).</li>
+<li>Any weighting or matching to a target population; whether personas are reused across conditions.</li>
+</ul>
+<p><strong>Stimulus and survey presentation ★</strong> <em>(tournament-specific)</em></p>
+<ul>
+<li>How the interventions / stimuli are presented to the model (verbatim vs.&nbsp;paraphrased or summarized).</li>
+<li>How survey items are presented (one item at a time vs.&nbsp;the whole survey; item and response-option ordering / randomization; how the response scales are shown).</li>
+</ul>
+<p><strong>E. Validation &amp; interpretation</strong></p>
+<ul>
+<li><strong>E.1 — Human validation.</strong> Whether and how any human review of model outputs was performed (often N/A for fully automated generation).</li>
+<li><strong>E.2 — Post-processing.</strong> How free-text outputs were parsed into the response scales; handling of refusals, malformed, missing, or out-of-range responses; how multiple generations were consolidated into the submitted values.</li>
+</ul>
+<p><strong>F. Reproducibility</strong></p>
+<ul>
+<li><strong>F.1 — Materials shared.</strong> Whether code, notebooks, prompts, and logs are shared (link / DOI), with API keys and any sensitive material removed; determinism and seeds.</li>
+</ul>
+<p><strong>G. Competing interests</strong></p>
+<ul>
+<li><strong>G.1 — Relationships.</strong> Funding, in-kind compute or model access, or professional / financial relationships with entities that have an interest in LLMs.</li>
+</ul>
+<p><strong>Data inputs and the blinding attestation ★</strong> <em>(tournament-specific)</em></p>
+<ul>
+<li>A self-declared list of any external data that informed the approach (training, fine-tuning, retrieval, in-context examples, calibration anchors) and any prior experiments or public datasets used.</li>
+<li>Following GUIDE-LLM’s training-data-leakage item, a brief novelty note: the interventions are previously untested in this form and the human outcome data are unpublished and inaccessible, so leakage of the prediction target is structurally precluded.</li>
+<li><strong>A mandatory attestation that the team had no access to this study’s human outcome data.</strong></li>
+</ul>
+<p><strong>Recommended items</strong> <em>(GUIDE-LLM optional)</em></p>
+<ul>
+<li><strong>Model-choice justification</strong> along performance, transparency (open- vs.&nbsp;closed-weight; known training data / objective), reproducibility, ethics, and cost.</li>
+<li><strong>Prompt-design rationale</strong> (structured format, established guidelines, prior studies, few-shot selection, standardization across models).</li>
+<li><strong>Comparison against other models / methods</strong>, if any, and the benchmarking procedure used.</li>
+<li><strong>Risk of bias</strong> or systematic differences in model behaviour across groups that could affect conclusions.</li>
+<li><strong>Computational resources</strong>: API-call counts, total tokens, financial cost, and compute time.</li>
+</ul>
+</section>
+<section id="submission-requirements" class="level2">
+<h2 class="anchored" data-anchor-id="submission-requirements">Submission requirements</h2>
+<p>Every submission is an <strong>individual-level behavioral-clone dataset</strong>: a respondent-per-row dataset conforming to the cleaned analysis schema (the structure of <code>cleaned_llm.rds</code>—one row per synthetic respondent, with <code>condition</code> and all preregistered outcome and moderator columns). Because the submission has the same shape as our own clone data, it flows through the original analysis pipeline unchanged and is eligible for <strong>all</strong> analyses: average treatment effects (Section 1), subgroup heterogeneity (Section 2), and demographic baseline calibration (Section 3). Standard errors, inferential agreement, and equivalence tests are computed from the fitted models, so no separate uncertainty input is required from teams.</p>
+<p>Experiment-level or aggregate predictions (a single effect estimate per condition, without underlying synthetic respondents) are not accepted (see <em>Tournament design</em>). Requiring one common individual-level schema is precisely what makes submissions directly comparable and lets the entire original analysis pipeline apply without modification.</p>
+<p>The model functions in <code>R/functions/statistics.R</code> are agnostic to the specific condition labels and to the data source, so the same code path applies to human data, our own clones, and any team’s submission.</p>
+</section>
+<section id="analysis-plan" class="level2">
+<h2 class="anchored" data-anchor-id="analysis-plan">Analysis plan</h2>
+<section id="per-team-analysis-reused" class="level3">
+<h3 class="anchored" data-anchor-id="per-team-analysis-reused">Per-team analysis (reused)</h3>
+<p>Each submission is analyzed exactly as the original preregistration specifies, against the <strong>Human 1</strong> reference half. We do not restate that plan here; see the <a href="./preregistration.html">original preregistration</a> for the full specification of:</p>
+<ul>
+<li><strong>Section 1 — Average Treatment Effects:</strong> ATE recovery across all outcomes (<code>run_main_treatment_model()</code> / <code>run_main_treatment_model_binary()</code>, compared with <code>compare_estimates()</code> and <code>run_calibration()</code>), and control-condition response distributions (<code>compare_distributions()</code>).</li>
+<li><strong>Section 2 — Subgroup Effects:</strong> condition × moderator heterogeneity across the six moderators (<code>run_moderator_model()</code>), and within-subgroup distributions.</li>
+<li><strong>Section 3 — Demographic Baseline Calibration:</strong> group-mean calibration (<code>compare_demographic_baselines()</code>) and demographic predictability / stereotyping (<code>compare_demographic_predictability()</code>).</li>
+</ul>
+<p>The <strong>Human 1 vs.&nbsp;Human 2</strong> split provides the human–human ceiling against which all teams are read, exactly as in the original document.</p>
+</section>
+<section id="cross-team-comparison-new" class="level3">
+<h3 class="anchored" data-anchor-id="cross-team-comparison-new">Cross-team comparison (new)</h3>
+<p>This is the new analytical contribution of the amendment. We assemble a <strong>leaderboard</strong>: each team is scored with the same metric ladder used throughout the original preregistration, and teams are ranked so that approaches can be compared directly and against the human–human ceiling.</p>
+<p>For the headline leaderboard we pool average-treatment-effect estimate pairs across all continuous outcomes and report the comparison-metric ladder in increasing order of strictness—directional agreement, Spearman ρ, Pearson r, inferential agreement, and TOST equivalence—plus calibration slope and R² on the primary outcome. Because every submission is individual-level, the distribution (Sections 1b, 2b) and demographic-calibration (Section 3) metrics are likewise available for every team and added as further leaderboard columns. We then relate these performance metrics to approach characteristics coded from the reporting form (e.g., open- vs.&nbsp;closed-weight model, fine-tuned vs.&nbsp;not, persona source, one-shot vs.&nbsp;full-survey presentation).</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>Exploratory by design.</strong> With a modest number of teams, the relationship between approach characteristics and predictive performance is reported <strong>descriptively</strong> (rankings, group comparisons, visual patterns). We do not preregister inferential tests of feature effects; the cross-team feature analysis is hypothesis-generating, intended to surface which design choices appear to matter for future, larger benchmarks.</p>
+</div>
+</div>
+<p>The remainder of this section demonstrates the leaderboard code on simulated multi-team placeholder data: five mock “teams”, each a full LLM-style simulation drawn with a different seed and stacked with a <code>team</code> label. The code will be applied to real submissions without modification.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>outcomes_primary   <span class="ot">&lt;-</span> <span class="st">"trust_multidimensional"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>outcomes_secondary <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"trust_post"</span>, <span class="st">"distrust_post"</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"funding_perceptions"</span>, <span class="st">"policy_role_mean"</span>, <span class="st">"inst_trust_mean"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>outcomes_tertiary  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"belief_post"</span>, <span class="st">"concern_mean"</span>, <span class="st">"policy_general"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"policy_specific_mean"</span>, <span class="st">"behavior_mean"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>outcomes_continuous <span class="ot">&lt;-</span> <span class="fu">c</span>(outcomes_primary, outcomes_secondary, outcomes_tertiary)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>outcome_label_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_multidimensional =</span> <span class="st">"Multidimensional trust (primary)"</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_post             =</span> <span class="st">"Overall trust"</span>,</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">distrust_post          =</span> <span class="st">"Distrust"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">funding_perceptions    =</span> <span class="st">"Funding perceptions"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_role_mean       =</span> <span class="st">"Policy role"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">inst_trust_mean        =</span> <span class="st">"Institutional trust"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">belief_post            =</span> <span class="st">"Climate belief"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">concern_mean           =</span> <span class="st">"Climate concern"</span>,</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_general         =</span> <span class="st">"General climate policy"</span>,</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_specific_mean   =</span> <span class="st">"Specific climate policy"</span>,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">behavior_mean          =</span> <span class="st">"Pro-climate behavior"</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract ATE pairs (estimate, SE, adjusted p) — same helper as the original</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co"># preregistration's rq1-all chunk.</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>prep_ate <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">|&gt;</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(condition, estimate) <span class="sc">|&gt;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">se    =</span> <span class="cf">if</span> (<span class="st">"std.error"</span>        <span class="sc">%in%</span> <span class="fu">names</span>(df)) df<span class="sc">$</span>std.error        <span class="cf">else</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_adj =</span> <span class="cf">if</span> (<span class="st">"p.value_adjusted"</span> <span class="sc">%in%</span> <span class="fu">names</span>(df)) df<span class="sc">$</span>p.value_adjusted <span class="cf">else</span> <span class="cn">NA_real_</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Reference (Human 1) ATE models, fit once and reused for every comparison.</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>human_models <span class="ot">&lt;-</span> <span class="fu">map</span>(outcomes_continuous,</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                    <span class="sc">~</span> <span class="fu">run_main_treatment_model</span>(human_data_1, <span class="at">outcome =</span> .x)) <span class="sc">|&gt;</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(outcomes_continuous)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Pool ATE estimate pairs across continuous outcomes for one prediction dataset</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co"># against the Human 1 reference models.</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>build_pairs <span class="ot">&lt;-</span> <span class="cf">function</span>(pred_data) {</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(outcomes_continuous, <span class="cf">function</span>(out) {</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">inner_join</span>(</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      <span class="fu">prep_ate</span>(human_models[[out]]) <span class="sc">|&gt;</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rename</span>(<span class="at">estimate_h =</span> estimate, <span class="at">se_h =</span> se, <span class="at">p_adj_h =</span> p_adj),</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>      <span class="fu">prep_ate</span>(<span class="fu">run_main_treatment_model</span>(pred_data, <span class="at">outcome =</span> out)) <span class="sc">|&gt;</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rename</span>(<span class="at">estimate_l =</span> estimate, <span class="at">se_l =</span> se, <span class="at">p_adj_l =</span> p_adj),</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="st">"condition"</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">outcome =</span> out)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Six-metric ladder over pooled pairs — mirrors compare_estimates() /</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co"># the pooled_row logic in the original preregistration.</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>pooled_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(pairs) {</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>  pairs <span class="sc">|&gt;</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">delta      =</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">abs</span>(estimate_h),</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">diff       =</span> estimate_h <span class="sc">-</span> estimate_l,</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>      <span class="at">se_diff    =</span> <span class="fu">sqrt</span>(se_h<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> se_l<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_tost     =</span> <span class="fu">pmax</span>(<span class="fu">pnorm</span>((diff <span class="sc">+</span> delta) <span class="sc">/</span> se_diff, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">pnorm</span>((diff <span class="sc">-</span> delta) <span class="sc">/</span> se_diff)),</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>      <span class="at">equivalent =</span> p_tost <span class="sc">&lt;</span> <span class="fl">0.05</span>,</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a>      <span class="at">same_sign  =</span> <span class="fu">sign</span>(estimate_h) <span class="sc">==</span> <span class="fu">sign</span>(estimate_l),</span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>      <span class="at">infer_h    =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_h) <span class="sc">&amp;</span> p_adj_h <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_h <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"pos"</span>,</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_h) <span class="sc">&amp;</span> p_adj_h <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_h <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"neg"</span>,</span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span>                                             <span class="sc">~</span> <span class="st">"ns"</span>),</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>      <span class="at">infer_l    =</span> <span class="fu">case_when</span>(</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_l) <span class="sc">&amp;</span> p_adj_l <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_l <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"pos"</span>,</span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_l) <span class="sc">&amp;</span> p_adj_l <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_l <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"neg"</span>,</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span>                                             <span class="sc">~</span> <span class="st">"ns"</span>)</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>      <span class="at">directional_pct =</span> <span class="fu">mean</span>(same_sign, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a>      <span class="at">spearman_rho    =</span> <span class="fu">cor</span>(estimate_h, estimate_l, <span class="at">method =</span> <span class="st">"spearman"</span>,</span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a>                            <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>),</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>      <span class="at">pearson_r       =</span> <span class="fu">cor</span>(estimate_h, estimate_l, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>),</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a>      <span class="at">inferential_pct =</span> <span class="fu">mean</span>(infer_h <span class="sc">==</span> infer_l, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a>      <span class="at">tost_pct        =</span> <span class="fu">mean</span>(equivalent, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>team_levels <span class="ot">&lt;-</span> <span class="fu">levels</span>(llm_data_teams<span class="sc">$</span>team)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># One leaderboard row per team</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>team_rows <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(team_levels, <span class="cf">function</span>(tm) {</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> llm_data_teams <span class="sc">|&gt;</span> <span class="fu">filter</span>(team <span class="sc">==</span> tm)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  pairs <span class="ot">&lt;-</span> <span class="fu">build_pairs</span>(pred)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  metrics <span class="ot">&lt;-</span> <span class="fu">pooled_metrics</span>(pairs)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  calib   <span class="ot">&lt;-</span> <span class="fu">run_calibration</span>(human_models[[outcomes_primary]],</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">run_main_treatment_model</span>(pred, <span class="at">outcome =</span> outcomes_primary))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  metrics <span class="sc">|&gt;</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">submission =</span> tm,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>           <span class="at">beta =</span> calib<span class="sc">$</span>beta, <span class="at">calib_r2 =</span> calib<span class="sc">$</span>r_squared)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Human–human ceiling row (Human 1 vs. Human 2)</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>ceiling_pairs <span class="ot">&lt;-</span> <span class="fu">build_pairs</span>(human_data_2)</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>ceiling_calib <span class="ot">&lt;-</span> <span class="fu">run_calibration</span>(human_models[[outcomes_primary]],</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">run_main_treatment_model</span>(human_data_2,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>                                                          <span class="at">outcome =</span> outcomes_primary))</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>ceiling_row <span class="ot">&lt;-</span> <span class="fu">pooled_metrics</span>(ceiling_pairs) <span class="sc">|&gt;</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">submission =</span> <span class="st">"Human–human ceiling"</span>,</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>         <span class="at">beta =</span> ceiling_calib<span class="sc">$</span>beta, <span class="at">calib_r2 =</span> ceiling_calib<span class="sc">$</span>r_squared)</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(ceiling_row, team_rows) <span class="sc">|&gt;</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(submission <span class="sc">==</span> <span class="st">"Human–human ceiling"</span>), <span class="fu">desc</span>(pearson_r))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(submission, directional_pct, spearman_rho, pearson_r,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>         inferential_pct, tost_pct, beta, calib_r2) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">c</span>(spearman_rho, pearson_r, beta, calib_r2), <span class="at">decimals =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">c</span>(directional_pct, inferential_pct, tost_pct), <span class="at">decimals =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">submission      =</span> <span class="st">"Submission"</span>,</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">directional_pct =</span> <span class="st">"Directional %"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">spearman_rho    =</span> <span class="st">"Spearman ρ"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">pearson_r       =</span> <span class="st">"Pearson r"</span>,</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">inferential_pct =</span> <span class="st">"Inferential %"</span>,</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">tost_pct        =</span> <span class="st">"TOST %"</span>,</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta            =</span> <span class="st">"Calib. β"</span>,</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">calib_r2        =</span> <span class="st">"Calib. R²"</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#eef3f7"</span>),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> submission <span class="sc">==</span> <span class="st">"Human–human ceiling"</span>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="tbl-leaderboard" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-leaderboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Table&nbsp;1: Cross-team leaderboard (placeholder data). Pooled ATE-recovery metrics across all continuous outcomes, plus calibration slope and R² on the primary outcome, scored against the Human 1 reference half. The Human–human ceiling (Human 1 vs.&nbsp;Human 2) is the upper bound for any approach. Metrics run least-to-most strict, left to right.
+</figcaption>
+<div aria-describedby="tbl-leaderboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="ntdyhoysab" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ntdyhoysab table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#ntdyhoysab thead, #ntdyhoysab tbody, #ntdyhoysab tfoot, #ntdyhoysab tr, #ntdyhoysab td, #ntdyhoysab th {
+  border-style: none;
+}
+
+#ntdyhoysab p {
+  margin: 0;
+  padding: 0;
+}
+
+#ntdyhoysab .gt_table {
+  display: table;
+  border-collapse: collapse;
+  line-height: normal;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ntdyhoysab .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ntdyhoysab .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 3px;
+  padding-bottom: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ntdyhoysab .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ntdyhoysab .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ntdyhoysab .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ntdyhoysab .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ntdyhoysab .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ntdyhoysab .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#ntdyhoysab .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ntdyhoysab .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ntdyhoysab .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ntdyhoysab .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ntdyhoysab .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ntdyhoysab .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ntdyhoysab .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ntdyhoysab .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ntdyhoysab .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#ntdyhoysab .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ntdyhoysab .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ntdyhoysab .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ntdyhoysab .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ntdyhoysab .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ntdyhoysab .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ntdyhoysab .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ntdyhoysab .gt_left {
+  text-align: left;
+}
+
+#ntdyhoysab .gt_center {
+  text-align: center;
+}
+
+#ntdyhoysab .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ntdyhoysab .gt_font_normal {
+  font-weight: normal;
+}
+
+#ntdyhoysab .gt_font_bold {
+  font-weight: bold;
+}
+
+#ntdyhoysab .gt_font_italic {
+  font-style: italic;
+}
+
+#ntdyhoysab .gt_super {
+  font-size: 65%;
+}
+
+#ntdyhoysab .gt_footnote_marks {
+  font-size: 75%;
+  vertical-align: 0.4em;
+  position: initial;
+}
+
+#ntdyhoysab .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ntdyhoysab .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ntdyhoysab .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ntdyhoysab .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ntdyhoysab .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ntdyhoysab .gt_indent_5 {
+  text-indent: 25px;
+}
+
+#ntdyhoysab .katex-display {
+  display: inline-flex !important;
+  margin-bottom: 0.75em !important;
+}
+
+#ntdyhoysab div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+  height: 0px !important;
+}
+</style>
+
+<table class="gt_table do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-bootstrap="false">
+<thead>
+<tr class="gt_col_headings header">
+<th id="submission" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">Submission</th>
+<th id="directional_pct" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Directional %</th>
+<th id="spearman_rho" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Spearman ρ</th>
+<th id="pearson_r" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Pearson r</th>
+<th id="inferential_pct" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Inferential %</th>
+<th id="tost_pct" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">TOST %</th>
+<th id="beta" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Calib. β</th>
+<th id="calib_r2" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">Calib. R²</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="submission" style="background-color: #EEF3F7">Human–human ceiling</td>
+<td class="gt_row gt_right" headers="directional_pct" style="background-color: #EEF3F7">48</td>
+<td class="gt_row gt_right" headers="spearman_rho" style="background-color: #EEF3F7">−0.10</td>
+<td class="gt_row gt_right" headers="pearson_r" style="background-color: #EEF3F7">−0.06</td>
+<td class="gt_row gt_right" headers="inferential_pct" style="background-color: #EEF3F7">98</td>
+<td class="gt_row gt_right" headers="tost_pct" style="background-color: #EEF3F7">0</td>
+<td class="gt_row gt_right" headers="beta" style="background-color: #EEF3F7">−0.16</td>
+<td class="gt_row gt_right" headers="calib_r2" style="background-color: #EEF3F7">0.06</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="submission">team_5</td>
+<td class="gt_row gt_right" headers="directional_pct">58</td>
+<td class="gt_row gt_right" headers="spearman_rho">0.27</td>
+<td class="gt_row gt_right" headers="pearson_r">0.33</td>
+<td class="gt_row gt_right" headers="inferential_pct">99</td>
+<td class="gt_row gt_right" headers="tost_pct">0</td>
+<td class="gt_row gt_right" headers="beta">−0.09</td>
+<td class="gt_row gt_right" headers="calib_r2">0.01</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="submission">team_1</td>
+<td class="gt_row gt_right" headers="directional_pct">52</td>
+<td class="gt_row gt_right" headers="spearman_rho">0.06</td>
+<td class="gt_row gt_right" headers="pearson_r">0.11</td>
+<td class="gt_row gt_right" headers="inferential_pct">99</td>
+<td class="gt_row gt_right" headers="tost_pct">0</td>
+<td class="gt_row gt_right" headers="beta">−0.28</td>
+<td class="gt_row gt_right" headers="calib_r2">0.04</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="submission">team_2</td>
+<td class="gt_row gt_right" headers="directional_pct">42</td>
+<td class="gt_row gt_right" headers="spearman_rho">−0.15</td>
+<td class="gt_row gt_right" headers="pearson_r">−0.10</td>
+<td class="gt_row gt_right" headers="inferential_pct">99</td>
+<td class="gt_row gt_right" headers="tost_pct">0</td>
+<td class="gt_row gt_right" headers="beta">−0.42</td>
+<td class="gt_row gt_right" headers="calib_r2">0.12</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="submission">team_3</td>
+<td class="gt_row gt_right" headers="directional_pct">50</td>
+<td class="gt_row gt_right" headers="spearman_rho">−0.07</td>
+<td class="gt_row gt_right" headers="pearson_r">−0.11</td>
+<td class="gt_row gt_right" headers="inferential_pct">99</td>
+<td class="gt_row gt_right" headers="tost_pct">0</td>
+<td class="gt_row gt_right" headers="beta">−0.34</td>
+<td class="gt_row gt_right" headers="calib_r2">0.07</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="submission">team_4</td>
+<td class="gt_row gt_right" headers="directional_pct">50</td>
+<td class="gt_row gt_right" headers="spearman_rho">−0.13</td>
+<td class="gt_row gt_right" headers="pearson_r">−0.18</td>
+<td class="gt_row gt_right" headers="inferential_pct">99</td>
+<td class="gt_row gt_right" headers="tost_pct">0</td>
+<td class="gt_row gt_right" headers="beta">0.03</td>
+<td class="gt_row gt_right" headers="calib_r2">0.00</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ceiling_r <span class="ot">&lt;-</span> leaderboard <span class="sc">|&gt;</span> <span class="fu">filter</span>(submission <span class="sc">==</span> <span class="st">"Human–human ceiling"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(pearson_r)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="sc">|&gt;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(submission <span class="sc">!=</span> <span class="st">"Human–human ceiling"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">submission =</span> <span class="fu">fct_reorder</span>(submission, pearson_r)) <span class="sc">|&gt;</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pearson_r, <span class="at">y =</span> submission)) <span class="sc">+</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ceiling_r, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">xend =</span> pearson_r, <span class="at">yend =</span> submission), <span class="at">colour =</span> <span class="st">"grey80"</span>) <span class="sc">+</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="fu">met.brewer</span>(<span class="st">"Egypt"</span>)[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ceiling_r, <span class="at">y =</span> <span class="fl">0.6</span>, <span class="at">label =</span> <span class="st">"Human–human ceiling"</span>,</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>           <span class="at">hjust =</span> <span class="fl">1.05</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Pearson r (pooled ATEs vs. Human 1)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div id="fig-leaderboard" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-leaderboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="amendment_preregistration_files/figure-html/fig-leaderboard-1.png" class="img-fluid figure-img" width="2400">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-leaderboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figure&nbsp;1: Approaches ranked by ATE-recovery (Pearson r of pooled ATEs against Human 1), with the human–human ceiling marked. On placeholder data all submissions are random noise, so no approach is expected to separate from the others.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>When real submissions arrive, this leaderboard is recomputed by replacing the placeholder team dataset with the stacked set of submitted clone datasets, and by adding the distribution and demographic-calibration metrics from Sections 1b, 2b, and 3 as additional leaderboard columns (available for every submission, since all are individual-level). The approach-characteristics table coded from the reporting form is then joined to the leaderboard for the exploratory analysis of which design choices accompany better predictions.</p>
+</section>
+</section>
+<section id="links-and-registration" class="level2">
+<h2 class="anchored" data-anchor-id="links-and-registration">Links and registration</h2>
+<ul>
+<li><strong>Original preregistration (this project):</strong> <a href="./preregistration.html">Preregistration</a>.</li>
+<li><strong>Human study preregistration:</strong> <a href="https://doi.org/10.5281/zenodo.20160212">https://doi.org/10.5281/zenodo.20160212</a>.</li>
+<li><strong>Core-team LLM simulation data:</strong> <a href="https://doi.org/10.5281/zenodo.20167059">https://doi.org/10.5281/zenodo.20167059</a>.</li>
+<li><strong>Simulation code (time-stamped release):</strong> <a href="https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0">https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0</a>.</li>
+</ul>
+
+
+<!-- -->
+
+
+</section>
+
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-cumminsThreatAnalyticFlexibility2025b" class="csl-entry" role="listitem">
+Cummins, Jamie. 2025. <span>“The Threat of Analytic Flexibility in Using Large Language Models to Simulate Human Data.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.2509.13397">https://doi.org/10.48550/ARXIV.2509.13397</a>.
+</div>
+<div id="ref-feuerriegelReportingChecklistLLMs2026" class="csl-entry" role="listitem">
+Feuerriegel, Stefan, Christopher Barrie, Molly J. Crockett, Laura K. Globig, Killian L. McLoughlin, Diana-Maria Mirea, Arthur Spirling, Diyi Yang, Steve Rathje, and Manoel Horta Ribeiro. 2026. <span>“A Reporting Checklist for <span>LLMs</span> in Behavioural Science.”</span> <em>Nature Human Behaviour</em>. <a href="https://doi.org/10.1038/s41562-026-02492-7">https://doi.org/10.1038/s41562-026-02492-7</a>.
+</div>
+</div></section><section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes"><h2 class="anchored quarto-appendix-heading">Footnotes</h2>
+
+<ol>
+<li id="fn1"><p>The original experiment contains 20 interventions, but we will only use 16, as the other four are interactive interventions that would make the simulation process more complicated.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects"</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="an">abstract:</span><span class="co"> |</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">    This is an amendment to our preregistration *"Predicting the effects of behavioral interventions on humans with LLMs"*. Writing the initial pre-registration, we conceived of the project as a single-team simulation project. With this preregistration amendment, we intend to turn the project into a **multi-team prediction tournament**: we will invite independent research teams to each predict the same human results using whatever AI-based simulation approach they prefer. The motivation is to catalogue the diversity of current AI approaches to forecasting behavioral experiments and to test, on genuinely novel data, how well they perform. The initial preregistration remains valid. It describes in detail how intend to measure the (dis)similarity between the human sample and LLM generated samples of "behavioral clones, and we will stick to all analytic procedures layd out there. We will report the simulations that we, the core team, have provided as part of the initial preregistration as one team's approach. </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">    </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">    At the point of writing this amandement to the pre-registration, human data is partially collected (~10,000 of the ~22,000 responses). Crucially, none of the invited teams will be granted access to the human data. Before any human data are released, all teams will need to preregister their simulation approach, following a standardized reporting form. As part of this process, the teams will need to make their simulated data sets public.</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">  </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-06-09"</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">    code-fold: true</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 4</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co">  pdf:</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 5</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a><span class="co">    include-before-body:</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a><span class="co">      text: |</span></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="co">        \clearpage</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a><span class="co">    colorlinks: true</span></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co">    tbl-colwidths: true</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a><span class="co">    header-includes:</span></span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a><span class="co">      - \usepackage{float}</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a><span class="co">      - \floatplacement{figure}{H}</span></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a><span class="co">      - \floatplacement{table}{H}</span></span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a><span class="co">      - \usepackage{listings}</span></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co">      - \lstset{breaklines=true, basicstyle=\small\ttfamily}</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a><span class="an">execute:</span></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co">  echo: true</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a><span class="co">  warning: false</span></span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a><span class="co">  message: false</span></span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a><span class="co">  fig-width: 8</span></span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a><span class="co">  fig-height: 5</span></span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a><span class="co">  fig-dpi: 300</span></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: setup</span></span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a><span class="co">#| output: false</span></span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a><span class="co"># packages</span></span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom)</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MetBrewer)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb7-55"><a href="#cb7-55" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(gt)</span>
+<span id="cb7-56"><a href="#cb7-56" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb7-57"><a href="#cb7-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-58"><a href="#cb7-58" aria-hidden="true" tabindex="-1"></a><span class="co"># custom functions (reused unchanged from the original preregistration)</span></span>
+<span id="cb7-59"><a href="#cb7-59" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/statistics.R"</span>))</span>
+<span id="cb7-60"><a href="#cb7-60" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/plots.R"</span>))</span>
+<span id="cb7-61"><a href="#cb7-61" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/tables.R"</span>))</span>
+<span id="cb7-62"><a href="#cb7-62" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="fu">here</span>(<span class="st">"R/functions/reporting.R"</span>))</span>
+<span id="cb7-63"><a href="#cb7-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-64"><a href="#cb7-64" aria-hidden="true" tabindex="-1"></a><span class="co"># simulated (random) placeholder data</span></span>
+<span id="cb7-65"><a href="#cb7-65" aria-hidden="true" tabindex="-1"></a>human_data     <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data/simulation_preregistration/human_data_preregistration.rds"</span>))</span>
+<span id="cb7-66"><a href="#cb7-66" aria-hidden="true" tabindex="-1"></a>llm_data_teams <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"data/simulation_preregistration/llm_data_preregistration_teams.rds"</span>))</span>
+<span id="cb7-67"><a href="#cb7-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-68"><a href="#cb7-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Same preregistered random split of the human sample as in the original</span></span>
+<span id="cb7-69"><a href="#cb7-69" aria-hidden="true" tabindex="-1"></a><span class="co"># preregistration. Human 1 is the reference half all submissions are scored</span></span>
+<span id="cb7-70"><a href="#cb7-70" aria-hidden="true" tabindex="-1"></a><span class="co"># against; Human 2 is the human-human ceiling.</span></span>
+<span id="cb7-71"><a href="#cb7-71" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb7-72"><a href="#cb7-72" aria-hidden="true" tabindex="-1"></a>split_ids    <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">unique</span>(human_data<span class="sc">$</span>id), <span class="at">size =</span> <span class="fu">floor</span>(<span class="fu">length</span>(<span class="fu">unique</span>(human_data<span class="sc">$</span>id)) <span class="sc">/</span> <span class="dv">2</span>))</span>
+<span id="cb7-73"><a href="#cb7-73" aria-hidden="true" tabindex="-1"></a>human_data_1 <span class="ot">&lt;-</span> human_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(id <span class="sc">%in%</span> split_ids)</span>
+<span id="cb7-74"><a href="#cb7-74" aria-hidden="true" tabindex="-1"></a>human_data_2 <span class="ot">&lt;-</span> human_data <span class="sc">|&gt;</span> <span class="fu">filter</span>(<span class="sc">!</span>id <span class="sc">%in%</span> split_ids)</span>
+<span id="cb7-75"><a href="#cb7-75" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-76"><a href="#cb7-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-77"><a href="#cb7-77" aria-hidden="true" tabindex="-1"></a>::: {.callout-important}</span>
+<span id="cb7-78"><a href="#cb7-78" aria-hidden="true" tabindex="-1"></a>**This is an amendment.** It builds on, and does not replace, the original preregistration (<span class="co">[</span><span class="ot">Preregistration</span><span class="co">](preregistration.qmd)</span>). All analytical procedures are kept in place. This document adds (i) the tournament design, (ii) a standardized reporting framework for describing each team's approach, and (iii) a new cross-team comparison. </span>
+<span id="cb7-79"><a href="#cb7-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-80"><a href="#cb7-80" aria-hidden="true" tabindex="-1"></a>All datasets used in this amandement are simulated random noise with the correct structure.</span>
+<span id="cb7-81"><a href="#cb7-81" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-82"><a href="#cb7-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-83"><a href="#cb7-83" aria-hidden="true" tabindex="-1"></a><span class="fu">## Motivation</span></span>
+<span id="cb7-84"><a href="#cb7-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-85"><a href="#cb7-85" aria-hidden="true" tabindex="-1"></a>The original preregistration evaluates a single approach to simulating human survey responses with LLMs—our own behavioral clones, built from demographically representative U.S. profiles and a particular model and prompt. However, a single team's result only represents one point in a large design space of simulating behavioral clones. A more systematic way of assessing how well behavioral clones can mimic human participants in survey experiments is to pool expertise and report different approaches. Since resarch on behavioral clone samples is very recent, there is additional value in outlining different approaches that researchers in the field take to optain human-like samples. </span>
+<span id="cb7-86"><a href="#cb7-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-87"><a href="#cb7-87" aria-hidden="true" tabindex="-1"></a>We will therefore launch a call for a **multi-team prediction tournament**. Predicting a large survey experiment (N = ~22,000) designed to increase trust in climate scientists provides a unique benchmarking opportunity for such a tournament. The experiment tests the effects of 16 messages^<span class="co">[</span><span class="ot">The original experiment contains 20 interventions, but we will only use 16, as the other four are interactive interventions that would make the simulation process more complicated.</span><span class="co">]</span>, and includes both self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization) as outcomes. Importantly, none of the interventions has ever been tested in that form. This matters, because the perhaps most discussed use-case of behavioral clones is simulating novel research paradigms that would otherwise be very costly to explore with human participants. The experiment is, at the point of writing, only partially conducted (~10,000 of the ~22,000 responses), and none of the data will be available to the teams participating in the tournament. This overcomes the issue of researcher degrees of freedom when assessing the capacities of behavioral clones <span class="co">[</span><span class="ot">@cumminsThreatAnalyticFlexibility2025b</span><span class="co">]</span>. </span>
+<span id="cb7-88"><a href="#cb7-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-89"><a href="#cb7-89" aria-hidden="true" tabindex="-1"></a>The first goal of the tournement is not to crown a single champion team---per the original pre-registration, we will evaluate the approaches along different metrics, and it seems likey that some approaches will do better on some metrics, but worse on others. Instead, we would like to provide a **collective benchmark** of how close behavioral clones get to mimicking human respondents across the different metrics, so there will likely be multiple "winners". Second, and perhaps more importantly, we aim to provide a **catalogue**: a structured, comparable description of how research teams are currently approaching AI prediction of behavioral experiments. Ideally, comparing the different approaches and their results will allow us to speculate on how some design choices (e.g., open- vs. closed-weight models, persona source, one-shot vs. full-survey presentation) may affect the accuracy of the behavioral clones in mimicking humans.</span>
+<span id="cb7-90"><a href="#cb7-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-91"><a href="#cb7-91" aria-hidden="true" tabindex="-1"></a><span class="fu">## Tournament design</span></span>
+<span id="cb7-92"><a href="#cb7-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-93"><a href="#cb7-93" aria-hidden="true" tabindex="-1"></a>The central methodological guarantee of this tournament is that **no participating team can observe the human target data**. The human outcome data are collected and held exclusively by the core team. At the time of registering this amendment, only about 10,000 of the planned ~22,000 human responses have been collected, and none of the outcome data have been shared, published, or otherwise made available. </span>
+<span id="cb7-94"><a href="#cb7-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-95"><a href="#cb7-95" aria-hidden="true" tabindex="-1"></a>All approaches must (i) be **AI-based**, i.e. not involve humans in the loop and (ii) produce **individual-level behavioral clones**: each submission is a dataset of synthetic respondents who each complete the experiment, conforming to the analysis schema (see *Submission requirements*). Experiment-level or aggregate-only predictions—a single effect estimate per condition, without underlying synthetic respondents—are out of scope, as are purely statistical models without an AI component.</span>
+<span id="cb7-96"><a href="#cb7-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-97"><a href="#cb7-97" aria-hidden="true" tabindex="-1"></a>Teams are otherwise **unrestricted**: they may use any AI models, any prompting or persona strategy, and any external training data or prior studies they wish. </span>
+<span id="cb7-98"><a href="#cb7-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-99"><a href="#cb7-99" aria-hidden="true" tabindex="-1"></a>We will send out invitation to researchers with a track record of working on behavioral clones. The procedure for each team is:</span>
+<span id="cb7-100"><a href="#cb7-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-101"><a href="#cb7-101" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Fill out a standardized reporting framework.** </span>
+<span id="cb7-102"><a href="#cb7-102" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Generate behavioral clones data.** </span>
+<span id="cb7-103"><a href="#cb7-103" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Preregister all** </span>
+<span id="cb7-104"><a href="#cb7-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-105"><a href="#cb7-105" aria-hidden="true" tabindex="-1"></a><span class="fu">## Preregistration</span></span>
+<span id="cb7-106"><a href="#cb7-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-107"><a href="#cb7-107" aria-hidden="true" tabindex="-1"></a>Teams are required preregister (i) the standaradized reporting framework which describes their simulation approach, and (ii) the behavioral clones data that they generated. </span>
+<span id="cb7-108"><a href="#cb7-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-109"><a href="#cb7-109" aria-hidden="true" tabindex="-1"></a>If possible, we encourage teams to also preregister their simulation code and other relevant materials. </span>
+<span id="cb7-110"><a href="#cb7-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-111"><a href="#cb7-111" aria-hidden="true" tabindex="-1"></a>Because it offers a convenient option to create preregistrations from <span class="co">[</span><span class="ot">generating a release on a linked github repository</span><span class="co">](https://help.zenodo.org/docs/github/archive-software/github-upload/)</span>, we will ask teams to register via <span class="co">[</span><span class="ot">Zenodo</span><span class="co">](https://zenodo.org/)</span>. </span>
+<span id="cb7-112"><a href="#cb7-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-113"><a href="#cb7-113" aria-hidden="true" tabindex="-1"></a><span class="fu">## Reporting framework</span></span>
+<span id="cb7-114"><a href="#cb7-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-115"><a href="#cb7-115" aria-hidden="true" tabindex="-1"></a>Every team describes its approach using the **GUIDE-LLM** reporting checklist [@feuerriegelReportingChecklistLLMs2026], a recently published standard for reporting LLM use in the behavioural and social sciences. Teams complete the full checklist as part of their preregistration; below we reproduce the items relevant to generating behavioural clones, adapt their wording to this tournament, and add a small number of **tournament-specific items** (marked ★) that are essential for comparability here but are not part of GUIDE-LLM. Items that concern human participants, participant-facing interventions, or sensitive-data privacy are generally *not applicable*, because every submission is a fully synthetic dataset generated without human subjects; teams may mark these "N/A". Sharing runnable code and materials on top of this description is strongly encouraged (see *Preregistration*).</span>
+<span id="cb7-116"><a href="#cb7-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-117"><a href="#cb7-117" aria-hidden="true" tabindex="-1"></a>**Approach identity and output ★** *(tournament-specific)*</span>
+<span id="cb7-118"><a href="#cb7-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-119"><a href="#cb7-119" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Team name and members.</span>
+<span id="cb7-120"><a href="#cb7-120" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>One-paragraph plain-language summary of the approach.</span>
+<span id="cb7-121"><a href="#cb7-121" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Approach family within individual-level simulation (e.g., one LLM call per respondent vs. an agent that walks through the full survey; single model vs. multi-agent).</span>
+<span id="cb7-122"><a href="#cb7-122" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Confirmation that the submission is an individual-level behavioural-clone dataset conforming to the analysis schema (see *Submission requirements*); number of synthetic respondents and how they map to conditions; coverage of outcomes and conditions (all, or a declared subset).</span>
+<span id="cb7-123"><a href="#cb7-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-124"><a href="#cb7-124" aria-hidden="true" tabindex="-1"></a>**A. Scope of LLM use**</span>
+<span id="cb7-125"><a href="#cb7-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-126"><a href="#cb7-126" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**A.1 — Purpose.** The stage(s) of the workflow where LLMs are used (here, at minimum, generating synthetic survey responses; note any additional use, e.g., constructing personas or post-processing outputs).</span>
+<span id="cb7-127"><a href="#cb7-127" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**A.2 — Degree of automation.** Confirm the pipeline is fully automated with no human in the loop (a tournament requirement); describe any exception and who provided oversight.</span>
+<span id="cb7-128"><a href="#cb7-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-129"><a href="#cb7-129" aria-hidden="true" tabindex="-1"></a>**B. Model / system details**</span>
+<span id="cb7-130"><a href="#cb7-130" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-131"><a href="#cb7-131" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**B.1 — Model name(s).** Exact model name(s) including provider, model size, version/ID, date of access, and a source link where applicable (e.g., *"GPT-4o-mini-2024-07-18 (OpenAI)"*, *"Llama-3.1-8B (Meta, via HuggingFace)"*). If several models were tested, name them and state which produced the submission and why.</span>
+<span id="cb7-132"><a href="#cb7-132" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**B.2 — Access and context mode.** How the model was accessed (API / web interface / local) and whether it was used in chat mode (ongoing conversation) or stateless mode (separate calls); exact API name and version.</span>
+<span id="cb7-133"><a href="#cb7-133" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**B.3 — Configuration.** Settings affecting output: temperature, top-k / top-p, max tokens, frequency / presence penalties, stop sequences, number of completions or runs per respondent, quantization (e.g., FP16 / INT8 / INT4), and any reasoning-effort settings.</span>
+<span id="cb7-134"><a href="#cb7-134" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**B.4 — Customization.** Any adaptation beyond standard inference: base model / fine-tuning (e.g., LoRA) / retrieval-augmentation (RAG) / automated prompt optimization / tool or function calling / web search / agentic workflows / post-training (RLHF, DPO) / other. Describe each one used.</span>
+<span id="cb7-135"><a href="#cb7-135" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**B.5 — Persistent memory.** Whether sessions carried persistent memory across interactions (yes / no / N/A).</span>
+<span id="cb7-136"><a href="#cb7-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-137"><a href="#cb7-137" aria-hidden="true" tabindex="-1"></a>**C. Prompts**</span>
+<span id="cb7-138"><a href="#cb7-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-139"><a href="#cb7-139" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**C.1 — Exact prompts.** Verbatim prompt text(s), including any in-context examples, or a link to them in the preregistered repository. Document whether prompts were iteratively refined, and whether refinements were pre-specified or made in response to interim outputs.</span>
+<span id="cb7-140"><a href="#cb7-140" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**C.2 — System-wide instructions.** Any system-level instructions guiding the model's general behaviour.</span>
+<span id="cb7-141"><a href="#cb7-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-142"><a href="#cb7-142" aria-hidden="true" tabindex="-1"></a>**Persona / profile construction ★** *(tournament-specific)*</span>
+<span id="cb7-143"><a href="#cb7-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-144"><a href="#cb7-144" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Source of the demographic profiles: GSS / ANES / Census / other survey / fully synthetic / none.</span>
+<span id="cb7-145"><a href="#cb7-145" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Variables encoded in each persona, and how they are injected into the prompt.</span>
+<span id="cb7-146"><a href="#cb7-146" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Number of personas and their assignment to conditions (between- vs. within-subjects).</span>
+<span id="cb7-147"><a href="#cb7-147" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Any weighting or matching to a target population; whether personas are reused across conditions.</span>
+<span id="cb7-148"><a href="#cb7-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-149"><a href="#cb7-149" aria-hidden="true" tabindex="-1"></a>**Stimulus and survey presentation ★** *(tournament-specific)*</span>
+<span id="cb7-150"><a href="#cb7-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-151"><a href="#cb7-151" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>How the interventions / stimuli are presented to the model (verbatim vs. paraphrased or summarized).</span>
+<span id="cb7-152"><a href="#cb7-152" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>How survey items are presented (one item at a time vs. the whole survey; item and response-option ordering / randomization; how the response scales are shown).</span>
+<span id="cb7-153"><a href="#cb7-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-154"><a href="#cb7-154" aria-hidden="true" tabindex="-1"></a>**E. Validation &amp; interpretation**</span>
+<span id="cb7-155"><a href="#cb7-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-156"><a href="#cb7-156" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**E.1 — Human validation.** Whether and how any human review of model outputs was performed (often N/A for fully automated generation).</span>
+<span id="cb7-157"><a href="#cb7-157" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**E.2 — Post-processing.** How free-text outputs were parsed into the response scales; handling of refusals, malformed, missing, or out-of-range responses; how multiple generations were consolidated into the submitted values.</span>
+<span id="cb7-158"><a href="#cb7-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-159"><a href="#cb7-159" aria-hidden="true" tabindex="-1"></a>**F. Reproducibility**</span>
+<span id="cb7-160"><a href="#cb7-160" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-161"><a href="#cb7-161" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**F.1 — Materials shared.** Whether code, notebooks, prompts, and logs are shared (link / DOI), with API keys and any sensitive material removed; determinism and seeds.</span>
+<span id="cb7-162"><a href="#cb7-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-163"><a href="#cb7-163" aria-hidden="true" tabindex="-1"></a>**G. Competing interests**</span>
+<span id="cb7-164"><a href="#cb7-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-165"><a href="#cb7-165" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**G.1 — Relationships.** Funding, in-kind compute or model access, or professional / financial relationships with entities that have an interest in LLMs.</span>
+<span id="cb7-166"><a href="#cb7-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-167"><a href="#cb7-167" aria-hidden="true" tabindex="-1"></a>**Data inputs and the blinding attestation ★** *(tournament-specific)*</span>
+<span id="cb7-168"><a href="#cb7-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-169"><a href="#cb7-169" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>A self-declared list of any external data that informed the approach (training, fine-tuning, retrieval, in-context examples, calibration anchors) and any prior experiments or public datasets used.</span>
+<span id="cb7-170"><a href="#cb7-170" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Following GUIDE-LLM's training-data-leakage item, a brief novelty note: the interventions are previously untested in this form and the human outcome data are unpublished and inaccessible, so leakage of the prediction target is structurally precluded.</span>
+<span id="cb7-171"><a href="#cb7-171" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**A mandatory attestation that the team had no access to this study's human outcome data.**</span>
+<span id="cb7-172"><a href="#cb7-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-173"><a href="#cb7-173" aria-hidden="true" tabindex="-1"></a>**Recommended items** *(GUIDE-LLM optional)*</span>
+<span id="cb7-174"><a href="#cb7-174" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-175"><a href="#cb7-175" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Model-choice justification** along performance, transparency (open- vs. closed-weight; known training data / objective), reproducibility, ethics, and cost.</span>
+<span id="cb7-176"><a href="#cb7-176" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Prompt-design rationale** (structured format, established guidelines, prior studies, few-shot selection, standardization across models).</span>
+<span id="cb7-177"><a href="#cb7-177" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Comparison against other models / methods**, if any, and the benchmarking procedure used.</span>
+<span id="cb7-178"><a href="#cb7-178" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Risk of bias** or systematic differences in model behaviour across groups that could affect conclusions.</span>
+<span id="cb7-179"><a href="#cb7-179" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Computational resources**: API-call counts, total tokens, financial cost, and compute time.</span>
+<span id="cb7-180"><a href="#cb7-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-181"><a href="#cb7-181" aria-hidden="true" tabindex="-1"></a><span class="fu">## Submission requirements</span></span>
+<span id="cb7-182"><a href="#cb7-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-183"><a href="#cb7-183" aria-hidden="true" tabindex="-1"></a>Every submission is an **individual-level behavioral-clone dataset**: a respondent-per-row dataset conforming to the cleaned analysis schema (the structure of `cleaned_llm.rds`—one row per synthetic respondent, with `condition` and all preregistered outcome and moderator columns). Because the submission has the same shape as our own clone data, it flows through the original analysis pipeline unchanged and is eligible for **all** analyses: average treatment effects (Section 1), subgroup heterogeneity (Section 2), and demographic baseline calibration (Section 3). Standard errors, inferential agreement, and equivalence tests are computed from the fitted models, so no separate uncertainty input is required from teams.</span>
+<span id="cb7-184"><a href="#cb7-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-185"><a href="#cb7-185" aria-hidden="true" tabindex="-1"></a>Experiment-level or aggregate predictions (a single effect estimate per condition, without underlying synthetic respondents) are not accepted (see *Tournament design*). Requiring one common individual-level schema is precisely what makes submissions directly comparable and lets the entire original analysis pipeline apply without modification.</span>
+<span id="cb7-186"><a href="#cb7-186" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-187"><a href="#cb7-187" aria-hidden="true" tabindex="-1"></a>The model functions in <span class="in">`R/functions/statistics.R`</span> are agnostic to the specific condition labels and to the data source, so the same code path applies to human data, our own clones, and any team's submission.</span>
+<span id="cb7-188"><a href="#cb7-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-189"><a href="#cb7-189" aria-hidden="true" tabindex="-1"></a><span class="fu">## Analysis plan</span></span>
+<span id="cb7-190"><a href="#cb7-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-191"><a href="#cb7-191" aria-hidden="true" tabindex="-1"></a><span class="fu">### Per-team analysis (reused)</span></span>
+<span id="cb7-192"><a href="#cb7-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-193"><a href="#cb7-193" aria-hidden="true" tabindex="-1"></a>Each submission is analyzed exactly as the original preregistration specifies, against the **Human 1** reference half. We do not restate that plan here; see the <span class="co">[</span><span class="ot">original preregistration</span><span class="co">](preregistration.qmd)</span> for the full specification of:</span>
+<span id="cb7-194"><a href="#cb7-194" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-195"><a href="#cb7-195" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Section 1 — Average Treatment Effects:** ATE recovery across all outcomes (<span class="in">`run_main_treatment_model()`</span> / <span class="in">`run_main_treatment_model_binary()`</span>, compared with <span class="in">`compare_estimates()`</span> and <span class="in">`run_calibration()`</span>), and control-condition response distributions (<span class="in">`compare_distributions()`</span>).</span>
+<span id="cb7-196"><a href="#cb7-196" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Section 2 — Subgroup Effects:** condition × moderator heterogeneity across the six moderators (<span class="in">`run_moderator_model()`</span>), and within-subgroup distributions.</span>
+<span id="cb7-197"><a href="#cb7-197" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Section 3 — Demographic Baseline Calibration:** group-mean calibration (<span class="in">`compare_demographic_baselines()`</span>) and demographic predictability / stereotyping (<span class="in">`compare_demographic_predictability()`</span>).</span>
+<span id="cb7-198"><a href="#cb7-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-199"><a href="#cb7-199" aria-hidden="true" tabindex="-1"></a>The **Human 1 vs. Human 2** split provides the human–human ceiling against which all teams are read, exactly as in the original document.</span>
+<span id="cb7-200"><a href="#cb7-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-201"><a href="#cb7-201" aria-hidden="true" tabindex="-1"></a><span class="fu">### Cross-team comparison (new)</span></span>
+<span id="cb7-202"><a href="#cb7-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-203"><a href="#cb7-203" aria-hidden="true" tabindex="-1"></a>This is the new analytical contribution of the amendment. We assemble a **leaderboard**: each team is scored with the same metric ladder used throughout the original preregistration, and teams are ranked so that approaches can be compared directly and against the human–human ceiling.</span>
+<span id="cb7-204"><a href="#cb7-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-205"><a href="#cb7-205" aria-hidden="true" tabindex="-1"></a>For the headline leaderboard we pool average-treatment-effect estimate pairs across all continuous outcomes and report the comparison-metric ladder in increasing order of strictness—directional agreement, Spearman ρ, Pearson r, inferential agreement, and TOST equivalence—plus calibration slope and R² on the primary outcome. Because every submission is individual-level, the distribution (Sections 1b, 2b) and demographic-calibration (Section 3) metrics are likewise available for every team and added as further leaderboard columns. We then relate these performance metrics to approach characteristics coded from the reporting form (e.g., open- vs. closed-weight model, fine-tuned vs. not, persona source, one-shot vs. full-survey presentation).</span>
+<span id="cb7-206"><a href="#cb7-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-207"><a href="#cb7-207" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb7-208"><a href="#cb7-208" aria-hidden="true" tabindex="-1"></a>**Exploratory by design.** With a modest number of teams, the relationship between approach characteristics and predictive performance is reported **descriptively** (rankings, group comparisons, visual patterns). We do not preregister inferential tests of feature effects; the cross-team feature analysis is hypothesis-generating, intended to surface which design choices appear to matter for future, larger benchmarks.</span>
+<span id="cb7-209"><a href="#cb7-209" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb7-210"><a href="#cb7-210" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-211"><a href="#cb7-211" aria-hidden="true" tabindex="-1"></a>The remainder of this section demonstrates the leaderboard code on simulated multi-team placeholder data: five mock "teams", each a full LLM-style simulation drawn with a different seed and stacked with a <span class="in">`team`</span> label. The code will be applied to real submissions without modification.</span>
+<span id="cb7-212"><a href="#cb7-212" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-215"><a href="#cb7-215" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-216"><a href="#cb7-216" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: variables</span></span>
+<span id="cb7-217"><a href="#cb7-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-218"><a href="#cb7-218" aria-hidden="true" tabindex="-1"></a>outcomes_primary   <span class="ot">&lt;-</span> <span class="st">"trust_multidimensional"</span></span>
+<span id="cb7-219"><a href="#cb7-219" aria-hidden="true" tabindex="-1"></a>outcomes_secondary <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"trust_post"</span>, <span class="st">"distrust_post"</span>,</span>
+<span id="cb7-220"><a href="#cb7-220" aria-hidden="true" tabindex="-1"></a>                         <span class="st">"funding_perceptions"</span>, <span class="st">"policy_role_mean"</span>, <span class="st">"inst_trust_mean"</span>)</span>
+<span id="cb7-221"><a href="#cb7-221" aria-hidden="true" tabindex="-1"></a>outcomes_tertiary  <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"belief_post"</span>, <span class="st">"concern_mean"</span>, <span class="st">"policy_general"</span>,</span>
+<span id="cb7-222"><a href="#cb7-222" aria-hidden="true" tabindex="-1"></a>                        <span class="st">"policy_specific_mean"</span>, <span class="st">"behavior_mean"</span>)</span>
+<span id="cb7-223"><a href="#cb7-223" aria-hidden="true" tabindex="-1"></a>outcomes_continuous <span class="ot">&lt;-</span> <span class="fu">c</span>(outcomes_primary, outcomes_secondary, outcomes_tertiary)</span>
+<span id="cb7-224"><a href="#cb7-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-225"><a href="#cb7-225" aria-hidden="true" tabindex="-1"></a>outcome_label_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb7-226"><a href="#cb7-226" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_multidimensional =</span> <span class="st">"Multidimensional trust (primary)"</span>,</span>
+<span id="cb7-227"><a href="#cb7-227" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_post             =</span> <span class="st">"Overall trust"</span>,</span>
+<span id="cb7-228"><a href="#cb7-228" aria-hidden="true" tabindex="-1"></a>  <span class="at">distrust_post          =</span> <span class="st">"Distrust"</span>,</span>
+<span id="cb7-229"><a href="#cb7-229" aria-hidden="true" tabindex="-1"></a>  <span class="at">funding_perceptions    =</span> <span class="st">"Funding perceptions"</span>,</span>
+<span id="cb7-230"><a href="#cb7-230" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_role_mean       =</span> <span class="st">"Policy role"</span>,</span>
+<span id="cb7-231"><a href="#cb7-231" aria-hidden="true" tabindex="-1"></a>  <span class="at">inst_trust_mean        =</span> <span class="st">"Institutional trust"</span>,</span>
+<span id="cb7-232"><a href="#cb7-232" aria-hidden="true" tabindex="-1"></a>  <span class="at">belief_post            =</span> <span class="st">"Climate belief"</span>,</span>
+<span id="cb7-233"><a href="#cb7-233" aria-hidden="true" tabindex="-1"></a>  <span class="at">concern_mean           =</span> <span class="st">"Climate concern"</span>,</span>
+<span id="cb7-234"><a href="#cb7-234" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_general         =</span> <span class="st">"General climate policy"</span>,</span>
+<span id="cb7-235"><a href="#cb7-235" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_specific_mean   =</span> <span class="st">"Specific climate policy"</span>,</span>
+<span id="cb7-236"><a href="#cb7-236" aria-hidden="true" tabindex="-1"></a>  <span class="at">behavior_mean          =</span> <span class="st">"Pro-climate behavior"</span></span>
+<span id="cb7-237"><a href="#cb7-237" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-238"><a href="#cb7-238" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-239"><a href="#cb7-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: leaderboard-helpers</span></span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract ATE pairs (estimate, SE, adjusted p) — same helper as the original</span></span>
+<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a><span class="co"># preregistration's rq1-all chunk.</span></span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a>prep_ate <span class="ot">&lt;-</span> <span class="cf">function</span>(df) {</span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a>  df <span class="sc">|&gt;</span></span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(condition, estimate) <span class="sc">|&gt;</span></span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a>      <span class="at">se    =</span> <span class="cf">if</span> (<span class="st">"std.error"</span>        <span class="sc">%in%</span> <span class="fu">names</span>(df)) df<span class="sc">$</span>std.error        <span class="cf">else</span> <span class="cn">NA_real_</span>,</span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_adj =</span> <span class="cf">if</span> (<span class="st">"p.value_adjusted"</span> <span class="sc">%in%</span> <span class="fu">names</span>(df)) df<span class="sc">$</span>p.value_adjusted <span class="cf">else</span> <span class="cn">NA_real_</span></span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-256"><a href="#cb7-256" aria-hidden="true" tabindex="-1"></a><span class="co"># Reference (Human 1) ATE models, fit once and reused for every comparison.</span></span>
+<span id="cb7-257"><a href="#cb7-257" aria-hidden="true" tabindex="-1"></a>human_models <span class="ot">&lt;-</span> <span class="fu">map</span>(outcomes_continuous,</span>
+<span id="cb7-258"><a href="#cb7-258" aria-hidden="true" tabindex="-1"></a>                    <span class="sc">~</span> <span class="fu">run_main_treatment_model</span>(human_data_1, <span class="at">outcome =</span> .x)) <span class="sc">|&gt;</span></span>
+<span id="cb7-259"><a href="#cb7-259" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_names</span>(outcomes_continuous)</span>
+<span id="cb7-260"><a href="#cb7-260" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-261"><a href="#cb7-261" aria-hidden="true" tabindex="-1"></a><span class="co"># Pool ATE estimate pairs across continuous outcomes for one prediction dataset</span></span>
+<span id="cb7-262"><a href="#cb7-262" aria-hidden="true" tabindex="-1"></a><span class="co"># against the Human 1 reference models.</span></span>
+<span id="cb7-263"><a href="#cb7-263" aria-hidden="true" tabindex="-1"></a>build_pairs <span class="ot">&lt;-</span> <span class="cf">function</span>(pred_data) {</span>
+<span id="cb7-264"><a href="#cb7-264" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dfr</span>(outcomes_continuous, <span class="cf">function</span>(out) {</span>
+<span id="cb7-265"><a href="#cb7-265" aria-hidden="true" tabindex="-1"></a>    <span class="fu">inner_join</span>(</span>
+<span id="cb7-266"><a href="#cb7-266" aria-hidden="true" tabindex="-1"></a>      <span class="fu">prep_ate</span>(human_models[[out]]) <span class="sc">|&gt;</span></span>
+<span id="cb7-267"><a href="#cb7-267" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rename</span>(<span class="at">estimate_h =</span> estimate, <span class="at">se_h =</span> se, <span class="at">p_adj_h =</span> p_adj),</span>
+<span id="cb7-268"><a href="#cb7-268" aria-hidden="true" tabindex="-1"></a>      <span class="fu">prep_ate</span>(<span class="fu">run_main_treatment_model</span>(pred_data, <span class="at">outcome =</span> out)) <span class="sc">|&gt;</span></span>
+<span id="cb7-269"><a href="#cb7-269" aria-hidden="true" tabindex="-1"></a>        <span class="fu">rename</span>(<span class="at">estimate_l =</span> estimate, <span class="at">se_l =</span> se, <span class="at">p_adj_l =</span> p_adj),</span>
+<span id="cb7-270"><a href="#cb7-270" aria-hidden="true" tabindex="-1"></a>      <span class="at">by =</span> <span class="st">"condition"</span></span>
+<span id="cb7-271"><a href="#cb7-271" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span> <span class="fu">mutate</span>(<span class="at">outcome =</span> out)</span>
+<span id="cb7-272"><a href="#cb7-272" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb7-273"><a href="#cb7-273" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-274"><a href="#cb7-274" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-275"><a href="#cb7-275" aria-hidden="true" tabindex="-1"></a><span class="co"># Six-metric ladder over pooled pairs — mirrors compare_estimates() /</span></span>
+<span id="cb7-276"><a href="#cb7-276" aria-hidden="true" tabindex="-1"></a><span class="co"># the pooled_row logic in the original preregistration.</span></span>
+<span id="cb7-277"><a href="#cb7-277" aria-hidden="true" tabindex="-1"></a>pooled_metrics <span class="ot">&lt;-</span> <span class="cf">function</span>(pairs) {</span>
+<span id="cb7-278"><a href="#cb7-278" aria-hidden="true" tabindex="-1"></a>  pairs <span class="sc">|&gt;</span></span>
+<span id="cb7-279"><a href="#cb7-279" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-280"><a href="#cb7-280" aria-hidden="true" tabindex="-1"></a>      <span class="at">delta      =</span> <span class="fl">0.5</span> <span class="sc">*</span> <span class="fu">abs</span>(estimate_h),</span>
+<span id="cb7-281"><a href="#cb7-281" aria-hidden="true" tabindex="-1"></a>      <span class="at">diff       =</span> estimate_h <span class="sc">-</span> estimate_l,</span>
+<span id="cb7-282"><a href="#cb7-282" aria-hidden="true" tabindex="-1"></a>      <span class="at">se_diff    =</span> <span class="fu">sqrt</span>(se_h<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> se_l<span class="sc">^</span><span class="dv">2</span>),</span>
+<span id="cb7-283"><a href="#cb7-283" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_tost     =</span> <span class="fu">pmax</span>(<span class="fu">pnorm</span>((diff <span class="sc">+</span> delta) <span class="sc">/</span> se_diff, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb7-284"><a href="#cb7-284" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">pnorm</span>((diff <span class="sc">-</span> delta) <span class="sc">/</span> se_diff)),</span>
+<span id="cb7-285"><a href="#cb7-285" aria-hidden="true" tabindex="-1"></a>      <span class="at">equivalent =</span> p_tost <span class="sc">&lt;</span> <span class="fl">0.05</span>,</span>
+<span id="cb7-286"><a href="#cb7-286" aria-hidden="true" tabindex="-1"></a>      <span class="at">same_sign  =</span> <span class="fu">sign</span>(estimate_h) <span class="sc">==</span> <span class="fu">sign</span>(estimate_l),</span>
+<span id="cb7-287"><a href="#cb7-287" aria-hidden="true" tabindex="-1"></a>      <span class="at">infer_h    =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-288"><a href="#cb7-288" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_h) <span class="sc">&amp;</span> p_adj_h <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_h <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"pos"</span>,</span>
+<span id="cb7-289"><a href="#cb7-289" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_h) <span class="sc">&amp;</span> p_adj_h <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_h <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"neg"</span>,</span>
+<span id="cb7-290"><a href="#cb7-290" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span>                                             <span class="sc">~</span> <span class="st">"ns"</span>),</span>
+<span id="cb7-291"><a href="#cb7-291" aria-hidden="true" tabindex="-1"></a>      <span class="at">infer_l    =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-292"><a href="#cb7-292" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_l) <span class="sc">&amp;</span> p_adj_l <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_l <span class="sc">&gt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"pos"</span>,</span>
+<span id="cb7-293"><a href="#cb7-293" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!</span><span class="fu">is.na</span>(p_adj_l) <span class="sc">&amp;</span> p_adj_l <span class="sc">&lt;</span> .<span class="dv">05</span> <span class="sc">&amp;</span> estimate_l <span class="sc">&lt;</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">"neg"</span>,</span>
+<span id="cb7-294"><a href="#cb7-294" aria-hidden="true" tabindex="-1"></a>        <span class="cn">TRUE</span>                                             <span class="sc">~</span> <span class="st">"ns"</span>)</span>
+<span id="cb7-295"><a href="#cb7-295" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb7-296"><a href="#cb7-296" aria-hidden="true" tabindex="-1"></a>    <span class="fu">summarise</span>(</span>
+<span id="cb7-297"><a href="#cb7-297" aria-hidden="true" tabindex="-1"></a>      <span class="at">directional_pct =</span> <span class="fu">mean</span>(same_sign, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb7-298"><a href="#cb7-298" aria-hidden="true" tabindex="-1"></a>      <span class="at">spearman_rho    =</span> <span class="fu">cor</span>(estimate_h, estimate_l, <span class="at">method =</span> <span class="st">"spearman"</span>,</span>
+<span id="cb7-299"><a href="#cb7-299" aria-hidden="true" tabindex="-1"></a>                            <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>),</span>
+<span id="cb7-300"><a href="#cb7-300" aria-hidden="true" tabindex="-1"></a>      <span class="at">pearson_r       =</span> <span class="fu">cor</span>(estimate_h, estimate_l, <span class="at">use =</span> <span class="st">"pairwise.complete.obs"</span>),</span>
+<span id="cb7-301"><a href="#cb7-301" aria-hidden="true" tabindex="-1"></a>      <span class="at">inferential_pct =</span> <span class="fu">mean</span>(infer_h <span class="sc">==</span> infer_l, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb7-302"><a href="#cb7-302" aria-hidden="true" tabindex="-1"></a>      <span class="at">tost_pct        =</span> <span class="fu">mean</span>(equivalent, <span class="at">na.rm =</span> <span class="cn">TRUE</span>) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb7-303"><a href="#cb7-303" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb7-304"><a href="#cb7-304" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-305"><a href="#cb7-305" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-306"><a href="#cb7-306" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-309"><a href="#cb7-309" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-310"><a href="#cb7-310" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: leaderboard-build</span></span>
+<span id="cb7-311"><a href="#cb7-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-312"><a href="#cb7-312" aria-hidden="true" tabindex="-1"></a>team_levels <span class="ot">&lt;-</span> <span class="fu">levels</span>(llm_data_teams<span class="sc">$</span>team)</span>
+<span id="cb7-313"><a href="#cb7-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-314"><a href="#cb7-314" aria-hidden="true" tabindex="-1"></a><span class="co"># One leaderboard row per team</span></span>
+<span id="cb7-315"><a href="#cb7-315" aria-hidden="true" tabindex="-1"></a>team_rows <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(team_levels, <span class="cf">function</span>(tm) {</span>
+<span id="cb7-316"><a href="#cb7-316" aria-hidden="true" tabindex="-1"></a>  pred <span class="ot">&lt;-</span> llm_data_teams <span class="sc">|&gt;</span> <span class="fu">filter</span>(team <span class="sc">==</span> tm)</span>
+<span id="cb7-317"><a href="#cb7-317" aria-hidden="true" tabindex="-1"></a>  pairs <span class="ot">&lt;-</span> <span class="fu">build_pairs</span>(pred)</span>
+<span id="cb7-318"><a href="#cb7-318" aria-hidden="true" tabindex="-1"></a>  metrics <span class="ot">&lt;-</span> <span class="fu">pooled_metrics</span>(pairs)</span>
+<span id="cb7-319"><a href="#cb7-319" aria-hidden="true" tabindex="-1"></a>  calib   <span class="ot">&lt;-</span> <span class="fu">run_calibration</span>(human_models[[outcomes_primary]],</span>
+<span id="cb7-320"><a href="#cb7-320" aria-hidden="true" tabindex="-1"></a>                             <span class="fu">run_main_treatment_model</span>(pred, <span class="at">outcome =</span> outcomes_primary))</span>
+<span id="cb7-321"><a href="#cb7-321" aria-hidden="true" tabindex="-1"></a>  metrics <span class="sc">|&gt;</span></span>
+<span id="cb7-322"><a href="#cb7-322" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(<span class="at">submission =</span> tm,</span>
+<span id="cb7-323"><a href="#cb7-323" aria-hidden="true" tabindex="-1"></a>           <span class="at">beta =</span> calib<span class="sc">$</span>beta, <span class="at">calib_r2 =</span> calib<span class="sc">$</span>r_squared)</span>
+<span id="cb7-324"><a href="#cb7-324" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb7-325"><a href="#cb7-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-326"><a href="#cb7-326" aria-hidden="true" tabindex="-1"></a><span class="co"># Human–human ceiling row (Human 1 vs. Human 2)</span></span>
+<span id="cb7-327"><a href="#cb7-327" aria-hidden="true" tabindex="-1"></a>ceiling_pairs <span class="ot">&lt;-</span> <span class="fu">build_pairs</span>(human_data_2)</span>
+<span id="cb7-328"><a href="#cb7-328" aria-hidden="true" tabindex="-1"></a>ceiling_calib <span class="ot">&lt;-</span> <span class="fu">run_calibration</span>(human_models[[outcomes_primary]],</span>
+<span id="cb7-329"><a href="#cb7-329" aria-hidden="true" tabindex="-1"></a>                                 <span class="fu">run_main_treatment_model</span>(human_data_2,</span>
+<span id="cb7-330"><a href="#cb7-330" aria-hidden="true" tabindex="-1"></a>                                                          <span class="at">outcome =</span> outcomes_primary))</span>
+<span id="cb7-331"><a href="#cb7-331" aria-hidden="true" tabindex="-1"></a>ceiling_row <span class="ot">&lt;-</span> <span class="fu">pooled_metrics</span>(ceiling_pairs) <span class="sc">|&gt;</span></span>
+<span id="cb7-332"><a href="#cb7-332" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">submission =</span> <span class="st">"Human–human ceiling"</span>,</span>
+<span id="cb7-333"><a href="#cb7-333" aria-hidden="true" tabindex="-1"></a>         <span class="at">beta =</span> ceiling_calib<span class="sc">$</span>beta, <span class="at">calib_r2 =</span> ceiling_calib<span class="sc">$</span>r_squared)</span>
+<span id="cb7-334"><a href="#cb7-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-335"><a href="#cb7-335" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(ceiling_row, team_rows) <span class="sc">|&gt;</span></span>
+<span id="cb7-336"><a href="#cb7-336" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(submission <span class="sc">==</span> <span class="st">"Human–human ceiling"</span>), <span class="fu">desc</span>(pearson_r))</span>
+<span id="cb7-337"><a href="#cb7-337" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-338"><a href="#cb7-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-341"><a href="#cb7-341" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-342"><a href="#cb7-342" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: tbl-leaderboard</span></span>
+<span id="cb7-343"><a href="#cb7-343" aria-hidden="true" tabindex="-1"></a><span class="co">#| tbl-cap: "Cross-team leaderboard (placeholder data). Pooled ATE-recovery metrics across all continuous outcomes, plus calibration slope and R² on the primary outcome, scored against the Human 1 reference half. The Human–human ceiling (Human 1 vs. Human 2) is the upper bound for any approach. Metrics run least-to-most strict, left to right."</span></span>
+<span id="cb7-344"><a href="#cb7-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-345"><a href="#cb7-345" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="sc">|&gt;</span></span>
+<span id="cb7-346"><a href="#cb7-346" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(submission, directional_pct, spearman_rho, pearson_r,</span>
+<span id="cb7-347"><a href="#cb7-347" aria-hidden="true" tabindex="-1"></a>         inferential_pct, tost_pct, beta, calib_r2) <span class="sc">|&gt;</span></span>
+<span id="cb7-348"><a href="#cb7-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gt</span>() <span class="sc">|&gt;</span></span>
+<span id="cb7-349"><a href="#cb7-349" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">c</span>(spearman_rho, pearson_r, beta, calib_r2), <span class="at">decimals =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-350"><a href="#cb7-350" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fmt_number</span>(<span class="at">columns =</span> <span class="fu">c</span>(directional_pct, inferential_pct, tost_pct), <span class="at">decimals =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-351"><a href="#cb7-351" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cols_label</span>(</span>
+<span id="cb7-352"><a href="#cb7-352" aria-hidden="true" tabindex="-1"></a>    <span class="at">submission      =</span> <span class="st">"Submission"</span>,</span>
+<span id="cb7-353"><a href="#cb7-353" aria-hidden="true" tabindex="-1"></a>    <span class="at">directional_pct =</span> <span class="st">"Directional %"</span>,</span>
+<span id="cb7-354"><a href="#cb7-354" aria-hidden="true" tabindex="-1"></a>    <span class="at">spearman_rho    =</span> <span class="st">"Spearman ρ"</span>,</span>
+<span id="cb7-355"><a href="#cb7-355" aria-hidden="true" tabindex="-1"></a>    <span class="at">pearson_r       =</span> <span class="st">"Pearson r"</span>,</span>
+<span id="cb7-356"><a href="#cb7-356" aria-hidden="true" tabindex="-1"></a>    <span class="at">inferential_pct =</span> <span class="st">"Inferential %"</span>,</span>
+<span id="cb7-357"><a href="#cb7-357" aria-hidden="true" tabindex="-1"></a>    <span class="at">tost_pct        =</span> <span class="st">"TOST %"</span>,</span>
+<span id="cb7-358"><a href="#cb7-358" aria-hidden="true" tabindex="-1"></a>    <span class="at">beta            =</span> <span class="st">"Calib. β"</span>,</span>
+<span id="cb7-359"><a href="#cb7-359" aria-hidden="true" tabindex="-1"></a>    <span class="at">calib_r2        =</span> <span class="st">"Calib. R²"</span></span>
+<span id="cb7-360"><a href="#cb7-360" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb7-361"><a href="#cb7-361" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tab_style</span>(</span>
+<span id="cb7-362"><a href="#cb7-362" aria-hidden="true" tabindex="-1"></a>    <span class="at">style     =</span> <span class="fu">cell_fill</span>(<span class="at">color =</span> <span class="st">"#eef3f7"</span>),</span>
+<span id="cb7-363"><a href="#cb7-363" aria-hidden="true" tabindex="-1"></a>    <span class="at">locations =</span> <span class="fu">cells_body</span>(<span class="at">rows =</span> submission <span class="sc">==</span> <span class="st">"Human–human ceiling"</span>)</span>
+<span id="cb7-364"><a href="#cb7-364" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb7-365"><a href="#cb7-365" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-366"><a href="#cb7-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-369"><a href="#cb7-369" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb7-370"><a href="#cb7-370" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: fig-leaderboard</span></span>
+<span id="cb7-371"><a href="#cb7-371" aria-hidden="true" tabindex="-1"></a><span class="co">#| fig-cap: "Approaches ranked by ATE-recovery (Pearson r of pooled ATEs against Human 1), with the human–human ceiling marked. On placeholder data all submissions are random noise, so no approach is expected to separate from the others."</span></span>
+<span id="cb7-372"><a href="#cb7-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-373"><a href="#cb7-373" aria-hidden="true" tabindex="-1"></a>ceiling_r <span class="ot">&lt;-</span> leaderboard <span class="sc">|&gt;</span> <span class="fu">filter</span>(submission <span class="sc">==</span> <span class="st">"Human–human ceiling"</span>) <span class="sc">|&gt;</span> <span class="fu">pull</span>(pearson_r)</span>
+<span id="cb7-374"><a href="#cb7-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-375"><a href="#cb7-375" aria-hidden="true" tabindex="-1"></a>leaderboard <span class="sc">|&gt;</span></span>
+<span id="cb7-376"><a href="#cb7-376" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(submission <span class="sc">!=</span> <span class="st">"Human–human ceiling"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-377"><a href="#cb7-377" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">submission =</span> <span class="fu">fct_reorder</span>(submission, pearson_r)) <span class="sc">|&gt;</span></span>
+<span id="cb7-378"><a href="#cb7-378" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> pearson_r, <span class="at">y =</span> submission)) <span class="sc">+</span></span>
+<span id="cb7-379"><a href="#cb7-379" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> ceiling_r, <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb7-380"><a href="#cb7-380" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> <span class="dv">0</span>, <span class="at">xend =</span> pearson_r, <span class="at">yend =</span> submission), <span class="at">colour =</span> <span class="st">"grey80"</span>) <span class="sc">+</span></span>
+<span id="cb7-381"><a href="#cb7-381" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="fu">met.brewer</span>(<span class="st">"Egypt"</span>)[<span class="dv">2</span>]) <span class="sc">+</span></span>
+<span id="cb7-382"><a href="#cb7-382" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> ceiling_r, <span class="at">y =</span> <span class="fl">0.6</span>, <span class="at">label =</span> <span class="st">"Human–human ceiling"</span>,</span>
+<span id="cb7-383"><a href="#cb7-383" aria-hidden="true" tabindex="-1"></a>           <span class="at">hjust =</span> <span class="fl">1.05</span>, <span class="at">size =</span> <span class="dv">3</span>, <span class="at">colour =</span> <span class="st">"grey40"</span>) <span class="sc">+</span></span>
+<span id="cb7-384"><a href="#cb7-384" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Pearson r (pooled ATEs vs. Human 1)"</span>, <span class="at">y =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb7-385"><a href="#cb7-385" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span>
+<span id="cb7-386"><a href="#cb7-386" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb7-387"><a href="#cb7-387" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-388"><a href="#cb7-388" aria-hidden="true" tabindex="-1"></a>When real submissions arrive, this leaderboard is recomputed by replacing the placeholder team dataset with the stacked set of submitted clone datasets, and by adding the distribution and demographic-calibration metrics from Sections 1b, 2b, and 3 as additional leaderboard columns (available for every submission, since all are individual-level). The approach-characteristics table coded from the reporting form is then joined to the leaderboard for the exploratory analysis of which design choices accompany better predictions.</span>
+<span id="cb7-389"><a href="#cb7-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-390"><a href="#cb7-390" aria-hidden="true" tabindex="-1"></a><span class="fu">## Links and registration</span></span>
+<span id="cb7-391"><a href="#cb7-391" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-392"><a href="#cb7-392" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Original preregistration (this project):** <span class="co">[</span><span class="ot">Preregistration</span><span class="co">](preregistration.qmd)</span>.</span>
+<span id="cb7-393"><a href="#cb7-393" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Human study preregistration:** <span class="co">[</span><span class="ot">https://doi.org/10.5281/zenodo.20160212</span><span class="co">](https://doi.org/10.5281/zenodo.20160212)</span>.</span>
+<span id="cb7-394"><a href="#cb7-394" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Core-team LLM simulation data:** <span class="co">[</span><span class="ot">https://doi.org/10.5281/zenodo.20167059</span><span class="co">](https://doi.org/10.5281/zenodo.20167059)</span>.</span>
+<span id="cb7-395"><a href="#cb7-395" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>**Simulation code (time-stamped release):** <span class="co">[</span><span class="ot">https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0</span><span class="co">](https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0)</span>.</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>Jan Pfänder · 2026</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

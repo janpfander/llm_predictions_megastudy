@@ -324,3 +324,27 @@ llm_data <- simulate_dataset(seed = 456)
 saveRDS(llm_data, "data/simulation/llm_data_preregistration.rds")
 write_csv(llm_data, "data/simulation/llm_data_preregistration.csv")
 cat("LLM data saved.   N =", nrow(llm_data), "\n")
+
+############################################################
+# Multi-team placeholder data (amendment preregistration)
+#
+# Five mock prediction "teams", each a full LLM-style
+# simulation drawn with a distinct seed, stacked into one
+# dataset with a `team` label. This lets the cross-team
+# leaderboard code in amendment_preregistration.qmd run on
+# correctly structured placeholder data before any real
+# submissions exist.
+############################################################
+
+team_seeds <- set_names(4561:4565, paste0("team_", 1:5))
+
+llm_data_teams <- imap_dfr(team_seeds, function(seed, team_name) {
+  simulate_dataset(seed = seed) |>
+    mutate(team = team_name)
+}) |>
+  mutate(team = factor(team, levels = names(team_seeds)))
+
+saveRDS(llm_data_teams, "data/simulation/llm_data_preregistration_teams.rds")
+write_csv(llm_data_teams, "data/simulation/llm_data_preregistration_teams.csv")
+cat("Multi-team LLM data saved. N =", nrow(llm_data_teams),
+    "across", length(team_seeds), "teams\n")
