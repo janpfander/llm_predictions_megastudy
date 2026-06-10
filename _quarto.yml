@@ -25,7 +25,7 @@ website:
         menu:
           - text: "Original preregistration"
             href: preregistration.qmd
-          - text: "Amendment — prediction tournament"
+          - text: "Amendment — multi-team benchmark approach"
             href: amendment_preregistration.qmd
       - text: "Clone profiles"
         menu:

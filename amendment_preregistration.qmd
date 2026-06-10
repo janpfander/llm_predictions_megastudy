@@ -2,9 +2,7 @@
 title: "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects"
 
 abstract: |
-    This is an amendment to our preregistration *"Predicting the effects of behavioral interventions on humans with LLMs"*. Writing the initial pre-registration, we conceived of the project as a single-team simulation project. With this preregistration amendment, we intend to turn the project into a **multi-team prediction tournament**: we will invite independent research teams to each predict the same human results using whatever AI-based simulation approach they prefer. The motivation is to catalogue the diversity of current AI approaches to forecasting behavioral experiments and to test, on genuinely novel data, how well they perform. The initial preregistration remains valid. It describes in detail how intend to measure the (dis)similarity between the human sample and LLM generated samples of "behavioral clones, and we will stick to all analytic procedures layd out there. We will report the simulations that we, the core team, have provided as part of the initial preregistration as one team's approach. 
-    
-    At the point of writing this amandement to the pre-registration, human data is partially collected (~10,000 of the ~22,000 responses). Crucially, none of the invited teams will be granted access to the human data. Before any human data are released, all teams will need to preregister their simulation approach, following a standardized reporting form. As part of this process, the teams will need to make their simulated data sets public.
+    This is an amendment to our preregistration *"Predicting the effects of behavioral interventions on humans with LLMs"*. Writing the initial pre-registration, we conceived of the project as a single-team simulation project. With this preregistration amendment, we intend to turn the project into a **multi-team prediction tournament**: we will invite independent research teams to each predict the same human results using whatever AI-based simulation approach they prefer. The motivation is to catalogue the diversity of current AI approaches to forecasting behavioral experiments and to test, on genuinely novel data, how well they perform. The initial preregistration remains valid. It describes in detail how intend to measure the (dis)similarity between the human sample and LLM generated samples of "behavioral clones, and we will stick to all analytic procedures layd out there. We will report the simulations that we, the core team, have provided as part of the initial preregistration as one team's approach. At the point of writing this amandement to the pre-registration, human data is partially collected (~10,000 of the ~22,000 responses). Crucially, none of the invited teams will be granted access to the human data. Before any human data are released, all teams will need to preregister their simulation approach, following a standardized reporting form. As part of this process, the teams will need to make their simulated data sets public.
   
 
 date: "2026-06-09"
@@ -71,6 +69,11 @@ split_ids    <- sample(unique(human_data$id), size = floor(length(unique(human_d
 human_data_1 <- human_data |> filter(id %in% split_ids)
 human_data_2 <- human_data |> filter(!id %in% split_ids)
 ```
+
+
+::: {.callout-warning}
+**This is an ongoing draft, to share with collaborators. The amdendement is not yet registered and will change still.**
+:::
 
 ::: {.callout-important}
 **This is an amendment.** It builds on, and does not replace, the original preregistration ([Preregistration](preregistration.qmd)). All analytical procedures are kept in place. This document adds (i) the tournament design, (ii) a standardized reporting framework for describing each team's approach, and (iii) a new cross-team comparison. 

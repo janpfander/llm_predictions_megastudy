@@ -224,18 +224,18 @@
     "text": "Motivation\nThe original preregistration evaluates a single approach to simulating human survey responses with LLMs—our own behavioral clones, built from demographically representative U.S. profiles and a particular model and prompt. However, a single team’s result only represents one point in a large design space of simulating behavioral clones. A more systematic way of assessing how well behavioral clones can mimic human participants in survey experiments is to pool expertise and report different approaches. Since resarch on behavioral clone samples is very recent, there is additional value in outlining different approaches that researchers in the field take to optain human-like samples.\nWe will therefore launch a call for a multi-team prediction tournament. Predicting a large survey experiment (N = ~22,000) designed to increase trust in climate scientists provides a unique benchmarking opportunity for such a tournament. The experiment tests the effects of 16 messages1, and includes both self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization) as outcomes. Importantly, none of the interventions has ever been tested in that form. This matters, because the perhaps most discussed use-case of behavioral clones is simulating novel research paradigms that would otherwise be very costly to explore with human participants. The experiment is, at the point of writing, only partially conducted (~10,000 of the ~22,000 responses), and none of the data will be available to the teams participating in the tournament. This overcomes the issue of researcher degrees of freedom when assessing the capacities of behavioral clones (Cummins 2025).\nThe first goal of the tournement is not to crown a single champion team—per the original pre-registration, we will evaluate the approaches along different metrics, and it seems likey that some approaches will do better on some metrics, but worse on others. Instead, we would like to provide a collective benchmark of how close behavioral clones get to mimicking human respondents across the different metrics, so there will likely be multiple “winners”. Second, and perhaps more importantly, we aim to provide a catalogue: a structured, comparable description of how research teams are currently approaching AI prediction of behavioral experiments. Ideally, comparing the different approaches and their results will allow us to speculate on how some design choices (e.g., open- vs. closed-weight models, persona source, one-shot vs. full-survey presentation) may affect the accuracy of the behavioral clones in mimicking humans."
   },
   {
-    "objectID": "amendment_preregistration.html#blinding-and-credibility",
-    "href": "amendment_preregistration.html#blinding-and-credibility",
-    "title": "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects",
-    "section": "Blinding and credibility",
-    "text": "Blinding and credibility\nThe central methodological guarantee of this tournament is that no participating team can observe the target. The human outcome data are collected and held exclusively by the core team. At the time of registering this amendment, only about 10,000 of the planned ~22,000 human responses have been collected, and none of the outcome data have been shared, published, or otherwise made available. Predictions therefore target data that does not yet fully exist and that is inaccessible to forecasters by construction—addressing the most common threat to credibility in LLM-prediction studies, namely that the model (or the team) may have already seen the data it is asked to “predict” (Hewitt et al. 2025).\nWithin this single constraint, teams are otherwise unrestricted: they may use any AI models, any prompting or persona strategy, and any external data or prior studies they wish, provided they declare these inputs in the reporting form (Section Reporting framework). We do not attempt to police what informs an approach; we make the one decisive fact—no access to this study’s human data—structurally true and verifiable, and we ask teams to attest to it."
-  },
-  {
     "objectID": "amendment_preregistration.html#tournament-design",
     "href": "amendment_preregistration.html#tournament-design",
     "title": "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects",
     "section": "Tournament design",
     "text": "Tournament design\nThe central methodological guarantee of this tournament is that no participating team can observe the human target data. The human outcome data are collected and held exclusively by the core team. At the time of registering this amendment, only about 10,000 of the planned ~22,000 human responses have been collected, and none of the outcome data have been shared, published, or otherwise made available.\nAll approaches must (i) be AI-based, i.e. not involve humans in the loop and (ii) produce individual-level behavioral clones: each submission is a dataset of synthetic respondents who each complete the experiment, conforming to the analysis schema (see Submission requirements). Experiment-level or aggregate-only predictions—a single effect estimate per condition, without underlying synthetic respondents—are out of scope, as are purely statistical models without an AI component.\nTeams are otherwise unrestricted: they may use any AI models, any prompting or persona strategy, and any external training data or prior studies they wish.\nWe will send out invitation to researchers with a track record of working on behavioral clones. The procedure for each team is:\n\nFill out a standardized reporting framework.\nGenerate behavioral clones data.\nPreregister all"
+  },
+  {
+    "objectID": "amendment_preregistration.html#preregistration",
+    "href": "amendment_preregistration.html#preregistration",
+    "title": "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects",
+    "section": "Preregistration",
+    "text": "Preregistration\nTeams are required preregister (i) the standaradized reporting framework which describes their simulation approach, and (ii) the behavioral clones data that they generated.\nIf possible, we encourage teams to also preregister their simulation code and other relevant materials.\nBecause it offers a convenient option to create preregistrations from generating a release on a linked github repository, we will ask teams to register via Zenodo."
   },
   {
     "objectID": "amendment_preregistration.html#reporting-framework",
@@ -264,6 +264,13 @@
     "title": "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects",
     "section": "Links and registration",
     "text": "Links and registration\n\nOriginal preregistration (this project): Preregistration.\nHuman study preregistration: https://doi.org/10.5281/zenodo.20160212.\nCore-team LLM simulation data: https://doi.org/10.5281/zenodo.20167059.\nSimulation code (time-stamped release): https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0."
+  },
+  {
+    "objectID": "amendment_preregistration.html#footnotes",
+    "href": "amendment_preregistration.html#footnotes",
+    "title": "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects",
+    "section": "Footnotes",
+    "text": "Footnotes\n\n\nThe original experiment contains 20 interventions, but we will only use 16, as the other four are interactive interventions that would make the simulation process more complicated.↩︎"
   },
   {
     "objectID": "clone_profiles/download_profiles.html",
@@ -439,19 +446,5 @@
     "title": "Achievements for SNSF CV template",
     "section": "",
     "text": "MENTORING AND TEACHING. Alongside my research activities, I have developed a strong teaching and mentoring profile. For the last three years, I have been the sole instructor of the undergraduate course Fact-Checking and Critical Thinking at Université (Paris)—a course which I created. The class provided hands-on training in research design, data analysis, and statistics. In addition, I have supervised five undergraduate student internships, supporting students in developing research questions, data analysis skills, and academic writing. My only graduate student supervision resulted in an academic publication (Pfänder, Kerzreho, et al., 2025)."
-  },
-  {
-    "objectID": "amendment_preregistration.html#preregistration",
-    "href": "amendment_preregistration.html#preregistration",
-    "title": "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects",
-    "section": "Preregistration",
-    "text": "Preregistration\nTeams are required preregister (i) the standaradized reporting framework which describes their simulation approach, and (ii) the behavioral clones data that they generated.\nIf possible, we encourage teams to also preregister their simulation code and other relevant materials.\nBecause it offers a convenient option to create preregistrations from generating a release on a linked github repository, we will ask teams to register via Zenodo."
-  },
-  {
-    "objectID": "amendment_preregistration.html#footnotes",
-    "href": "amendment_preregistration.html#footnotes",
-    "title": "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects",
-    "section": "Footnotes",
-    "text": "Footnotes\n\n\nThe original experiment contains 20 interventions, but we will only use 16, as the other four are interactive interventions that would make the simulation process more complicated.↩︎"
   }
 ]
