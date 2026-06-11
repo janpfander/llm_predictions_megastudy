@@ -1,5 +1,0 @@
----
-title: "Simulations"
----
-
-The LLM clone simulations are run using the [`llm-participants`](https://github.com/yarakyrychenko/llm-participants) framework developed by [Yara Kyrychenko](https://github.com/yarakyrychenko). The framework takes the demographic profiles generated in this project and queries a range of language models to produce per-participant responses to the megastudy survey.

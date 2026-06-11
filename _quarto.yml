@@ -5,16 +5,16 @@ project:
     - "*.qmd"
     - "!manuscript.qmd"
     - "!cleaning.qmd"
-    - "!clone_profiles/demographic_check.qmd"
+    - "!slides/05_26_mpg_berlin.qmd"
 
 freeze: auto 
 
 website:
-  title: "LLM Predictions Megastudy"
-  description: "Predicting behavioral intervention effects on humans with LLM clones"
+  title: "The Silicon Sample Tournament"
+  description: "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects"
   favicon: ""
   page-footer:
-    center: "Jan Pfänder · 2026"
+    center: "The Silicon Sample Tournament · A multi-team benchmark of AI approaches for predicting behavioral-experiment effects · Jan Pfänder · 2026"
   navbar:
     background: dark
     foreground: light
@@ -27,19 +27,14 @@ website:
             href: preregistration.qmd
           - text: "Amendment — multi-team benchmark approach"
             href: amendment_preregistration.qmd
-      - text: "Clone profiles"
-        menu:
-          - text: "Download profiles"
-            href: clone_profiles/download_profiles.qmd
-          - text: "Generate profiles"
-            href: clone_profiles/make_profiles.qmd
-      - text: "Simulations"
-        href: simulations.qmd
-      - text: "Talks"
-        href: slides/talks.qmd            
+      # Talks section hidden: the presentation reveals results that future
+      # collaborator teams should not see. Kept local only (see .gitignore).
+      # - text: "Talks"
+      #   href: slides/talks.qmd
 format:
   html:
-    theme: cosmo
+    theme: [cosmo, theme.scss]
+    highlight-style: nord
     toc: true
     toc-depth: 4
     toc-location: right

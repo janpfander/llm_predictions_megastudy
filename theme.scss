@@ -1,0 +1,132 @@
+/*-- scss:defaults --*/
+
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+// design tokens (shared with tournament.css via :root export below)
+$paper: #F5F7F6;
+$panel: #FFFFFF;
+$ink: #17222B;
+$ink-soft: #46555F;
+$rule: #D7DEDC;
+$petrol: #0E6B63;
+$petrol-dark: #0A4B46;
+$petrol-wash: #E5F0EE;
+$signal: #AE3A24;
+$signal-wash: #F8ECE8;
+
+$primary: $petrol;
+$dark: $ink; // navbar `background: dark` resolves here
+$body-bg: $paper;
+$body-color: $ink;
+
+$font-family-sans-serif: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+$font-family-monospace: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+$headings-font-family: "Newsreader", Georgia, serif;
+$headings-font-weight: 600;
+
+$link-color: $petrol-dark;
+$link-hover-color: $petrol;
+
+$code-color: $petrol-dark;
+$code-bg: $petrol-wash;
+$code-block-bg: #10211F;
+
+$navbar-bg: $ink;
+$navbar-fg: #E4EDEA;
+$navbar-hl: #8FD4C8;
+$footer-bg: $ink;
+$footer-fg: #C8D4D1;
+
+$toc-color: $ink-soft;
+$toc-active-border: $petrol;
+$toc-inactive-border: $rule;
+
+$btn-border-radius: 3px;
+$border-radius: 4px;
+
+/*-- scss:rules --*/
+
+:root {
+  --paper: #{$paper};
+  --panel: #{$panel};
+  --ink: #{$ink};
+  --ink-soft: #{$ink-soft};
+  --rule: #{$rule};
+  --petrol: #{$petrol};
+  --petrol-dark: #{$petrol-dark};
+  --petrol-wash: #{$petrol-wash};
+  --signal: #{$signal};
+  --signal-wash: #{$signal-wash};
+  --mono: #{inspect($font-family-monospace)};
+  --sans: #{inspect($font-family-sans-serif)};
+  --serif: #{inspect($headings-font-family)};
+}
+
+html {
+  scroll-padding-top: 70px;
+}
+
+// climate-stripes signature band: drawn on the fixed navbar header so it
+// sits above the nav on every page (a DOM include would land below it)
+$stripe-colors: #08306B, #08519C, #2171B5, #4292C6, #6BAED6, #9ECAE1,
+  #C6DBEF, #DEEBF7, #FEE0D2, #FCBBA1, #FC9272, #FB6A4A,
+  #EF3B2C, #CB181D, #A50F15, #67000D;
+$stripe-stops: ();
+@for $i from 1 through length($stripe-colors) {
+  $c: nth($stripe-colors, $i);
+  $from: percentage(calc(($i - 1) / length($stripe-colors)));
+  $to: percentage(calc($i / length($stripe-colors)));
+  $stripe-stops: append($stripe-stops, $c $from $to, comma);
+}
+
+#quarto-header::before {
+  content: "";
+  display: block;
+  height: 8px;
+  background: linear-gradient(to right, $stripe-stops);
+}
+
+// in-page stripe bands (tournament page footer)
+.stripes {
+  height: 8px;
+  display: flex;
+  width: 100%;
+}
+.stripes span { flex: 1; }
+.stripes--thin { height: 4px; }
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+  font-family: $font-family-monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+h1, h2, h3 { letter-spacing: -0.01em; }
+h2 {
+  border-bottom: 2px solid $ink;
+  padding-bottom: 0.35rem;
+}
+
+// light text for unhighlighted code on the dark block background
+pre > code:not([class]) { color: #DDEAE7; }
+
+div.callout.callout-style-default {
+  border-left: 3px solid $petrol;
+  background: $petrol-wash;
+}
+div.callout-warning.callout-style-default,
+div.callout-important.callout-style-default {
+  border-left-color: $signal;
+  background: $signal-wash;
+}
+
+.nav-footer {
+  background: $ink;
+  color: $footer-fg;
+  font-family: $font-family-monospace;
+  font-size: 0.75rem;
+  a { color: #E4EDEA; }
+}

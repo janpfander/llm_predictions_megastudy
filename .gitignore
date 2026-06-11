@@ -14,7 +14,6 @@ manuscript*
 
 
 data/
-clone_profiles/demographic_check.qmd
 
 # analysis.R outputs are derived from gitignored real data; keep the script,
 # not the artifacts.
@@ -23,3 +22,10 @@ analysis/figures/
 
 CONTEXT.md
 CLAUDE.md
+
+# Talk presentation reveals results that future collaborator teams should not
+# see; keep it local only (source, rendered output, and freeze cache).
+slides/05_26_mpg_berlin.qmd
+docs/slides/05_26_mpg_berlin.html
+docs/slides/05_26_mpg_berlin_files/
+_freeze/slides/05_26_mpg_berlin/

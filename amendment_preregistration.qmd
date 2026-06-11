@@ -1,11 +1,10 @@
 ---
-title: "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects"
+title: "The Silicon Sample Tournament: A multi-team benchmark of AI approaches for predicting behavioral-experiment effects"
 
 abstract: |
-    This is an amendment to our preregistration *"Predicting the effects of behavioral interventions on humans with LLMs"*. Writing the initial pre-registration, we conceived of the project as a single-team simulation project. With this preregistration amendment, we intend to turn the project into a **multi-team prediction tournament**: we will invite independent research teams to each predict the same human results using whatever AI-based simulation approach they prefer. The motivation is to catalogue the diversity of current AI approaches to forecasting behavioral experiments and to test, on genuinely novel data, how well they perform. The initial preregistration remains valid. It describes in detail how intend to measure the (dis)similarity between the human sample and LLM generated samples of "behavioral clones, and we will stick to all analytic procedures layd out there. We will report the simulations that we, the core team, have provided as part of the initial preregistration as one team's approach. At the point of writing this amandement to the pre-registration, human data is partially collected (~10,000 of the ~22,000 responses). Crucially, none of the invited teams will be granted access to the human data. Before any human data are released, all teams will need to preregister their simulation approach, following a standardized reporting form. As part of this process, the teams will need to make their simulated data sets public.
-  
+    This is an amendment to our preregistration *"Predicting the effects of behavioral interventions on humans with LLMs"*. Writing the initial preregistration, we conceived of the project as a single-team simulation project. With this amendment, we turn the project into a **multi-team prediction tournament**: we invite independent research teams to predict the results of a novel behavioral megastudy (16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample of ~18,000) using any AI-based approach they choose—behavioral clones, group-level simulation, or direct effect forecasting. Submissions enter at one of **three tiers** defined by the granularity of the prediction (individual-level synthetic data, cell-level statistics, or effect-level estimates with prediction intervals), and every approach is scored on the preregistered metric ladder against the same human–human ceiling. The initial preregistration remains valid: it specifies in detail how we measure the (dis)similarity between the human sample and simulated samples, and all analytic procedures laid out there are kept in place. Our own simulations, registered with the initial preregistration, are reported as one team's approach under identical rules. At the time of writing this amendment, human data are partially collected (~10,000 of the ~18,000 responses); none of these data have been shared, published, or made accessible to any prospective team, and no team will be granted access before the prediction lock. Before any human data are released, every team registers its approach using a standardized method-registration form (an extended version of the GUIDE-LLM reporting checklist) and deposits its predictions on Zenodo—publicly, or partly escrowed under a disclosure policy that keeps every entry locked and verifiable even where it cannot be fully public.
 
-date: "2026-06-09"
+date: "2026-06-11"
 
 format:
   html:
@@ -72,144 +71,318 @@ human_data_2 <- human_data |> filter(!id %in% split_ids)
 
 
 ::: {.callout-warning}
-**This is an ongoing draft, to share with collaborators. The amdendement is not yet registered and will change still.**
+**This is an ongoing draft, to share with collaborators. The amendment is not yet registered and will change still.**
 :::
 
 ::: {.callout-important}
-**This is an amendment.** It builds on, and does not replace, the original preregistration ([Preregistration](preregistration.qmd)). All analytical procedures are kept in place. This document adds (i) the tournament design, (ii) a standardized reporting framework for describing each team's approach, and (iii) a new cross-team comparison. 
+**This is an amendment.** It builds on, and does not replace, the original preregistration ([Preregistration](preregistration.qmd)). All analytical procedures are kept in place. This document adds (i) the tournament design with three submission tiers, (ii) a standardized method-registration framework and disclosure policy, (iii) per-tier submission specifications, and (iv) a new cross-team comparison.
 
-All datasets used in this amandement are simulated random noise with the correct structure.
+All datasets used in this amendment are simulated random noise with the correct structure.
 :::
 
 ## Motivation
 
-The original preregistration evaluates a single approach to simulating human survey responses with LLMs—our own behavioral clones, built from demographically representative U.S. profiles and a particular model and prompt. However, a single team's result only represents one point in a large design space of simulating behavioral clones. A more systematic way of assessing how well behavioral clones can mimic human participants in survey experiments is to pool expertise and report different approaches. Since resarch on behavioral clone samples is very recent, there is additional value in outlining different approaches that researchers in the field take to optain human-like samples. 
+Whether large language models can stand in for human participants is one of the most consequential open questions in behavioral science. The evidence so far is mixed and hard to interpret: most existing evaluations target experiments that were already published—and plausibly in the models' training data—and almost none are preregistered, so reported successes are entangled with researcher degrees of freedom in model and prompt choice [@cumminsThreatAnalyticFlexibility2025b].
 
-We will therefore launch a call for a **multi-team prediction tournament**. Predicting a large survey experiment (N = ~22,000) designed to increase trust in climate scientists provides a unique benchmarking opportunity for such a tournament. The experiment tests the effects of 16 messages^[The original experiment contains 20 interventions, but we will only use 16, as the other four are interactive interventions that would make the simulation process more complicated.], and includes both self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization) as outcomes. Importantly, none of the interventions has ever been tested in that form. This matters, because the perhaps most discussed use-case of behavioral clones is simulating novel research paradigms that would otherwise be very costly to explore with human participants. The experiment is, at the point of writing, only partially conducted (~10,000 of the ~22,000 responses), and none of the data will be available to the teams participating in the tournament. This overcomes the issue of researcher degrees of freedom when assessing the capacities of behavioral clones [@cumminsThreatAnalyticFlexibility2025b]. 
+The original preregistration evaluates a single approach to simulating human survey responses with LLMs—our own behavioral clones, built from demographically representative U.S. profiles and a particular model and prompt. However, a single team's result only represents one point in a large design space. A more systematic way of assessing how well AI approaches can predict human behavior in survey experiments is to pool expertise and compare different approaches on the same target.
 
-The first goal of the tournement is not to crown a single champion team---per the original pre-registration, we will evaluate the approaches along different metrics, and it seems likey that some approaches will do better on some metrics, but worse on others. Instead, we would like to provide a **collective benchmark** of how close behavioral clones get to mimicking human respondents across the different metrics, so there will likely be multiple "winners". Second, and perhaps more importantly, we aim to provide a **catalogue**: a structured, comparable description of how research teams are currently approaching AI prediction of behavioral experiments. Ideally, comparing the different approaches and their results will allow us to speculate on how some design choices (e.g., open- vs. closed-weight models, persona source, one-shot vs. full-survey presentation) may affect the accuracy of the behavioral clones in mimicking humans.
+We will therefore launch a call for a **multi-team prediction tournament**—the *Silicon Sample Tournament*. Predicting a large survey experiment (N ≈ 18,000) designed to increase trust in climate scientists provides a unique benchmarking opportunity. The experiment tests the effects of 16 text-based messages^[The original experiment contains 20 interventions, but we will only use 16, as the other four are interactive interventions that would make the simulation process more complicated.], and includes both self-reported attitudes (e.g., support for funding of climate science) and behavioral measures (e.g., donations to a scientific organization, a newsletter sign-up) as outcomes. Importantly, none of the interventions has ever been tested in this form. This matters, because the perhaps most discussed use-case of simulated participants is predicting novel research paradigms that would otherwise be very costly to explore with humans. The tournament removes the two problems of existing evaluations by construction: the target is genuinely novel, and every prediction is deposited and time-stamped before any human data are released. What a team predicts is what a team is scored on.
+
+The first goal of the tournament is *not* to crown a single champion team. Per the original preregistration, we evaluate approaches on a ladder of metrics of increasing strictness—from directional agreement to formal equivalence—plus distributional fidelity and stereotyping diagnostics. We expect different approaches to win on different rungs; the point is to map the design space, not to declare one winner. Second, and perhaps more importantly, we aim to provide a **catalogue**: a structured, comparable description of how research teams currently approach AI prediction of behavioral experiments—open- vs. closed-weight models, persona sources, administration protocols, fine-tuning, in-context learning—and which of these choices appear to matter.
 
 ## Tournament design
 
-The central methodological guarantee of this tournament is that **no participating team can observe the human target data**. The human outcome data are collected and held exclusively by the core team. At the time of registering this amendment, only about 10,000 of the planned ~22,000 human responses have been collected, and none of the outcome data have been shared, published, or otherwise made available. 
+### How it works
 
-All approaches must (i) be **AI-based**, i.e. not involve humans in the loop and (ii) produce **individual-level behavioral clones**: each submission is a dataset of synthetic respondents who each complete the experiment, conforming to the analysis schema (see *Submission requirements*). Experiment-level or aggregate-only predictions—a single effect estimate per condition, without underlying synthetic respondents—are out of scope, as are purely statistical models without an AI component.
+Participation is by invitation to teams with a track record in simulating human participants or forecasting experimental results. The procedure for each team is:
 
-Teams are otherwise **unrestricted**: they may use any AI models, any prompting or persona strategy, and any external training data or prior studies they wish. 
+1. **Accept the invitation.** Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, (optionally) our standardized profile pool, the registration template, and the submission validator.
+2. **Build the pipeline.** Use any AI-based approach: any models, personas, prompts, fine-tuning, retrieval, or prior literature. Teams never receive any human outcome data.
+3. **Register & lock.** Complete the method-registration form (see *Method registration*), generate the predictions, and deposit both on Zenodo—publicly, or partly escrowed under the disclosure policy. The deposit is hashed and time-stamped before the prediction lock date.
+4. **Scoring & publication.** Once human data collection completes, every submission runs through the preregistered analysis pipeline unchanged. Results are reported on a public leaderboard alongside the human–human ceiling, and in a joint manuscript with all participating teams as co-authors.
 
-We will send out invitation to researchers with a track record of working on behavioral clones. The procedure for each team is:
+### Ground rules
 
-1. **Fill out a standardized reporting framework.** 
-2. **Generate behavioral clones data.** 
-3. **Preregister all** 
+- **Blinding is absolute.** The human outcome data are collected and held exclusively by the core team. At the time of registering this amendment, only about 10,000 of the planned ~18,000 human responses have been collected, and none of the outcome data have been shared, published, or otherwise made available. No team may access, solicit, or be shown any human outcome data from this study—including pilots—before the prediction lock. A signed attestation is part of registration (item G.3).
+- **AI-based and automated.** Pipelines must be AI-based and run without humans in the loop at prediction time. Human effort goes into designing the pipeline, not into adjusting its outputs.
+- **Otherwise unrestricted.** Any models (open or closed weight), any prompting or persona strategy, any external training data, prior studies, or meta-analytic knowledge may be used—as long as it is declared (Sections F/G of the registration form).
+- **One primary submission per team.** Optional secondary submissions (ablations, alternate models) are welcome and analyzed as clearly labeled exploratory entries.
+- **Everything is registered—not everything must be public.** The method form, the prediction files, and—strongly encouraged—code and raw model output logs are deposited on Zenodo (conveniently via a release on a linked GitHub repository) before the lock date. Teams with proprietary methods may seal parts of their registration under the disclosure policy: locked and verifiable is mandatory, public is not.
 
-## Preregistration
+### Three ways to compete
 
-Teams are required preregister (i) the standaradized reporting framework which describes their simulation approach, and (ii) the behavioral clones data that they generated. 
+We deliberately welcome very different approaches. Submissions enter at one of **three tiers**, defined by the granularity of the prediction. The common currency across tiers is the set of preregistered estimands—the same quantities the human analysis produces—so every approach is scored on the rungs it can reach. Teams choose the highest tier their approach supports; lower tiers are simply eligible for fewer analyses.
 
-If possible, we encourage teams to also preregister their simulation code and other relevant materials. 
+- **Tier 1 · Full — individual-level synthetic data.** A respondent-per-row dataset of behavioral clones: each synthetic participant completes the experiment in one condition. Flows through the preregistered analysis pipeline completely unchanged. Eligible for everything: ATE recovery, calibration regression, response distributions, subgroup heterogeneity, demographic baselines, and stereotyping diagnostics. *Grain: 1 row = 1 synthetic respondent.*
+- **Tier 2 · Cell-level — group-level predictions.** Predicted cell statistics—mean, SD, and effective N—per condition × outcome, and per condition × moderator-level × outcome. For approaches that simulate or reason about groups rather than individuals. Eligible for ATEs, calibration, subgroup heterogeneity, and demographic baselines; not eligible for distribution-shape metrics (OVL, KS) or predictability regressions. *Grain: 1 row = 1 cell (condition × [moderator level ×] outcome).*
+- **Tier 3 · Effect-level — direct effect predictions.** One predicted ATE per intervention × outcome, in original outcome units, with a **95% prediction interval** expressing the team's epistemic uncertainty. For zero-shot forecasting, in-context learning over the literature, meta-analytic priors, or hybrid pipelines. Eligible for directional agreement, Spearman ρ, Pearson r, RMSE, and calibration regression; inferential agreement and TOST are computed from the submitted intervals. *Grain: 1 row = 1 intervention × outcome estimate.*
 
-Because it offers a convenient option to create preregistrations from [generating a release on a linked github repository](https://help.zenodo.org/docs/github/archive-software/github-upload/), we will ask teams to register via [Zenodo](https://zenodo.org/). 
+::: {.callout-tip}
+**Dual entries encouraged.** A team may submit a Tier 1 dataset as its primary entry and a Tier 3 direct prediction from the same pipeline as a secondary entry. Comparing a team's simulated-then-derived effects against its own direct forecasts isolates the value of the simulation step itself—one of the most interesting questions this tournament can answer.
+:::
 
-## Reporting framework
+### Analysis eligibility by tier
 
-Every team describes its approach using the **GUIDE-LLM** reporting checklist [@feuerriegelReportingChecklistLLMs2026], a recently published standard for reporting LLM use in the behavioural and social sciences. Teams complete the full checklist as part of their preregistration; below we reproduce the items relevant to generating behavioural clones, adapt their wording to this tournament, and add a small number of **tournament-specific items** (marked ★) that are essential for comparability here but are not part of GUIDE-LLM. Items that concern human participants, participant-facing interventions, or sensitive-data privacy are generally *not applicable*, because every submission is a fully synthetic dataset generated without human subjects; teams may mark these "N/A". Sharing runnable code and materials on top of this description is strongly encouraged (see *Preregistration*).
+| Preregistered analysis | Tier 1 | Tier 2 | Tier 3 |
+|---|:-:|:-:|:-:|
+| ATE recovery — six-metric ladder (Section 1) | ✓ | ✓ | ✓ * |
+| Calibration regression α / β (Section 1) | ✓ | ✓ | ✓ |
+| Response distributions — variance ratio, OVL, KS (Section 1) | ✓ | — | — |
+| Subgroup heterogeneity — condition × moderator (Section 2) | ✓ | ✓ | — |
+| Within-subgroup distributions (Section 2) | ✓ | — | — |
+| Demographic baseline calibration (Section 3) | ✓ | ✓ | — |
+| Demographic predictability / stereotyping (Section 3) | ✓ | — | — |
 
-**Approach identity and output ★** *(tournament-specific)*
+\* For Tier 3, inferential agreement and equivalence (TOST) are evaluated against the submitted 95% prediction intervals rather than model-based standard errors. For Tiers 1–2, standard errors fall out of the fitted models (or are computed from the submitted cell SDs and effective Ns), so no separate uncertainty input is required.
 
-- Team name and members.
-- One-paragraph plain-language summary of the approach.
-- Approach family within individual-level simulation (e.g., one LLM call per respondent vs. an agent that walks through the full survey; single model vs. multi-agent).
-- Confirmation that the submission is an individual-level behavioural-clone dataset conforming to the analysis schema (see *Submission requirements*); number of synthetic respondents and how they map to conditions; coverage of outcomes and conditions (all, or a declared subset).
+## Method registration
 
-**A. Scope of LLM use**
+Every team registers its approach using a structured form before the prediction lock. The form builds on the GUIDE-LLM reporting checklist [@feuerriegelReportingChecklistLarge2026]—the consensus reporting standard for LLM use in behavioral science—and extends it where a reporting checklist alone is not sufficient for, in principle, full replicability of a prediction pipeline. Tournament-specific extensions are marked ★; item codes A–G follow GUIDE-LLM.
 
-- **A.1 — Purpose.** The stage(s) of the workflow where LLMs are used (here, at minimum, generating synthetic survey responses; note any additional use, e.g., constructing personas or post-processing outputs).
-- **A.2 — Degree of automation.** Confirm the pipeline is fully automated with no human in the loop (a tournament requirement); describe any exception and who provided oversight.
+Items concerning human participants or sensitive-data privacy (GUIDE-LLM D.1) are generally *not applicable* here, since every submission is fully synthetic; teams mark these N/A. When multiple models serve different pipeline stages, the model sections are completed separately per model.
 
-**B. Model / system details**
+::: {.callout-note}
+**Replicability standard.** An independent team with access to a team's registration—and nothing else—should in principle be able to re-run the pipeline and obtain a statistically equivalent submission. Where exact replication is impossible (deprecated APIs, hardware nondeterminism), the deposited raw output logs (item I.2) take over as the verifiable record. Where disclosure is restricted (see *Disclosure policy*), this standard applies to the escrowed registration rather than the public one.
+:::
 
-- **B.1 — Model name(s).** Exact model name(s) including provider, model size, version/ID, date of access, and a source link where applicable (e.g., *"GPT-4o-mini-2024-07-18 (OpenAI)"*, *"Llama-3.1-8B (Meta, via HuggingFace)"*). If several models were tested, name them and state which produced the submission and why.
-- **B.2 — Access and context mode.** How the model was accessed (API / web interface / local) and whether it was used in chat mode (ongoing conversation) or stateless mode (separate calls); exact API name and version.
-- **B.3 — Configuration.** Settings affecting output: temperature, top-k / top-p, max tokens, frequency / presence penalties, stop sequences, number of completions or runs per respondent, quantization (e.g., FP16 / INT8 / INT4), and any reasoning-effort settings.
-- **B.4 — Customization.** Any adaptation beyond standard inference: base model / fine-tuning (e.g., LoRA) / retrieval-augmentation (RAG) / automated prompt optimization / tool or function calling / web search / agentic workflows / post-training (RLHF, DPO) / other. Describe each one used.
-- **B.5 — Persistent memory.** Whether sessions carried persistent memory across interactions (yes / no / N/A).
+### Registration form — part 1 · Identity, scope, and system
 
-**C. Prompts**
+**0 · Approach identity and output ★**
 
-- **C.1 — Exact prompts.** Verbatim prompt text(s), including any in-context examples, or a link to them in the preregistered repository. Document whether prompts were iteratively refined, and whether refinements were pre-specified or made in response to interim outputs.
-- **C.2 — System-wide instructions.** Any system-level instructions guiding the model's general behaviour.
+| Item | Name | What to report |
+|---|---|--------|
+| 0.1 ★ | Team | Team name, members, affiliations, and a corresponding contact. |
+| 0.2 ★ | Plain-language summary | One paragraph describing the approach so that a non-specialist reader of the catalogue understands what was done. |
+| 0.3 ★ | Submission tier & approach family | Tier (1 / 2 / 3) and approach family — e.g., one call per respondent vs. agent walking the full survey; single model vs. ensemble vs. multi-agent; simulation vs. direct forecasting; zero-shot vs. literature-conditioned. |
+| 0.4 ★ | Pipeline diagram | The full pipeline as an ordered sequence of steps (input → transformation → output), covering every stage from raw inputs to the submitted file. Prose descriptions of multi-stage pipelines are where replicability dies; a numbered step list or diagram is required. |
+| 0.5 ★ | Coverage | Number of synthetic respondents / cells / estimates; mapping to conditions; coverage of the 16 interventions and 13 outcomes (all, or a declared subset with justification). |
 
-**Persona / profile construction ★** *(tournament-specific)*
+**A · Scope of LLM use (GUIDE-LLM)**
 
-- Source of the demographic profiles: GSS / ANES / Census / other survey / fully synthetic / none.
-- Variables encoded in each persona, and how they are injected into the prompt.
-- Number of personas and their assignment to conditions (between- vs. within-subjects).
-- Any weighting or matching to a target population; whether personas are reused across conditions.
+| Item | Name | What to report |
+|---|---|--------|
+| A.1 | Purpose | Every workflow stage where LLMs are used — at minimum generating predictions; also persona construction, prompt optimization, post-processing, literature digestion, etc. |
+| A.2 | Degree of automation | Confirmation that the pipeline is fully automated with no human in the loop at prediction time (a tournament requirement); any exception and the oversight provided. |
 
-**Stimulus and survey presentation ★** *(tournament-specific)*
+**B · Model / system details (GUIDE-LLM, extended)**
 
-- How the interventions / stimuli are presented to the model (verbatim vs. paraphrased or summarized).
-- How survey items are presented (one item at a time vs. the whole survey; item and response-option ordering / randomization; how the response scales are shown).
+| Item | Name | What to report |
+|---|---|--------|
+| B.1 | Model name(s) | Exact identifiers including provider, size, version/timestamp, and source link — e.g., `gpt-4o-mini-2024-07-18` (OpenAI), `Llama-3.1-8B-Instruct` (Meta, via HuggingFace). If several models were tested, name all and state which produced the submission and why (see also H.1). |
+| B.2 | Access & context mode | Access route (API / web / local), API name and version, chat vs. stateless calls, and exact call dates — providers update hosted models silently, so the date window is part of the model identity. |
+| B.3 | Configuration | All settings affecting output: temperature, top-p / top-k, max tokens, penalties, stop sequences, seeds, reasoning-effort settings, and number of completions per respondent / item. |
+| B.4 | Customization | Any adaptation beyond standard inference: fine-tuning (method, e.g., LoRA), RAG, automated prompt optimization, tool use, web search, agentic scaffolds, post-training. Cross-reference Section F for the data behind each. |
+| B.5 | Persistent memory | Whether sessions carried memory across interactions (yes / no / N/A), and if yes, what persisted. |
+| B.6 ★ | Inference stack | For locally run models: serving framework and version (e.g., vLLM, llama.cpp, transformers), quantization (FP16 / INT8 / GGUF Q4 …), and hardware where nondeterminism matters. These change outputs and are invisible to GUIDE-LLM B.1–B.3 alone. |
+| B.7 ★ | Ensembles | If multiple models or runs are combined: all members and the exact aggregation rule (averaging, voting, stacking, router logic). |
 
-**E. Validation & interpretation**
+### Registration form — part 2 · Conditioning, administration, and stochasticity
 
-- **E.1 — Human validation.** Whether and how any human review of model outputs was performed (often N/A for fully automated generation).
-- **E.2 — Post-processing.** How free-text outputs were parsed into the response scales; handling of refusals, malformed, missing, or out-of-range responses; how multiple generations were consolidated into the submitted values.
+**C · Prompts (GUIDE-LLM)**
 
-**F. Reproducibility**
+| Item | Name | What to report |
+|---|---|--------|
+| C.1 | Exact prompts | Verbatim prompt text(s) including any in-context examples, or a link to them in the deposited repository. State whether prompts were iteratively refined, and whether refinements were pre-specified or made in response to interim outputs. |
+| C.2 | System-wide instructions | Any system-level instructions guiding the model's general behavior. |
 
-- **F.1 — Materials shared.** Whether code, notebooks, prompts, and logs are shared (link / DOI), with API keys and any sensitive material removed; determinism and seeds.
+**C★ · Persona / profile construction ★ (Tiers 1–2)**
 
-**G. Competing interests**
+| Item | Name | What to report |
+|---|---|--------|
+| C.3 ★ | Profile source | Source of demographic profiles: the provided GSS-based pool / ANES / Census / other survey / fully synthetic / none. If the provided pool is not used as published — including its condition assignments — register the deviation and procedure. |
+| C.4 ★ | Profile verbalization | Which profile variables are encoded and exactly how they are rendered into text — fixed template vs. LLM-generated persona narratives (if the latter: the generating model and prompt, recursively subject to this form). |
+| C.5 ★ | Assignment & weighting | Number of personas, assignment to conditions (between- vs. within-subjects), reuse across conditions, and any weighting or matching to a target population. |
 
-- **G.1 — Relationships.** Funding, in-kind compute or model access, or professional / financial relationships with entities that have an interest in LLMs.
+**C★★ · Stimulus and survey administration ★**
 
-**Data inputs and the blinding attestation ★** *(tournament-specific)*
+| Item | Name | What to report |
+|---|---|--------|
+| C.6 ★ | Stimulus presentation | How interventions are shown to the model: verbatim text vs. paraphrase or summary; how state-contingent content (e.g., the extreme-weather intervention) is handled. |
+| C.7 ★ | Survey walk-through | How items are administered: one item per call vs. blocks vs. whole survey; whether context carries across items; item and response-option ordering and any randomization; how response scales are displayed; how attention/comprehension elements are handled. The goal: enough detail to re-run the survey walk deterministically. |
+| C.8 ★ | Response elicitation | How responses are obtained: free text, constrained choice, structured output, or token log-probabilities over the response scale (if logprobs: the normalization and mapping to scale values). |
 
-- A self-declared list of any external data that informed the approach (training, fine-tuning, retrieval, in-context examples, calibration anchors) and any prior experiments or public datasets used.
-- Following GUIDE-LLM's training-data-leakage item, a brief novelty note: the interventions are previously untested in this form and the human outcome data are unpublished and inaccessible, so leakage of the prediction target is structurally precluded.
-- **A mandatory attestation that the team had no access to this study's human outcome data.**
+**D★ · Stochasticity and aggregation ★**
 
-**Recommended items** *(GUIDE-LLM optional)*
+| Item | Name | What to report |
+|---|---|--------|
+| D.1 ★ | Runs & seeds | Number of runs per respondent / item / estimate; seeds where applicable; expected reproducibility of outputs under identical settings. |
+| D.2 ★ | Aggregation rule | How multiple generations are consolidated into submitted values: mean, median, mode, first valid response, sampling one, distribution-preserving sampling. GUIDE-LLM asks for temperature; this item asks what you did with the variance — it directly shapes the distributional metrics. |
 
-- **Model-choice justification** along performance, transparency (open- vs. closed-weight; known training data / objective), reproducibility, ethics, and cost.
-- **Prompt-design rationale** (structured format, established guidelines, prior studies, few-shot selection, standardization across models).
-- **Comparison against other models / methods**, if any, and the benchmarking procedure used.
-- **Risk of bias** or systematic differences in model behaviour across groups that could affect conclusions.
-- **Computational resources**: API-call counts, total tokens, financial cost, and compute time.
+### Registration form — part 3 · Post-processing, learning components, blinding, and selection
 
-## Submission requirements
+**E · Validation & post-processing (GUIDE-LLM, extended)**
 
-Every submission is an **individual-level behavioral-clone dataset**: a respondent-per-row dataset conforming to the cleaned analysis schema (the structure of `cleaned_llm.rds`—one row per synthetic respondent, with `condition` and all preregistered outcome and moderator columns). Because the submission has the same shape as our own clone data, it flows through the original analysis pipeline unchanged and is eligible for **all** analyses: average treatment effects (Section 1), subgroup heterogeneity (Section 2), and demographic baseline calibration (Section 3). Standard errors, inferential agreement, and equivalence tests are computed from the fitted models, so no separate uncertainty input is required from teams.
+| Item | Name | What to report |
+|---|---|--------|
+| E.1 | Human validation | Whether and how any human review of model outputs was performed (often N/A for fully automated generation; note any design-phase checks on pilot outputs). |
+| E.2 | Post-processing | Parsing rules from raw output to response scales; handling of refusals, malformed, missing, and out-of-range responses (re-prompt / drop / clip / impute); any exclusion criteria; the resulting effective N per condition. Refusal handling alone can move distributions substantially — report counts. |
+| E.3 ★ | Calibration corrections | Any post-hoc scaling, shifting, debiasing, or calibration applied to predictions — and exactly what data it was fit on (cross-reference F and G). |
 
-Experiment-level or aggregate predictions (a single effect estimate per condition, without underlying synthetic respondents) are not accepted (see *Tournament design*). Requiring one common individual-level schema is precisely what makes submissions directly comparable and lets the entire original analysis pipeline apply without modification.
+**F★ · Learning and conditioning components ★**
 
-The model functions in `R/functions/statistics.R` are agnostic to the specific condition labels and to the data source, so the same code path applies to human data, our own clones, and any team's submission.
+| Item | Name | What to report |
+|---|---|--------|
+| F.1 ★ | Fine-tuning data | For any fine-tuned component: the exact training corpus (with hashes or DOIs), hyperparameters, and checkpoint identifiers. |
+| F.2 ★ | Context & retrieval corpora | For ICL / RAG / literature-conditioned approaches: the exact document set placed in context or indexed for retrieval, archived in the deposit. For direct-effect forecasters this corpus is the core of the method and must be fully enumerated. |
+
+**G · Data inputs, blinding, and competing interests (GUIDE-LLM, extended)**
+
+| Item | Name | What to report |
+|---|---|--------|
+| G.1 | Competing interests | Funding, in-kind compute or model access, and professional or financial relationships with entities that have an interest in LLMs — particularly relevant where teams evaluate models built by affiliated organizations. |
+| G.2 ★ | External human data | A self-declared list of all external human datasets that informed the approach anywhere (training, fine-tuning, retrieval, in-context examples, calibration anchors) — particularly published trust-in-science or climate-communication experiments. |
+| G.3 ★ | Blinding attestation | **Mandatory.** A signed attestation that no team member accessed, solicited, or was shown any human outcome data from this study, including pilots, before the prediction lock. |
+| G.4 ★ | Contamination note | Training cutoff of every model used, relative to the public release dates of this project's preregistrations and Zenodo deposits — which are themselves potential contamination vectors for late-cutoff models. Note any known exposure of models to the project's materials. |
+
+**H★ · Internal selection procedure ★**
+
+| Item | Name | What to report |
+|---|---|--------|
+| H.1 ★ | Design-space search | How the team arrived at the final pipeline: how many candidate configurations (models, prompts, hyperparameters) were tried; the internal validation criterion; and what data internal validation was run against. This is the researcher-degrees-of-freedom analog for simulation pipelines — invisible to GUIDE-LLM, but without it the benchmark partly measures luck in configuration lotteries rather than method quality. |
+
+**I · Reproducibility & frozen artifacts (GUIDE-LLM F.1, extended)**
+
+| Item | Name | What to report |
+|---|---|--------|
+| I.1 | Code & materials | Code, notebooks, prompts, and configuration shared (link / DOI), with secrets removed; determinism and seeds documented. |
+| I.2 ★ | Raw output logs | Complete, unprocessed model responses archived alongside the processed submission, hashed and time-stamped in the Zenodo deposit. Code is necessary but insufficient: when a hosted model is deprecated, the logs are what remains verifiable. Strongly required for Tiers 1–2; required for Tier 3 where intermediate generations exist. |
+| I.3 ★ | Computational resources | API-call counts, total tokens, financial cost, and compute time — a GUIDE-LLM optional item made standard here, since cost-per-fidelity is itself a benchmark dimension. |
+
+GUIDE-LLM optional items remain recommended where not already absorbed above: model-choice justification (performance, transparency, reproducibility, ethics, cost), prompt-design rationale, comparisons against other models or methods, and assessment of bias or systematic group differences in model behavior. A fillable template of this form (Markdown + machine-readable YAML) is provided in the tournament repository.
+
+### Disclosure policy — proprietary approaches
+
+We expect some participants—including companies—to be unable or unwilling to publicly disclose their full approach. The tournament accommodates this by separating two things that are usually conflated: **verifiability** (is the registration locked, time-stamped, and auditable?) and **publicity** (can everyone read it?). Verifiability is non-negotiable; publicity is graded. Each registration item is assigned one of three statuses:
+
+- **Public** — included in the open Zenodo deposit, visible to everyone.
+- **Escrowed** — deposited in a restricted-access Zenodo record (or equivalent sealed deposit). The record still carries a DOI, a timestamp, and public SHA-256 hashes of its contents, so the lock is publicly verifiable; the contents are accessible only to the core team and up to two designated independent auditors, under a confidentiality agreement, solely for verifying compliance with the tournament rules. An embargo with a sunset date (e.g., public release upon publication, or after 24 months) is strongly encouraged but not required.
+- **Withheld** — not deposited at all, not even under escrow. Permitted only for items outside the non-waivable set below, and only at the cost of entering as a sealed entry (Class C).
+
+The overall disclosure class of an entry follows from its most restricted item:
+
+| Class | Definition | Consequences |
+|---|------|----------|
+| **Class A · Open** | All registration items public. | Full leaderboard standing; entry is independently replicable in principle; all features enter the approach catalogue and the design-choice analysis. |
+| **Class B · Escrowed** | Some items sealed, but every item is available to the core team and auditors under confidentiality. | Full leaderboard standing with an *escrowed* badge; compliance is verified but independent replication awaits the embargo sunset; only publicly disclosed features enter the design-choice analysis (the rest coded as *undisclosed*). |
+| **Class C · Sealed** | One or more permitted items withheld even from escrow. | Scored and reported on the leaderboard with a *sealed / not independently verifiable* flag; excluded from the approach catalogue and the design-choice analysis; the manuscript reports the entry as a performance claim that the core team could not audit beyond the non-waivable core. |
+
+**The non-waivable core.** The following can never be escrow-only-skipped or withheld, because without them scores are uninterpretable for any reader—they protect the validity of the benchmark itself, not the team's IP:
+
+- **Always public:** team identity and contact (0.1), a plain-language summary at a functional level (0.2 — what the pipeline does, not how), tier and approach family (0.3), coverage (0.5), automation confirmation (A.2), competing interests (G.1), the blinding attestation (G.3), the metadata file, and the prediction files themselves.
+- **At minimum escrowed** (may be sealed from the public, never from the core team): the external-human-data declaration (G.2), the contamination note (G.4), the internal selection procedure (H.1), and the raw output logs (I.2). These are precisely the items a team gaming the benchmark would want to hide—which is why even Class C entries must place them in escrow.
+- **All remaining items** (model details B, prompts and administration C, stochasticity D, post-processing E, learning corpora F, code I.1, resources I.3) may be escrowed freely, or withheld at the cost of Class C.
+
+For commercial teams, the value of participating runs the other way: this is an adversarially designed, preregistered, third-party benchmark on genuinely unseen human data—a substantially stronger credibility signal than any internal evaluation, available at whichever disclosure class the team's IP constraints allow. The leaderboard reports performance regardless of class; the badge tells readers exactly how much of the claim was auditable.
+
+## Submission specification
+
+A submission is a Zenodo deposit (ideally generated from a release on a linked GitHub repository, which offers a convenient option to [create time-stamped deposits](https://help.zenodo.org/docs/github/archive-software/github-upload/)) containing: the completed registration form, the prediction file(s) for the team's tier, a machine-readable metadata file, and—per items I.1–I.2—code and raw output logs. Under the disclosure policy the deposit may be split into a public record and a restricted-access (escrowed) record; the prediction files and metadata are always in the public record, and the public record lists the DOI and content hashes of the escrowed one. Everything must be deposited and time-stamped before the prediction lock date; the DOIs and SHA-256 hashes of all files are emailed to the core team by the same deadline.
+
+### Common requirements (all tiers)
+
+- **File naming:** `<team_id>_T<tier>_<primary|secondary-k>_v<n>.csv` — e.g., `vienna_T1_primary_v1.csv`. UTF-8, comma-separated, period decimal separator, `NA` for missing.
+- **Coverage:** all 16 simulated interventions plus control, all 13 outcomes. Declared subsets are permitted (item 0.5); uncovered cells are excluded pairwise and coverage is reported on the leaderboard.
+- **Condition and column labels** must match the published codebook exactly. A validator script (R and Python) is provided in the tournament repository — teams run it before depositing; submissions failing validation at the lock date are scored only on the cells that parse.
+- **One primary submission per team;** secondary submissions clearly labeled in the metadata file.
+- **No revisions after lock.** Versioning before the lock is fine (hence `v<n>`); only the latest pre-lock deposit counts.
+
+### metadata.json
+
+```json
+{
+  "team_id": "vienna",
+  "team_name": "WU Behavioral Clones Lab",
+  "contact": "name@institution.edu",
+  "tier": 1,
+  "entry": "primary",
+  "approach_family": "per-respondent simulation, single model",
+  "models": ["gpt-4o-mini-2024-07-18"],
+  "registration_doi": "10.5281/zenodo.XXXXXXX",
+  "disclosure_class": "A",
+  "escrow_doi": null,
+  "prediction_files": [
+    { "file": "vienna_T1_primary_v1.csv",
+      "sha256": "9f2c…e41a" }
+  ],
+  "coverage": { "interventions": 16, "outcomes": 13 },
+  "blinding_attestation": true
+}
+```
+
+(`entry` is `"primary"` or `"secondary-1"`, `"secondary-2"`, …; `disclosure_class` is `"A"` open, `"B"` escrowed, or `"C"` sealed; `escrow_doi` names the restricted-access record for Class B/C entries.)
+
+### Tier 1 — individual-level dataset
+
+One row per synthetic respondent, matching the structure of the cleaned analysis data (`cleaned_llm.rds` schema). Teams are strongly encouraged to use the published profile pool with its fixed condition assignments (N = 9,000), so that `profile_id` links submissions across teams; deviations must be registered under C.3/C.5.
+
+| Column(s) | Type | Specification |
+|---|---|------|
+| `profile_id` | string | ID from the published profile pool (or registered alternative). |
+| `condition` | factor | Control or one of the 16 intervention labels, exactly as in the codebook. |
+| `gender`, `age_band`, `race`, `education`, `income`, `party` | factor | The six moderators, levels per codebook (derivable from the profile pool). |
+| `trust_multidimensional` + 12 trust items | numeric | Primary composite 0–100; the 12 underlying items per codebook scale. |
+| `trust_post`, `distrust_post`, `funding_perceptions`, `policy_role_mean`, `inst_trust_mean` | numeric | Secondary outcomes, original scales per codebook. |
+| `belief_post`, `concern_mean`, `policy_general`, `policy_specific_mean`, `behavior_mean` | numeric | Tertiary outcomes, original scales per codebook. |
+| `donation_ams` | numeric | Donation to AMS in $, per codebook. |
+| `newsletter_signup` | 0 / 1 | Binary behavioral outcome. |
+
+Because a Tier 1 submission has the same shape as our own clone data, it flows through the original analysis pipeline unchanged and is eligible for **all** analyses. The model functions in `R/functions/statistics.R` are agnostic to the specific condition labels and to the data source, so the same code path applies to human data, our own clones, and any team's submission.
+
+### Tier 2 — cell-level file(s)
+
+Two long-format files. `*_cells_main.csv`: one row per condition × outcome. `*_cells_moderator.csv`: one row per condition × moderator × moderator-level × outcome.
+
+| Column | Type | Specification |
+|---|---|------|
+| `condition` | factor | Per codebook. |
+| `moderator`, `moderator_level` | factor | Moderator file only; per codebook levels. |
+| `outcome` | string | Outcome variable name per codebook. |
+| `mean` | numeric | Predicted cell mean on the original scale (proportion for `newsletter_signup`). |
+| `sd` | numeric | Predicted within-cell SD (`NA` for the binary outcome). |
+| `n_eff` | integer | Effective number of simulated respondents behind the cell. |
+
+### Tier 3 — effect-level file
+
+One row per intervention × outcome (16 × 13 = 208 rows for full coverage). Estimates are ATEs versus control on the original outcome scale; the binary outcome is on the probability scale.
+
+| Column | Type | Specification |
+|---|---|------|
+| `condition` | factor | Intervention label per codebook. |
+| `outcome` | string | Outcome variable name per codebook. |
+| `ate` | numeric | Predicted ATE, original units. |
+| `pi_lower`, `pi_upper` | numeric | 95% prediction interval bounds — the team's epistemic uncertainty about the *human* ATE, not a within-simulation standard error. Used for inferential-agreement and equivalence scoring. |
 
 ## Analysis plan
 
 ### Per-team analysis (reused)
 
-Each submission is analyzed exactly as the original preregistration specifies, against the **Human 1** reference half. We do not restate that plan here; see the [original preregistration](preregistration.qmd) for the full specification of:
+Scoring follows the preregistered analysis plan without modification. The human sample is split in half by a preregistered random seed: every submission is scored against **Human 1**, and the agreement between Human 1 and Human 2 defines the **human–human ceiling**—the upper bound any predictive method could reach—reported in the same row format as every team. We do not restate the original plan here; see the [original preregistration](preregistration.qmd) for the full specification of:
 
 - **Section 1 — Average Treatment Effects:** ATE recovery across all outcomes (`run_main_treatment_model()` / `run_main_treatment_model_binary()`, compared with `compare_estimates()` and `run_calibration()`), and control-condition response distributions (`compare_distributions()`).
 - **Section 2 — Subgroup Effects:** condition × moderator heterogeneity across the six moderators (`run_moderator_model()`), and within-subgroup distributions.
 - **Section 3 — Demographic Baseline Calibration:** group-mean calibration (`compare_demographic_baselines()`) and demographic predictability / stereotyping (`compare_demographic_predictability()`).
 
-The **Human 1 vs. Human 2** split provides the human–human ceiling against which all teams are read, exactly as in the original document.
+Which of these analyses applies to a given submission follows from its tier (see *Analysis eligibility by tier*). One fixed **reference row** appears in every results table: the human–human ceiling (Human 1 vs. Human 2). The core team's own clone simulations (GPT-4o mini; Gemini 2.5 Flash Lite), registered with the original preregistration, enter the tournament as one team's submission under identical rules—they appear on the leaderboard like any other team and receive no special reference row.
+
+### Tier-specific estimand recovery
+
+The comparison-metric ladder requires, per intervention × outcome, an estimate, a standard error, and an inferential category. How these are obtained depends on the tier:
+
+- **Tier 1:** the submission runs through `run_main_treatment_model()` exactly like our own clone data; estimates, HC2 robust standard errors, and BH-adjusted p-values fall out of the fitted models.
+- **Tier 2:** the ATE for each intervention × outcome is the submitted cell mean minus the submitted control mean. Because only cell summaries are available, the preregistered OLS cannot be refit on a Tier 2 submission; instead we use the standard two-sample (Welch) comparison, which is what the OLS treatment contrast reduces to in a between-subjects design. The standard error is computed from the submitted cell SDs and effective Ns, $\mathrm{SE} = \sqrt{sd_t^2 / n_t + sd_c^2 / n_c}$, and the test statistic $z = \mathrm{ATE} / \mathrm{SE}$ is referred to the standard normal distribution for a two-sided p-value, $p = 2\,\Phi(-|z|)$. (With effective cell sizes in the hundreds, the normal approximation to the t distribution is essentially exact.) These p-values are BH-adjusted within outcome, mirroring the Tier 1 models. Subgroup ATEs and demographic baselines are computed analogously from the moderator cell file.
+- **Tier 3:** the submitted `ate` is the estimate. Inferential agreement uses the submitted 95% prediction interval: an effect counts as significantly positive (negative) if the interval lies entirely above (below) zero—the direct analog of a two-sided test at α = .05, so the significance criterion matches the one applied to Tiers 1–2. For the TOST equivalence test, the interval implies a standard error, $\mathrm{SE} = (\mathrm{pi}_{upper} - \mathrm{pi}_{lower}) / (2 \times z_{0.975})$.
 
 ### Cross-team comparison (new)
 
-This is the new analytical contribution of the amendment. We assemble a **leaderboard**: each team is scored with the same metric ladder used throughout the original preregistration, and teams are ranked so that approaches can be compared directly and against the human–human ceiling.
+This is the new analytical contribution of the amendment. We assemble a **leaderboard**: each submission is scored with the same metric ladder used throughout the original preregistration—in increasing order of strictness: directional agreement, Spearman ρ, Pearson r, inferential agreement, RMSE, and TOST equivalence—so that approaches can be compared directly and against the human–human ceiling. Knowing on which rung an approach breaks is more informative than any single pass/fail verdict. On top of the ladder: the calibration regression (human ATEs on predicted ATEs) separates additive bias (α) from proportionality (β); distributional metrics (variance ratio, overlap coefficient, KS distance) test whether Tier 1 submissions reproduce response *shapes*, not just means; and the stereotyping diagnostics ask whether demographic variables predict synthetic responses with the same magnitude as in humans—or whether simulated respondents over-rely on demographic cues.
 
-For the headline leaderboard we pool average-treatment-effect estimate pairs across all continuous outcomes and report the comparison-metric ladder in increasing order of strictness—directional agreement, Spearman ρ, Pearson r, inferential agreement, and TOST equivalence—plus calibration slope and R² on the primary outcome. Because every submission is individual-level, the distribution (Sections 1b, 2b) and demographic-calibration (Section 3) metrics are likewise available for every team and added as further leaderboard columns. We then relate these performance metrics to approach characteristics coded from the reporting form (e.g., open- vs. closed-weight model, fine-tuned vs. not, persona source, one-shot vs. full-survey presentation).
+The headline leaderboard pools ATE pairs across all continuous outcomes (pooled RMSE is not reported, as it is not comparable across scales; per-outcome RMSE is reported in the per-outcome breakdowns); per-outcome, distributional, subgroup, and demographic-calibration columns follow for the tiers eligible for them, and every row carries its disclosure-class badge (open / escrowed / sealed) so readers see at a glance how much of each entry is auditable. Registered approach characteristics (open- vs. closed-weight, persona source, administration protocol, fine-tuned vs. not, …) are joined to the leaderboard for a descriptive, hypothesis-generating analysis of which design choices accompany better predictions—preregistered as exploratory, and restricted to publicly disclosed features (Class C entries are excluded from this analysis, not from the leaderboard).
 
 ::: {.callout-note}
 **Exploratory by design.** With a modest number of teams, the relationship between approach characteristics and predictive performance is reported **descriptively** (rankings, group comparisons, visual patterns). We do not preregister inferential tests of feature effects; the cross-team feature analysis is hypothesis-generating, intended to surface which design choices appear to matter for future, larger benchmarks.
 :::
 
-The remainder of this section demonstrates the leaderboard code on simulated multi-team placeholder data: five mock "teams", each a full LLM-style simulation drawn with a different seed and stacked with a `team` label. The code will be applied to real submissions without modification.
+The remainder of this section demonstrates the leaderboard code on simulated multi-team placeholder data: five mock "teams", each a full LLM-style simulation drawn with a different seed and stacked with a `team` label. To exercise all three tier code paths, three mock teams enter at Tier 1 (individual-level), one is collapsed into a Tier 2 cell-level file, and one into a Tier 3 effect-level file. The code will be applied to real submissions without modification.
 
 ```{r}
 #| label: variables
@@ -250,27 +423,89 @@ prep_ate <- function(df) {
     )
 }
 
+# Inferential category from estimate sign + adjusted p-value (Tiers 1-2)
+classify_sig <- function(estimate, p_adj) {
+  case_when(
+    !is.na(p_adj) & p_adj < .05 & estimate > 0 ~ "pos",
+    !is.na(p_adj) & p_adj < .05 & estimate < 0 ~ "neg",
+    TRUE                                       ~ "ns"
+  )
+}
+
 # Reference (Human 1) ATE models, fit once and reused for every comparison.
 human_models <- map(outcomes_continuous,
                     ~ run_main_treatment_model(human_data_1, outcome = .x)) |>
   set_names(outcomes_continuous)
 
-# Pool ATE estimate pairs across continuous outcomes for one prediction dataset
-# against the Human 1 reference models.
-build_pairs <- function(pred_data) {
+human_side <- map_dfr(outcomes_continuous, function(out) {
+  prep_ate(human_models[[out]]) |>
+    rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj) |>
+    mutate(outcome = out)
+})
+
+control_lab <- levels(human_data$condition)[1]
+z95 <- qnorm(0.975)
+
+# Tier 1: pool ATE pairs from an individual-level dataset by refitting the
+# preregistered treatment models on the submission.
+build_pairs_t1 <- function(pred_data) {
   map_dfr(outcomes_continuous, function(out) {
-    inner_join(
-      prep_ate(human_models[[out]]) |>
-        rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj),
-      prep_ate(run_main_treatment_model(pred_data, outcome = out)) |>
-        rename(estimate_l = estimate, se_l = se, p_adj_l = p_adj),
-      by = "condition"
-    ) |> mutate(outcome = out)
-  })
+    prep_ate(run_main_treatment_model(pred_data, outcome = out)) |>
+      mutate(outcome = out)
+  }) |>
+    mutate(infer_l = classify_sig(estimate, p_adj)) |>
+    rename(estimate_l = estimate, se_l = se) |>
+    select(-p_adj) |>
+    inner_join(human_side, by = c("condition", "outcome"))
 }
 
-# Six-metric ladder over pooled pairs — mirrors compare_estimates() /
-# the pooled_row logic in the original preregistration.
+# Tier 2: ATEs and SEs from submitted cell statistics (mean, sd, n_eff per
+# condition x outcome); normal-approximation p-values, BH-adjusted within
+# outcome to mirror the Tier 1 models.
+build_pairs_t2 <- function(cells_main) {
+  cells_main |>
+    mutate(condition = as.character(condition)) |>
+    group_by(outcome) |>
+    group_modify(function(cells, key) {
+      ctrl <- cells |> filter(condition == control_lab)
+      cells |>
+        filter(condition != control_lab) |>
+        mutate(
+          estimate_l = mean - ctrl$mean,
+          se_l       = sqrt(sd^2 / n_eff + ctrl$sd^2 / ctrl$n_eff),
+          p_adj      = p.adjust(2 * pnorm(-abs(estimate_l / se_l)), method = "BH"),
+          infer_l    = classify_sig(estimate_l, p_adj)
+        ) |>
+        select(condition, estimate_l, se_l, infer_l)
+    }) |>
+    ungroup() |>
+    inner_join(human_side, by = c("condition", "outcome"))
+}
+
+# Tier 3: submitted ATEs taken as-is; inference from the submitted 95%
+# prediction interval (significant iff the interval excludes zero, the direct
+# analog of a two-sided test at alpha = .05); implied SE from the interval
+# width for the TOST computation.
+build_pairs_t3 <- function(effects) {
+  effects |>
+    mutate(
+      condition  = as.character(condition),
+      estimate_l = ate,
+      se_l       = (pi_upper - pi_lower) / (2 * z95),
+      infer_l    = case_when(
+        pi_lower > 0 ~ "pos",
+        pi_upper < 0 ~ "neg",
+        TRUE         ~ "ns"
+      )
+    ) |>
+    inner_join(human_side, by = c("condition", "outcome")) |>
+    select(condition, outcome, estimate_l, se_l, infer_l,
+           estimate_h, se_h, p_adj_h)
+}
+
+# Metric ladder over pooled pairs — mirrors compare_estimates() / the
+# pooled_row logic in the original preregistration. Pooled RMSE omitted (not
+# comparable across outcome scales).
 pooled_metrics <- function(pairs) {
   pairs |>
     mutate(
@@ -281,14 +516,7 @@ pooled_metrics <- function(pairs) {
                         pnorm((diff - delta) / se_diff)),
       equivalent = p_tost < 0.05,
       same_sign  = sign(estimate_h) == sign(estimate_l),
-      infer_h    = case_when(
-        !is.na(p_adj_h) & p_adj_h < .05 & estimate_h > 0 ~ "pos",
-        !is.na(p_adj_h) & p_adj_h < .05 & estimate_h < 0 ~ "neg",
-        TRUE                                             ~ "ns"),
-      infer_l    = case_when(
-        !is.na(p_adj_l) & p_adj_l < .05 & estimate_l > 0 ~ "pos",
-        !is.na(p_adj_l) & p_adj_l < .05 & estimate_l < 0 ~ "neg",
-        TRUE                                             ~ "ns")
+      infer_h    = classify_sig(estimate_h, p_adj_h)
     ) |>
     summarise(
       directional_pct = mean(same_sign, na.rm = TRUE) * 100,
@@ -299,33 +527,77 @@ pooled_metrics <- function(pairs) {
       tost_pct        = mean(equivalent, na.rm = TRUE) * 100
     )
 }
+
+# One leaderboard row: pooled ladder + calibration slope and R^2 on the
+# primary outcome. Works identically for all tiers since the calibration
+# regression only needs (condition, estimate) pairs.
+leaderboard_row <- function(pairs, submission, tier, disclosure) {
+  calib <- run_calibration(
+    human_models[[outcomes_primary]],
+    pairs |> filter(outcome == outcomes_primary) |>
+      select(condition, estimate = estimate_l)
+  )
+  pooled_metrics(pairs) |>
+    mutate(submission = submission, tier = tier, disclosure = disclosure,
+           beta = calib$beta, calib_r2 = calib$r_squared)
+}
+```
+
+```{r}
+#| label: mock-submissions
+
+# Mock Tier 2 submission: collapse one placeholder team to the cell-level
+# schema (*_cells_main.csv).
+cells_t2 <- llm_data_teams |>
+  filter(team == "team_4") |>
+  select(condition, all_of(outcomes_continuous)) |>
+  pivot_longer(-condition, names_to = "outcome") |>
+  group_by(condition, outcome) |>
+  summarise(
+    mean  = mean(value, na.rm = TRUE),
+    sd    = sd(value, na.rm = TRUE),
+    n_eff = sum(!is.na(value)),
+    .groups = "drop"
+  )
+
+# Mock Tier 3 submission: ATEs from one placeholder team with widened 95%
+# prediction intervals standing in for a team's epistemic uncertainty.
+effects_t3 <- map_dfr(outcomes_continuous, function(out) {
+  run_main_treatment_model(llm_data_teams |> filter(team == "team_5"),
+                           outcome = out) |>
+    transmute(
+      condition,
+      outcome  = out,
+      ate      = estimate,
+      pi_lower = estimate - z95 * 2 * std.error,
+      pi_upper = estimate + z95 * 2 * std.error
+    )
+})
 ```
 
 ```{r}
 #| label: leaderboard-build
 
-team_levels <- levels(llm_data_teams$team)
+# Three mock Tier 1 teams (mock disclosure classes shown to demonstrate the
+# badge column), one Tier 2 team, one Tier 3 team.
+team_rows <- bind_rows(
+  leaderboard_row(build_pairs_t1(llm_data_teams |> filter(team == "team_1")),
+                  "Team 1", tier = "1", disclosure = "A"),
+  leaderboard_row(build_pairs_t1(llm_data_teams |> filter(team == "team_2")),
+                  "Team 2", tier = "1", disclosure = "B"),
+  leaderboard_row(build_pairs_t1(llm_data_teams |> filter(team == "team_3")),
+                  "Team 3", tier = "1", disclosure = "C"),
+  leaderboard_row(build_pairs_t2(cells_t2),
+                  "Team 4", tier = "2", disclosure = "A"),
+  leaderboard_row(build_pairs_t3(effects_t3),
+                  "Team 5", tier = "3", disclosure = "A")
+)
 
-# One leaderboard row per team
-team_rows <- map_dfr(team_levels, function(tm) {
-  pred <- llm_data_teams |> filter(team == tm)
-  pairs <- build_pairs(pred)
-  metrics <- pooled_metrics(pairs)
-  calib   <- run_calibration(human_models[[outcomes_primary]],
-                             run_main_treatment_model(pred, outcome = outcomes_primary))
-  metrics |>
-    mutate(submission = tm,
-           beta = calib$beta, calib_r2 = calib$r_squared)
-})
-
-# Human–human ceiling row (Human 1 vs. Human 2)
-ceiling_pairs <- build_pairs(human_data_2)
-ceiling_calib <- run_calibration(human_models[[outcomes_primary]],
-                                 run_main_treatment_model(human_data_2,
-                                                          outcome = outcomes_primary))
-ceiling_row <- pooled_metrics(ceiling_pairs) |>
-  mutate(submission = "Human–human ceiling",
-         beta = ceiling_calib$beta, calib_r2 = ceiling_calib$r_squared)
+# Fixed reference row: the human-human ceiling (Human 1 vs. Human 2). The
+# core team's own clones enter as a regular team submission like any other,
+# with no special reference row.
+ceiling_row <- leaderboard_row(build_pairs_t1(human_data_2),
+                               "Human–human ceiling", tier = "—", disclosure = "—")
 
 leaderboard <- bind_rows(ceiling_row, team_rows) |>
   arrange(desc(submission == "Human–human ceiling"), desc(pearson_r))
@@ -333,16 +605,18 @@ leaderboard <- bind_rows(ceiling_row, team_rows) |>
 
 ```{r}
 #| label: tbl-leaderboard
-#| tbl-cap: "Cross-team leaderboard (placeholder data). Pooled ATE-recovery metrics across all continuous outcomes, plus calibration slope and R² on the primary outcome, scored against the Human 1 reference half. The Human–human ceiling (Human 1 vs. Human 2) is the upper bound for any approach. Metrics run least-to-most strict, left to right."
+#| tbl-cap: "Cross-team leaderboard (placeholder data). Pooled ATE-recovery metrics across all continuous outcomes, plus calibration slope and R² on the primary outcome, scored against the Human 1 reference half. The Human–human ceiling (Human 1 vs. Human 2) is the upper bound for any approach. Metrics run least-to-most strict, left to right; Class is the disclosure-class badge (A open / B escrowed / C sealed)."
 
 leaderboard |>
-  select(submission, directional_pct, spearman_rho, pearson_r,
+  select(submission, tier, disclosure, directional_pct, spearman_rho, pearson_r,
          inferential_pct, tost_pct, beta, calib_r2) |>
   gt() |>
   fmt_number(columns = c(spearman_rho, pearson_r, beta, calib_r2), decimals = 2) |>
   fmt_number(columns = c(directional_pct, inferential_pct, tost_pct), decimals = 0) |>
   cols_label(
     submission      = "Submission",
+    tier            = "Tier",
+    disclosure      = "Class",
     directional_pct = "Directional %",
     spearman_rho    = "Spearman ρ",
     pearson_r       = "Pearson r",
@@ -376,11 +650,5 @@ leaderboard |>
   theme_minimal()
 ```
 
-When real submissions arrive, this leaderboard is recomputed by replacing the placeholder team dataset with the stacked set of submitted clone datasets, and by adding the distribution and demographic-calibration metrics from Sections 1b, 2b, and 3 as additional leaderboard columns (available for every submission, since all are individual-level). The approach-characteristics table coded from the reporting form is then joined to the leaderboard for the exploratory analysis of which design choices accompany better predictions.
+When real submissions arrive, this leaderboard is recomputed by replacing the placeholder datasets with the submitted prediction files routed through their tier's builder (`build_pairs_t1()` / `build_pairs_t2()` / `build_pairs_t3()`), and by adding the distribution, subgroup, and demographic-calibration metrics from Sections 1b, 2, and 3 as additional leaderboard columns for the tiers eligible for them. The approach-characteristics table coded from the registration forms is then joined to the leaderboard for the exploratory analysis of which design choices accompany better predictions (publicly disclosed features only; Class C entries excluded from this analysis, not from the leaderboard).
 
-## Links and registration
-
-- **Original preregistration (this project):** [Preregistration](preregistration.qmd).
-- **Human study preregistration:** [https://doi.org/10.5281/zenodo.20160212](https://doi.org/10.5281/zenodo.20160212).
-- **Core-team LLM simulation data:** [https://doi.org/10.5281/zenodo.20167059](https://doi.org/10.5281/zenodo.20167059).
-- **Simulation code (time-stamped release):** [https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0](https://github.com/yarakyrychenko/llm-participants/releases/tag/v1.0.0).
