@@ -10,11 +10,11 @@ project:
 freeze: auto 
 
 website:
-  title: "The Silicon Sample Tournament"
+  title: "The Silicon Sample Benchmark"
   description: "A multi-team benchmark of AI approaches for predicting behavioral-experiment effects"
   favicon: ""
   page-footer:
-    center: "The Silicon Sample Tournament · A multi-team benchmark of AI approaches for predicting behavioral-experiment effects · Jan Pfänder · 2026"
+    center: "The Silicon Sample Benchmark · A multi-team benchmark of AI approaches for predicting behavioral-experiment effects · Jan Pfänder · 2026"
   navbar:
     background: dark
     foreground: light
@@ -27,10 +27,23 @@ website:
             href: preregistration.qmd
           - text: "Amendment — multi-team benchmark approach"
             href: amendment_preregistration.qmd
+      - text: "Materials"
+        menu:
+          - text: "Submission template"
+            href: materials.qmd
+          - text: "Registration form"
+            href: index.html#registration-form
+          - text: "Questionnaire"
+            href: questionnaire.qmd
       # Talks section hidden: the presentation reveals results that future
       # collaborator teams should not see. Kept local only (see .gitignore).
       # - text: "Talks"
       #   href: slides/talks.qmd
+    right:
+      - text: "Team"
+        href: team.qmd
+      - text: "Contact"
+        href: contact.qmd
 format:
   html:
     theme: [cosmo, theme.scss]

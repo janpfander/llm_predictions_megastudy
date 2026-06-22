@@ -1,0 +1,19 @@
+---
+title: "Submission template"
+subtitle: "Everything participating teams need lives in one clone-able repository"
+toc: false
+css: tournament.css
+---
+
+All working materials — the survey, the codebook, example submissions, the reporting checklist, and
+the scripts that clean and self-check a submission — live in a dedicated GitHub repository that **is**
+a submission template:
+
+[**github.com/janpfander/silicon-sample-submission**](https://github.com/janpfander/silicon-sample-submission){.btn .btn-primary}
+
+Clone it (or click **“Use this template”**), drop in your predictions, and release it to Zenodo —
+full step-by-step instructions are in the repository's `README`. It ships with a random-placeholder
+example so a fresh clone already passes the self-check, showing you the exact target structure.
+
+The **submission file schemas** and the **human target sample** (recruitment, census-based quotas, and
+the quota table) are specified in the **[benchmark amendment](amendment_preregistration.qmd)**.

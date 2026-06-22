@@ -90,6 +90,24 @@ We will therefore launch a call for a **multi-team prediction tournament**—the
 
 The first goal of the tournament is *not* to crown a single champion team. Per the original preregistration, we evaluate approaches on a ladder of metrics of increasing strictness—from directional agreement to formal equivalence—plus distributional fidelity and stereotyping diagnostics. We expect different approaches to win on different rungs; the point is to map the design space, not to declare one winner. Second, and perhaps more importantly, we aim to provide a **catalogue**: a structured, comparable description of how research teams currently approach AI prediction of behavioral experiments—open- vs. closed-weight models, persona sources, administration protocols, fine-tuning, in-context learning—and which of these choices appear to matter.
 
+## The human target sample
+
+Predictions are scored against the human data from the megastudy itself. Participants are recruited from a national, non-probability opt-in panel of U.S. residents (CloudResearch), all aged 18 or older, who pass a series of attention and bot-detection checks before treatment assignment, so that the analyzed sample is relatively attentive to the intervention materials.
+
+The benchmark targets **N ≈ 18,000 complete responses**: 1,000 per intervention across the 16 text-based interventions, plus 2,000 in the shared control condition. Recruitment uses **census-based cross quotas** on gender × age and gender × race/ethnicity to approximate the U.S. adult population; the targets below match the proportions of the parent megastudy, with counts simply rescaled to N ≈ 18,000. Participants selecting "Other" as their gender are not quota-constrained.
+
+The targets below are drawn from the 2024 U.S. Census Bureau Population Estimates Program. *Total* is the share within each category; *Male* and *Female* give the within-category gender split.
+
+```{r}
+#| label: tbl-quotas
+#| tbl-cap: "Sampling quota targets (N ≈ 18,000), from the 2024 U.S. Census Bureau Population Estimates Program. Proportions match the parent megastudy, with counts rescaled to N ≈ 18,000."
+
+read_csv(here("data/quotas_18000.csv")) |>
+  gt(groupname_col = "Variable", rowname_col = "Category")
+```
+
+Gender, age, and race are the only mandatory survey items (needed to fill the quotas) and so enter every analysis model as covariates with no missing data. The six demographic moderators used for the subgroup and calibration analyses—gender, age, race, education, income, and partisan identity—are documented in the [original preregistration](preregistration.qmd) and codebook; full sampling and exclusion detail is in the [human study preregistration](https://doi.org/10.5281/zenodo.20160212).
+
 ## Tournament design
 
 ### How it works
