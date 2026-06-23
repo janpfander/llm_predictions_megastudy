@@ -22,37 +22,37 @@ listing:
         path: https://www.mpib-berlin.mpg.de/staff/dirk-wulff
         title: "[Dirk U. Wulff](https://www.mpib-berlin.mpg.de/staff/dirk-wulff)"
         subtitle: Senior Research Scientist, [Center for Adaptive Rationality](https://www.mpib-berlin.mpg.de/research/research-centers/adaptive-rationality), Max Planck Institute for Human Development, *Germany*
-        sortby: "5"
+        sortby: "3"
 
       - image: images/jon.jpg
         path: https://www.sdmlab.psychol.cam.ac.uk/staff/professor-jon-roozenbeek
         title: "[Jon Roozenbeek](https://www.sdmlab.psychol.cam.ac.uk/staff/professor-jon-roozenbeek)"
         subtitle: Associate Professor, University of Cambridge & VU Amsterdam, *United Kingdom / Netherlands*
-        sortby: "3"
+        sortby: "5"
 
       - image: images/viktoria.jpg
         path: https://www.viktoriacologna.com/
         title: "[Viktoria Cologna](https://www.viktoriacologna.com/)"
         subtitle: Group leader, [Climate and Societal Change Group](https://www.eawag.ch/en/abteilung/ess/schwerpunkte/climate-and-societal-change-casc/) at Eawag, *Switzerland*
-        sortby: "4"
+        sortby: "6"
 
       - image: images/miriam.jpg
         path: https://www.sdmlab.psychol.cam.ac.uk/staff/miriam-remshard
         title: "[Miriam Remshard](https://www.sdmlab.psychol.cam.ac.uk/staff/miriam-remshard)"
         subtitle: PhD Candidate, [Cambridge Social Decision-Making Lab](https://www.sdmlab.psychol.cam.ac.uk/), University of Cambridge, *United Kingdom*
-        sortby: "6"
+        sortby: "4"
 
-      - image: images/madalina.jpg
-        path: https://profiles.stanford.edu/madalina-vlasceanu
-        title: "[Madalina Vlasceanu](https://profiles.stanford.edu/madalina-vlasceanu)"
-        subtitle: Assistant Professor, [Climate Cognition Lab](https://climatecognition.stanford.edu/) at Stanford University, *United States*
-        sortby: "7"
+      # - image: images/madalina.jpg
+      #   path: https://profiles.stanford.edu/madalina-vlasceanu
+      #   title: "[Madalina Vlasceanu](https://profiles.stanford.edu/madalina-vlasceanu)"
+      #   subtitle: Assistant Professor, [Climate Cognition Lab](https://climatecognition.stanford.edu/) at Stanford University, *United States*
+      #   sortby: "7"
 
-      - image: images/sara.png
-        path: https://sustainability.stanford.edu/people/sara-constantino
-        title: "[Sara Constantino](https://sustainability.stanford.edu/people/sara-constantino)"
-        subtitle: Assistant Professor, Stanford University, *United States*
-        sortby: "8"
+      # - image: images/sara.png
+      #   path: https://sustainability.stanford.edu/people/sara-constantino
+      #   title: "[Sara Constantino](https://sustainability.stanford.edu/people/sara-constantino)"
+      #   subtitle: Assistant Professor, Stanford University, *United States*
+      #   sortby: "8"
 
     type: grid
     image-height: 325px
