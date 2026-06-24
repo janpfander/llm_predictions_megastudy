@@ -236,3 +236,51 @@
   .sst .sst-shell { grid-template-columns: 1fr; gap: 0; padding: 0 24px; }
   .sst .sst-toc { display: none; }
 }
+
+/* ---------- arcade / CRT overrides ---------- */
+/* The token remap in theme.scss recolors most of this page automatically;
+   these rules add pixel-font chrome and fix the few hard-coded light values. */
+
+/* synthwave multi-accent role assignment: brand/H1 = magenta (--petrol),
+   links/H2 = cyan (--petrol-dark), code/callouts = green, buttons/labels =
+   yellow, warnings = orange (--signal). */
+
+.sst .eyebrow { font-family: var(--pixel); font-size: 10px; color: var(--yellow); text-shadow: 0 0 8px rgba(255, 210, 63, .5); }
+
+.sst .hero h1 { color: var(--petrol); text-shadow: var(--glow); }
+.sst .hero h1 em { color: var(--cyan); }
+.sst .hero h1::after { content: "_"; animation: sst-blink 1.1s steps(1) infinite; }
+@keyframes sst-blink { 50% { opacity: 0; } }
+
+/* H2s here sit inside .sec-head with their own number — cancel the global "> " */
+.sst h2::before { content: ""; }
+.sst .sec-head .no { color: var(--cyan); }
+
+.sst .btn { font-family: var(--pixel); font-size: 10.5px; }
+.sst .btn-primary { background: var(--yellow); border-color: var(--yellow); color: var(--shell); box-shadow: 0 0 12px rgba(255, 210, 63, .5); }
+.sst .btn-primary:hover { background: #FFDD6B; border-color: #FFDD6B; color: var(--shell); }
+.sst .btn-ghost { color: var(--cyan); border-color: var(--cyan); }
+.sst .btn-ghost:hover { background: rgba(54, 225, 255, .12); color: var(--cyan); }
+
+/* default callout cabinets = green; warning variant stays orange (--signal) */
+.sst .sst-callout { border-left-color: var(--green); }
+.sst .sst-callout .tag { color: var(--green); }
+.sst .tier { border-top-color: var(--cyan); }
+
+.sst .hero-link .hl-no { color: var(--shell); }
+
+/* footer & code blocks hard-coded the old dark ink; pin them to the shell dark */
+.sst footer { background: var(--shell); }
+.sst footer h5 { color: var(--petrol-dark); }
+.sst footer a { color: var(--ink); border-bottom-color: rgba(201, 232, 216, .3); }
+.sst footer a:hover { color: var(--petrol); border-bottom-color: var(--petrol); }
+.sst pre { background: var(--shell); }
+
+/* citation popover was a white box with (now light) ink text — invisible */
+.sst .fn-pop {
+  background: var(--panel);
+  color: var(--ink);
+  border-color: var(--rule);
+  border-top-color: var(--signal);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .55);
+}

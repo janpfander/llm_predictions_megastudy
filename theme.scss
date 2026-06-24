@@ -1,41 +1,80 @@
 /*-- scss:defaults --*/
 
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&family=VT323&display=swap');
 
-// design tokens (shared with tournament.css via :root export below)
-$paper: #F5F7F6;
-$panel: #FFFFFF;
-$ink: #17222B;
-$ink-soft: #46555F;
-$rule: #D7DEDC;
-$petrol: #0E6B63;
-$petrol-dark: #0A4B46;
-$petrol-wash: #E5F0EE;
-$signal: #AE3A24;
-$signal-wash: #F8ECE8;
+// design tokens — retro/arcade CRT palette, "synthwave / outrun" (navy-purple
+// base, multiple neon accents). Shared with tournament.css via :root export
+// below; the role variable NAMES are preserved so tournament.css recolors.
+$paper: #160F2E;       // navy-purple base
+$panel: #1E1547;       // lifted panel surface
+$ink: #ECE4FF;         // lavender-white body text
+$ink-soft: #9A8FC4;    // muted secondary text
+$rule: #2E2156;        // hairline rules
+$shell: #0E0922;       // structural dark — navbar, footer, code blocks
+
+// named neon accents — assigned to roles just below
+$magenta: #FF4D9D;     // headings, brand
+$cyan: #36E1FF;        // links, H2
+$green: #6EF7A0;       // inline code, default callouts
+$yellow: #FFD23F;      // buttons, labels
+$orange: #FF7849;      // warnings
+
+// role tokens keep their original (single-accent era) names so tournament.css,
+// which references --petrol etc., recolors through the :root export
+$petrol: $magenta;       // primary accent
+$petrol-dark: $cyan;     // links / hover
+$petrol-wash: #221848;   // dark wash — inline-code / callout / dropdown-hover bg
+$signal: $orange;        // warnings
+$signal-wash: #2A1A12;   // dark warm wash
 
 $primary: $petrol;
-$dark: $ink; // navbar `background: dark` resolves here
+$dark: $shell; // navbar `background: dark` resolves here
 $body-bg: $paper;
 $body-color: $ink;
 
-$font-family-sans-serif: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+// arcade typography: pixel font for chrome (nav, H1, buttons, labels),
+// VT323 terminal font for headings, monospace body for legibility
+$pixel-font: "Press Start 2P", monospace;
+$font-family-sans-serif: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 $font-family-monospace: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-$headings-font-family: "Newsreader", Georgia, serif;
-$headings-font-weight: 600;
+$headings-font-family: "VT323", "IBM Plex Mono", monospace;
+$headings-font-weight: 400;
+
+$glow: 0 0 6px rgba(255, 77, 157, .55), 0 0 14px rgba(255, 77, 157, .3);   // magenta
+$glow-cyan: 0 0 6px rgba(54, 225, 255, .5), 0 0 14px rgba(54, 225, 255, .28);
 
 $link-color: $petrol-dark;
 $link-hover-color: $petrol;
 
-$code-color: $petrol-dark;
+$code-color: $green;
 $code-bg: $petrol-wash;
-$code-block-bg: #10211F;
+$code-block-bg: $shell;
 
-$navbar-bg: $ink;
-$navbar-fg: #E4EDEA;
-$navbar-hl: #8FD4C8;
-$footer-bg: $ink;
-$footer-fg: #C8D4D1;
+$navbar-bg: $shell;
+$navbar-fg: $ink-soft;
+$navbar-hl: $cyan;
+$footer-bg: $shell;
+$footer-fg: $ink-soft;
+
+// dropdown menus — Bootstrap defaults to a white panel with a near-white
+// (#f8f9fa) hover, leaving light text unreadable on hover. Drive its
+// --bs-dropdown-* variables to the arcade palette at the source.
+$dropdown-bg: $shell;
+$dropdown-border-color: $rule;
+$dropdown-color: $ink-soft;
+$dropdown-link-color: $ink-soft;
+$dropdown-link-hover-color: $petrol;
+$dropdown-link-hover-bg: $petrol-wash;
+$dropdown-link-active-color: $petrol;
+$dropdown-link-active-bg: $petrol-wash;
+
+// data tables opt out of the dark/retro theme — restore the original light
+// palette (gt/kable tables carry Bootstrap's .table class; the bespoke .sst
+// tournament tables do not, so they are unaffected)
+$table-color: #17222B;
+$table-bg: #FFFFFF;
+$table-striped-bg: #F5F7F6;
+$table-border-color: #D7DEDC;
 
 $toc-color: $ink-soft;
 $toc-active-border: $petrol;
@@ -57,61 +96,118 @@ $border-radius: 4px;
   --petrol-wash: #{$petrol-wash};
   --signal: #{$signal};
   --signal-wash: #{$signal-wash};
+  --shell: #{$shell};
+  --magenta: #{$magenta};
+  --cyan: #{$cyan};
+  --green: #{$green};
+  --yellow: #{$yellow};
+  --orange: #{$orange};
   --mono: #{inspect($font-family-monospace)};
   --sans: #{inspect($font-family-sans-serif)};
   --serif: #{inspect($headings-font-family)};
+  --pixel: #{inspect($pixel-font)};
+  --glow: #{$glow};
+  --glow-cyan: #{$glow-cyan};
 }
+
+// CRT scanline overlay — static (no flicker), faint. z-index sits above body
+// text but below the navbar (z~1030) so figures/tables can be lifted out of it
+// (below) without ever covering the fixed navbar. pointer-events:none lets all
+// clicks pass straight through.
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0,
+    rgba(0, 0, 0, 0) 2px,
+    rgba(0, 0, 0, .16) 3px
+  );
+}
+
+// figures and data tables opt out of the CRT treatment: paint them above the
+// scanline overlay (z-index 4 > 3, but < navbar) so no stripes land on them
+.quarto-float-fig,
+.quarto-float-tbl,
+.quarto-figure,
+.cell-output-display,
+table.gt_table,
+table.tinytable {
+  position: relative;
+  z-index: 4;
+}
+
+// tinytable ships its own CSS (no Bootstrap .table class) — give it the same
+// original light surface as the gt/kable tables handled via $table-* above
+table.tinytable {
+  background-color: #FFFFFF;
+  color: #17222B;
+}
+table.tinytable :is(th, td) { color: #17222B; border-color: #D7DEDC; }
+
+@keyframes blink { 50% { opacity: 0; } }
 
 html {
   scroll-padding-top: 70px;
 }
 
-// climate-stripes signature band: drawn on the fixed navbar header so it
-// sits above the nav on every page (a DOM include would land below it)
-$stripe-colors: #08306B, #08519C, #2171B5, #4292C6, #6BAED6, #9ECAE1,
-  #C6DBEF, #DEEBF7, #FEE0D2, #FCBBA1, #FC9272, #FB6A4A,
-  #EF3B2C, #CB181D, #A50F15, #67000D;
-$stripe-stops: ();
-@for $i from 1 through length($stripe-colors) {
-  $c: nth($stripe-colors, $i);
-  $from: percentage(calc(($i - 1) / length($stripe-colors)));
-  $to: percentage(calc($i / length($stripe-colors)));
-  $stripe-stops: append($stripe-stops, $c $from $to, comma);
-}
-
-#quarto-header::before {
-  content: "";
-  display: block;
-  height: 8px;
-  background: linear-gradient(to right, $stripe-stops);
-}
-
-// in-page stripe bands (tournament page footer)
-.stripes {
-  height: 8px;
-  display: flex;
-  width: 100%;
-}
-.stripes span { flex: 1; }
-.stripes--thin { height: 4px; }
-
 .navbar .navbar-brand,
 .navbar .nav-link {
-  font-family: $font-family-monospace;
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
+  font-family: $pixel-font;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
   text-transform: uppercase;
+}
+.navbar .navbar-brand {
+  font-size: 0.72rem;
+  color: $petrol;
+  text-shadow: $glow;
+}
+
+// dropdown menus: keep them dark like the navbar (Bootstrap defaults to a
+// white panel, which left light text unreadable on hover)
+.navbar .dropdown-menu {
+  background: $shell;
+  border: 1px solid $rule;
+}
+.navbar .dropdown-menu .dropdown-item {
+  color: $ink-soft;
+}
+.navbar .dropdown-menu .dropdown-item:hover,
+.navbar .dropdown-menu .dropdown-item:focus,
+.navbar .dropdown-menu .dropdown-item.active {
+  background: $petrol-wash;
+  color: $petrol;
 }
 
 h1, h2, h3 { letter-spacing: -0.01em; }
+h1.title {
+  color: $petrol;
+  text-shadow: $glow;
+}
+h1.title::after {
+  content: "_";
+  color: $petrol;
+  animation: blink 1.1s steps(1) infinite;
+}
 h2 {
-  border-bottom: 2px solid $ink;
+  color: $cyan;
+  border-bottom: 2px solid $cyan;
   padding-bottom: 0.35rem;
 }
+h2::before { content: "> "; color: $cyan; }
 
-// light text for unhighlighted code on the dark block background
-pre > code:not([class]) { color: #DDEAE7; }
+// light text for code + verbatim blocks on the dark background. Bootstrap's
+// default `pre { color:#000 }` left plain <pre> blocks (e.g. the verbatim LLM
+// prompt text) as black-on-dark and unreadable; syntax-highlight spans still
+// supply their own colors on top of this.
+pre,
+pre > code:not([class]) { color: $ink; }
+pre { background: $code-block-bg; }
 
 div.callout.callout-style-default {
   border-left: 3px solid $petrol;
@@ -124,9 +220,9 @@ div.callout-important.callout-style-default {
 }
 
 .nav-footer {
-  background: $ink;
+  background: $shell;
   color: $footer-fg;
   font-family: $font-family-monospace;
   font-size: 0.75rem;
-  a { color: #E4EDEA; }
+  a { color: $petrol-dark; }
 }
