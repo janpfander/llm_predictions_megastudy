@@ -31,8 +31,6 @@ website:
         menu:
           - text: "Submission template"
             href: materials.qmd
-          - text: "Registration form"
-            href: index.html#registration-form
           - text: "Questionnaire"
             href: questionnaire.qmd
       # Talks section hidden: the presentation reveals results that future

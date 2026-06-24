@@ -4,17 +4,6 @@ title: "Questionnaire: 16 information interventions to strengthen trust in clima
 format:
   html:
     code-tools: false
-    title-block-banner: images/alternative_2.jpg
-    title-block-banner-color: white
-    include-in-header:
-      - text: |
-          <style>
-            /* Use bottom part of the banner image */
-            .quarto-title-block .quarto-title-banner {
-              background-position: center;
-              background-size: cover;
-            }
-          </style>
 
 echo: false
 warning: false

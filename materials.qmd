@@ -1,6 +1,6 @@
 ---
 title: "Submission template"
-subtitle: "Everything participating teams need lives in one clone-able repository"
+subtitle: "A working repository that holds your whole modelling approach"
 toc: false
 css: tournament.css
 ---
@@ -11,16 +11,39 @@ a submission template:
 
 [**github.com/janpfander/silicon-sample-submission**](https://github.com/janpfander/silicon-sample-submission){.btn .btn-primary}
 
-Clone it (or click **“Use this template”**), drop in your predictions, and release it to Zenodo —
-full step-by-step instructions are in the repository's `README`. It ships with a random-placeholder
-example so a fresh clone already passes the self-check, showing you the exact target structure.
+### A home for your whole pipeline, not just a drop-box
+
+Clone it (or click **“Use this template”**) and do your actual work inside it: your simulation code,
+prompts, profile construction, intermediate data — whatever your approach involves. The repository can
+hold as much or as little as you like. In the end we read just two things from it: your **prediction
+data** and your **report** (`registration.md`). Everything else is yours to organize. Full
+step-by-step instructions are in the repository's `README`.
+
+### It does the tedious parts for you
+
+Two pieces are why working inside the template is worth it:
+
+- an **integrated cleaning script** that turns raw Qualtrics-format output into the analysis-ready
+  schema the locked analysis expects (composites, reverse-codes, `age_band`, …), so you don't have to
+  reconstruct it by hand;
+- a **submission check** that validates file structure, coverage, and value ranges before you deposit.
+
+A random-placeholder example ships with the repo, so a fresh clone already passes the check — it shows
+you the exact target structure to aim for.
+
+### Blind what you can't share
+
+You can keep proprietary parts of your pipeline in the repository and simply **gitignore** them: your
+work stays in one place while only what you choose becomes public. This lets you respect the
+[disclosure policy](index.qmd#disclosure) — locked and verifiable is mandatory, public is not —
+without splitting your project across repositories.
 
 The **submission file schemas** and the **human target sample** (recruitment, census-based quotas, and
 the quota table) are specified in the **[benchmark amendment](amendment_preregistration.qmd)**.
 
 ::: {.callout-note}
-**No participant pool is shipped.** You build your own synthetic respondents — any source (a public
-survey such as GSS/ANES/Census, fully synthetic personas, or none) — and assign them to conditions
-yourself; declare your choice in registration item C.3. If you want to match the human target
-population, the amendment's census-based quota table is available to sample against.
+**You build your own synthetic respondents.** Generate them from any source — a public survey such as
+GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare
+your choice in registration item C.4. If you want to match the human target population, the
+amendment's census-based quota table is available to sample against.
 :::

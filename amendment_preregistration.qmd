@@ -114,7 +114,7 @@ Gender, age, and race are the only mandatory survey items (needed to fill the qu
 
 Participation is by invitation to teams with a track record in simulating human participants or forecasting experimental results. The procedure for each team is:
 
-1. **Accept the invitation.** Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, the registration template, and the submission validator. No participant pool is shipped—each team constructs its own profiles (see C.3).
+1. **Accept the invitation.** Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, the registration template, and the submission validator. No participant pool is shipped—each team constructs its own profiles (see C.4).
 2. **Build the pipeline.** Use any AI-based approach: any models, personas, prompts, fine-tuning, retrieval, or prior literature. Teams never receive any human outcome data.
 3. **Register & lock.** Complete the method-registration form (see *Method registration*), generate the predictions, and deposit both on Zenodo—publicly, or partly escrowed under the disclosure policy. The deposit is hashed and time-stamped before the prediction lock date.
 4. **Scoring & publication.** Once human data collection completes, every submission runs through the preregistered analysis pipeline unchanged. Results are reported on a public leaderboard alongside the human–human ceiling, and in a joint manuscript with all participating teams as co-authors.
@@ -163,110 +163,7 @@ Items concerning human participants or sensitive-data privacy (GUIDE-LLM D.1) ar
 **Replicability standard.** An independent team with access to a team's registration—and nothing else—should in principle be able to re-run the pipeline and obtain a statistically equivalent submission. Where exact replication is impossible (deprecated APIs, hardware nondeterminism), the deposited raw output logs (item I.2) take over as the verifiable record. Where disclosure is restricted (see *Disclosure policy*), this standard applies to the escrowed registration rather than the public one.
 :::
 
-### Registration form — part 1 · Identity, scope, and system
-
-**0 · Approach identity and output ★**
-
-| Item | Name | What to report |
-|---|---|--------|
-| 0.1 ★ | Team | Team name, members, affiliations, and a corresponding contact. |
-| 0.2 ★ | Plain-language summary | One paragraph describing the approach so that a non-specialist reader of the catalogue understands what was done. |
-| 0.3 ★ | Submission tier & approach family | Tier (1 / 2 / 3) and approach family — e.g., one call per respondent vs. agent walking the full survey; single model vs. ensemble vs. multi-agent; simulation vs. direct forecasting; zero-shot vs. literature-conditioned. |
-| 0.4 ★ | Pipeline diagram | The full pipeline as an ordered sequence of steps (input → transformation → output), covering every stage from raw inputs to the submitted file. Prose descriptions of multi-stage pipelines are where replicability dies; a numbered step list or diagram is required. |
-| 0.5 ★ | Coverage | Number of synthetic respondents / cells / estimates; mapping to conditions; coverage of the 16 interventions and 13 outcomes (all, or a declared subset with justification). |
-
-**A · Scope of LLM use (GUIDE-LLM)**
-
-| Item | Name | What to report |
-|---|---|--------|
-| A.1 | Purpose | Every workflow stage where LLMs are used — at minimum generating predictions; also persona construction, prompt optimization, post-processing, literature digestion, etc. |
-| A.2 | Degree of automation | Confirmation that the pipeline is fully automated with no human in the loop at prediction time (a tournament requirement); any exception and the oversight provided. |
-
-**B · Model / system details (GUIDE-LLM, extended)**
-
-| Item | Name | What to report |
-|---|---|--------|
-| B.1 | Model name(s) | Exact identifiers including provider, size, version/timestamp, and source link — e.g., `gpt-4o-mini-2024-07-18` (OpenAI), `Llama-3.1-8B-Instruct` (Meta, via HuggingFace). If several models were tested, name all and state which produced the submission and why (see also H.1). |
-| B.2 | Access & context mode | Access route (API / web / local), API name and version, chat vs. stateless calls, and exact call dates — providers update hosted models silently, so the date window is part of the model identity. |
-| B.3 | Configuration | All settings affecting output: temperature, top-p / top-k, max tokens, penalties, stop sequences, seeds, reasoning-effort settings, and number of completions per respondent / item. |
-| B.4 | Customization | Any adaptation beyond standard inference: fine-tuning (method, e.g., LoRA), RAG, automated prompt optimization, tool use, web search, agentic scaffolds, post-training. Cross-reference Section F for the data behind each. |
-| B.5 | Persistent memory | Whether sessions carried memory across interactions (yes / no / N/A), and if yes, what persisted. |
-| B.6 ★ | Inference stack | For locally run models: serving framework and version (e.g., vLLM, llama.cpp, transformers), quantization (FP16 / INT8 / GGUF Q4 …), and hardware where nondeterminism matters. These change outputs and are invisible to GUIDE-LLM B.1–B.3 alone. |
-| B.7 ★ | Ensembles | If multiple models or runs are combined: all members and the exact aggregation rule (averaging, voting, stacking, router logic). |
-
-### Registration form — part 2 · Conditioning, administration, and stochasticity
-
-**C · Prompts (GUIDE-LLM)**
-
-| Item | Name | What to report |
-|---|---|--------|
-| C.1 | Exact prompts | Verbatim prompt text(s) including any in-context examples, or a link to them in the deposited repository. State whether prompts were iteratively refined, and whether refinements were pre-specified or made in response to interim outputs. |
-| C.2 | System-wide instructions | Any system-level instructions guiding the model's general behavior. |
-
-**C★ · Persona / profile construction ★ (Tiers 1–2)**
-
-| Item | Name | What to report |
-|---|---|--------|
-| C.3 ★ | Profile source | Source of demographic profiles you constructed: a public survey (e.g. GSS / ANES / Census), other survey, fully synthetic, or none. The benchmark ships no participant pool; report how you built yours, including how profiles were assigned to conditions. |
-| C.4 ★ | Profile verbalization | Which profile variables are encoded and exactly how they are rendered into text — fixed template vs. LLM-generated persona narratives (if the latter: the generating model and prompt, recursively subject to this form). |
-| C.5 ★ | Assignment & weighting | Number of personas, assignment to conditions (between- vs. within-subjects)—the team's responsibility, covering all 17 conditions—reuse across conditions, and any weighting or matching to a target population. |
-
-**C★★ · Stimulus and survey administration ★**
-
-| Item | Name | What to report |
-|---|---|--------|
-| C.6 ★ | Stimulus presentation | How interventions are shown to the model: verbatim text vs. paraphrase or summary; how state-contingent content (e.g., the extreme-weather intervention) is handled. |
-| C.7 ★ | Survey walk-through | How items are administered: one item per call vs. blocks vs. whole survey; whether context carries across items; item and response-option ordering and any randomization; how response scales are displayed; how attention/comprehension elements are handled. The goal: enough detail to re-run the survey walk deterministically. |
-| C.8 ★ | Response elicitation | How responses are obtained: free text, constrained choice, structured output, or token log-probabilities over the response scale (if logprobs: the normalization and mapping to scale values). |
-
-**D★ · Stochasticity and aggregation ★**
-
-| Item | Name | What to report |
-|---|---|--------|
-| D.1 ★ | Runs & seeds | Number of runs per respondent / item / estimate; seeds where applicable; expected reproducibility of outputs under identical settings. |
-| D.2 ★ | Aggregation rule | How multiple generations are consolidated into submitted values: mean, median, mode, first valid response, sampling one, distribution-preserving sampling. GUIDE-LLM asks for temperature; this item asks what you did with the variance — it directly shapes the distributional metrics. |
-
-### Registration form — part 3 · Post-processing, learning components, blinding, and selection
-
-**E · Validation & post-processing (GUIDE-LLM, extended)**
-
-| Item | Name | What to report |
-|---|---|--------|
-| E.1 | Human validation | Whether and how any human review of model outputs was performed (often N/A for fully automated generation; note any design-phase checks on pilot outputs). |
-| E.2 | Post-processing | Parsing rules from raw output to response scales; handling of refusals, malformed, missing, and out-of-range responses (re-prompt / drop / clip / impute); any exclusion criteria; the resulting effective N per condition. Refusal handling alone can move distributions substantially — report counts. |
-| E.3 ★ | Calibration corrections | Any post-hoc scaling, shifting, debiasing, or calibration applied to predictions — and exactly what data it was fit on (cross-reference F and G). |
-
-**F★ · Learning and conditioning components ★**
-
-| Item | Name | What to report |
-|---|---|--------|
-| F.1 ★ | Fine-tuning data | For any fine-tuned component: the exact training corpus (with hashes or DOIs), hyperparameters, and checkpoint identifiers. |
-| F.2 ★ | Context & retrieval corpora | For ICL / RAG / literature-conditioned approaches: the exact document set placed in context or indexed for retrieval, archived in the deposit. For direct-effect forecasters this corpus is the core of the method and must be fully enumerated. |
-
-**G · Data inputs, blinding, and competing interests (GUIDE-LLM, extended)**
-
-| Item | Name | What to report |
-|---|---|--------|
-| G.1 | Competing interests | Funding, in-kind compute or model access, and professional or financial relationships with entities that have an interest in LLMs — particularly relevant where teams evaluate models built by affiliated organizations. |
-| G.2 ★ | External human data | A self-declared list of all external human datasets that informed the approach anywhere (training, fine-tuning, retrieval, in-context examples, calibration anchors) — particularly published trust-in-science or climate-communication experiments. |
-| G.3 ★ | Blinding attestation | **Mandatory.** A signed attestation that no team member accessed, solicited, or was shown any human outcome data from this study, including pilots, before the prediction lock. |
-| G.4 ★ | Contamination note | Training cutoff of every model used, relative to the public release dates of this project's preregistrations and Zenodo deposits — which are themselves potential contamination vectors for late-cutoff models. Note any known exposure of models to the project's materials. |
-
-**H★ · Internal selection procedure ★**
-
-| Item | Name | What to report |
-|---|---|--------|
-| H.1 ★ | Design-space search | How the team arrived at the final pipeline: how many candidate configurations (models, prompts, hyperparameters) were tried; the internal validation criterion; and what data internal validation was run against. This is the researcher-degrees-of-freedom analog for simulation pipelines — invisible to GUIDE-LLM, but without it the benchmark partly measures luck in configuration lotteries rather than method quality. |
-
-**I · Reproducibility & frozen artifacts (GUIDE-LLM F.1, extended)**
-
-| Item | Name | What to report |
-|---|---|--------|
-| I.1 | Code & materials | Code, notebooks, prompts, and configuration shared (link / DOI), with secrets removed; determinism and seeds documented. |
-| I.2 ★ | Raw output logs | Complete, unprocessed model responses archived alongside the processed submission, hashed and time-stamped in the Zenodo deposit. Code is necessary but insufficient: when a hosted model is deprecated, the logs are what remains verifiable. Strongly required for Tiers 1–2; required for Tier 3 where intermediate generations exist. |
-| I.3 ★ | Computational resources | API-call counts, total tokens, financial cost, and compute time — a GUIDE-LLM optional item made standard here, since cost-per-fidelity is itself a benchmark dimension. |
-
-GUIDE-LLM optional items remain recommended where not already absorbed above: model-choice justification (performance, transparency, reproducibility, ethics, cost), prompt-design rationale, comparisons against other models or methods, and assessment of bias or systematic group differences in model behavior. A fillable template of this form (Markdown + machine-readable YAML) is provided in the tournament repository.
+The full item-by-item form—items 0.1 through I.3, with the tournament-specific extensions marked ★—is published in the [call for collaboration](index.html#registration-form). A fillable template (Markdown + machine-readable YAML) ships in the [tournament repository](https://github.com/janpfander/silicon-sample-submission).
 
 ### Disclosure policy — proprietary approaches
 
@@ -331,7 +228,7 @@ A submission is a Zenodo deposit (ideally generated from a release on a linked G
 
 ### Tier 1 — individual-level dataset
 
-One row per synthetic respondent, matching the structure of the cleaned analysis data (`cleaned_llm.rds` schema). Each team supplies its own synthetic respondents: `profile_id` is a team-assigned identifier, unique within the submission, and assignment of respondents to conditions (between-subjects, covering all 17 conditions) is the team's responsibility, registered under C.3/C.5.
+One row per synthetic respondent, matching the structure of the cleaned analysis data (`cleaned_llm.rds` schema). Each team supplies its own synthetic respondents: `profile_id` is a team-assigned identifier, unique within the submission, and assignment of respondents to conditions (between-subjects, covering all 17 conditions) is the team's responsibility, registered under C.4/C.6.
 
 | Column(s) | Type | Specification |
 |---|---|------|

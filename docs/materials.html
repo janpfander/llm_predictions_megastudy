@@ -157,10 +157,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Submission template</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./index.html#registration-form">
- <span class="dropdown-text">Registration form</span></a>
-  </li>  
-        <li>
     <a class="dropdown-item" href="./questionnaire.html">
  <span class="dropdown-text">Questionnaire</span></a>
   </li>  
@@ -194,7 +190,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
 <div class="quarto-title-block"><div><h1 class="title">Submission template</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
-<p class="subtitle lead">Everything participating teams need lives in one clone-able repository</p>
+<p class="subtitle lead">A working repository that holds your whole modelling approach</p>
 </div>
 
 
@@ -213,7 +209,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p>All working materials — the survey, the codebook, example submissions, the reporting checklist, and the scripts that clean and self-check a submission — live in a dedicated GitHub repository that <strong>is</strong> a submission template:</p>
 <p><a href="https://github.com/janpfander/silicon-sample-submission" class="btn btn-primary"><strong>github.com/janpfander/silicon-sample-submission</strong></a></p>
-<p>Clone it (or click <strong>“Use this template”</strong>), drop in your predictions, and release it to Zenodo — full step-by-step instructions are in the repository’s <code>README</code>. It ships with a random-placeholder example so a fresh clone already passes the self-check, showing you the exact target structure.</p>
+<section id="a-home-for-your-whole-pipeline-not-just-a-drop-box" class="level3">
+<h3 class="anchored" data-anchor-id="a-home-for-your-whole-pipeline-not-just-a-drop-box">A home for your whole pipeline, not just a drop-box</h3>
+<p>Clone it (or click <strong>“Use this template”</strong>) and do your actual work inside it: your simulation code, prompts, profile construction, intermediate data — whatever your approach involves. The repository can hold as much or as little as you like. In the end we read just two things from it: your <strong>prediction data</strong> and your <strong>report</strong> (<code>registration.md</code>). Everything else is yours to organize. Full step-by-step instructions are in the repository’s <code>README</code>.</p>
+</section>
+<section id="it-does-the-tedious-parts-for-you" class="level3">
+<h3 class="anchored" data-anchor-id="it-does-the-tedious-parts-for-you">It does the tedious parts for you</h3>
+<p>Two pieces are why working inside the template is worth it:</p>
+<ul>
+<li>an <strong>integrated cleaning script</strong> that turns raw Qualtrics-format output into the analysis-ready schema the locked analysis expects (composites, reverse-codes, <code>age_band</code>, …), so you don’t have to reconstruct it by hand;</li>
+<li>a <strong>submission check</strong> that validates file structure, coverage, and value ranges before you deposit.</li>
+</ul>
+<p>A random-placeholder example ships with the repo, so a fresh clone already passes the check — it shows you the exact target structure to aim for.</p>
+</section>
+<section id="blind-what-you-cant-share" class="level3">
+<h3 class="anchored" data-anchor-id="blind-what-you-cant-share">Blind what you can’t share</h3>
+<p>You can keep proprietary parts of your pipeline in the repository and simply <strong>gitignore</strong> them: your work stays in one place while only what you choose becomes public. This lets you respect the <a href="./index.html#disclosure">disclosure policy</a> — locked and verifiable is mandatory, public is not — without splitting your project across repositories.</p>
 <p>The <strong>submission file schemas</strong> and the <strong>human target sample</strong> (recruitment, census-based quotas, and the quota table) are specified in the <strong><a href="./amendment_preregistration.html">benchmark amendment</a></strong>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -225,13 +236,14 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>No participant pool is shipped.</strong> You build your own synthetic respondents — any source (a public survey such as GSS/ANES/Census, fully synthetic personas, or none) — and assign them to conditions yourself; declare your choice in registration item C.3. If you want to match the human target population, the amendment’s census-based quota table is available to sample against.</p>
+<p><strong>You build your own synthetic respondents.</strong> Generate them from any source — a public survey such as GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare your choice in registration item C.4. If you want to match the human target population, the amendment’s census-based quota table is available to sample against.</p>
 </div>
 </div>
 
 
 <!-- -->
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -692,7 +704,7 @@ Note
   </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Submission template"</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Everything participating teams need lives in one clone-able repository"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "A working repository that holds your whole modelling approach"</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">toc:</span><span class="co"> false</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="an">css:</span><span class="co"> tournament.css</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
@@ -703,19 +715,42 @@ Note
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">**github.com/janpfander/silicon-sample-submission**</span><span class="co">](https://github.com/janpfander/silicon-sample-submission)</span>{.btn .btn-primary}</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>Clone it (or click **“Use this template”**), drop in your predictions, and release it to Zenodo —</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>full step-by-step instructions are in the repository's <span class="in">`README`</span>. It ships with a random-placeholder</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>example so a fresh clone already passes the self-check, showing you the exact target structure.</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>The **submission file schemas** and the **human target sample** (recruitment, census-based quotas, and</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>the quota table) are specified in the **[benchmark amendment](amendment_preregistration.qmd)**.</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
-<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>**No participant pool is shipped.** You build your own synthetic respondents — any source (a public</span>
-<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>survey such as GSS/ANES/Census, fully synthetic personas, or none) — and assign them to conditions</span>
-<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>yourself; declare your choice in registration item C.3. If you want to match the human target</span>
-<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>population, the amendment's census-based quota table is available to sample against.</span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">### A home for your whole pipeline, not just a drop-box</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>Clone it (or click **“Use this template”**) and do your actual work inside it: your simulation code,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>prompts, profile construction, intermediate data — whatever your approach involves. The repository can</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>hold as much or as little as you like. In the end we read just two things from it: your **prediction</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>data** and your **report** (<span class="in">`registration.md`</span>). Everything else is yours to organize. Full</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>step-by-step instructions are in the repository's <span class="in">`README`</span>.</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="fu">### It does the tedious parts for you</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>Two pieces are why working inside the template is worth it:</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>an **integrated cleaning script** that turns raw Qualtrics-format output into the analysis-ready</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>  schema the locked analysis expects (composites, reverse-codes, <span class="in">`age_band`</span>, …), so you don't have to</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>  reconstruct it by hand;</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>a **submission check** that validates file structure, coverage, and value ranges before you deposit.</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>A random-placeholder example ships with the repo, so a fresh clone already passes the check — it shows</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>you the exact target structure to aim for.</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="fu">### Blind what you can't share</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>You can keep proprietary parts of your pipeline in the repository and simply **gitignore** them: your</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>work stays in one place while only what you choose becomes public. This lets you respect the</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">disclosure policy</span><span class="co">](index.qmd#disclosure)</span> — locked and verifiable is mandatory, public is not —</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>without splitting your project across repositories.</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>The **submission file schemas** and the **human target sample** (recruitment, census-based quotas, and</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>the quota table) are specified in the **[benchmark amendment](amendment_preregistration.qmd)**.</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>**You build your own synthetic respondents.** Generate them from any source — a public survey such as</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>your choice in registration item C.4. If you want to match the human target population, the</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>amendment's census-based quota table is available to sample against.</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
 <footer class="footer">

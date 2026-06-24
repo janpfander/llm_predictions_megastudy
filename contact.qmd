@@ -3,7 +3,7 @@ title: "Contact"
 toc: false
 ---
 
-Participation in the Silicon Sample Benchmark is by invitation. If you believe your team should be on the list, or you have questions about the [registration form](index.html#registration), the data schemas, or edge cases of the rules, get in touch with the core team.
+Participation in the Silicon Sample Benchmark is by invitation. If you believe your team should be on the list, or you have questions about the submission process, get in touch with the core team.
 
 Reach us at [\[contact-email\]](mailto:[contact-email]).
 
