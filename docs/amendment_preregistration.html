@@ -930,7 +930,7 @@ Table&nbsp;1: Sampling quota targets (N ≈ 18,000), from the 2024 U.S. Census B
 <h3 class="anchored" data-anchor-id="how-it-works">How it works</h3>
 <p>Participation is by invitation to teams with a track record in simulating human participants or forecasting experimental results. The procedure for each team is:</p>
 <ol type="1">
-<li><strong>Accept the invitation.</strong> Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, (optionally) our standardized profile pool, the registration template, and the submission validator.</li>
+<li><strong>Accept the invitation.</strong> Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, the registration template, and the submission validator. No participant pool is shipped—each team constructs its own profiles (see C.3).</li>
 <li><strong>Build the pipeline.</strong> Use any AI-based approach: any models, personas, prompts, fine-tuning, retrieval, or prior literature. Teams never receive any human outcome data.</li>
 <li><strong>Register &amp; lock.</strong> Complete the method-registration form (see <em>Method registration</em>), generate the predictions, and deposit both on Zenodo—publicly, or partly escrowed under the disclosure policy. The deposit is hashed and time-stamped before the prediction lock date.</li>
 <li><strong>Scoring &amp; publication.</strong> Once human data collection completes, every submission runs through the preregistered analysis pipeline unchanged. Results are reported on a public leaderboard alongside the human–human ceiling, and in a joint manuscript with all participating teams as co-authors.</li>
@@ -1221,7 +1221,7 @@ Note
 <tr class="odd">
 <td>C.3 ★</td>
 <td>Profile source</td>
-<td>Source of demographic profiles: the provided GSS-based pool / ANES / Census / other survey / fully synthetic / none. If the provided pool is not used as published — including its condition assignments — register the deviation and procedure.</td>
+<td>Source of demographic profiles you constructed: a public survey (e.g.&nbsp;GSS / ANES / Census), other survey, fully synthetic, or none. The benchmark ships no participant pool; report how you built yours, including how profiles were assigned to conditions.</td>
 </tr>
 <tr class="even">
 <td>C.4 ★</td>
@@ -1231,7 +1231,7 @@ Note
 <tr class="odd">
 <td>C.5 ★</td>
 <td>Assignment &amp; weighting</td>
-<td>Number of personas, assignment to conditions (between- vs.&nbsp;within-subjects), reuse across conditions, and any weighting or matching to a target population.</td>
+<td>Number of personas, assignment to conditions (between- vs.&nbsp;within-subjects)—the team’s responsibility, covering all 17 conditions—reuse across conditions, and any weighting or matching to a target population.</td>
 </tr>
 </tbody>
 </table>
@@ -1535,7 +1535,7 @@ Note
 </section>
 <section id="tier-1-individual-level-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="tier-1-individual-level-dataset">Tier 1 — individual-level dataset</h3>
-<p>One row per synthetic respondent, matching the structure of the cleaned analysis data (<code>cleaned_llm.rds</code> schema). Teams are strongly encouraged to use the published profile pool with its fixed condition assignments (N = 9,000), so that <code>profile_id</code> links submissions across teams; deviations must be registered under C.3/C.5.</p>
+<p>One row per synthetic respondent, matching the structure of the cleaned analysis data (<code>cleaned_llm.rds</code> schema). Each team supplies its own synthetic respondents: <code>profile_id</code> is a team-assigned identifier, unique within the submission, and assignment of respondents to conditions (between-subjects, covering all 17 conditions) is the team’s responsibility, registered under C.3/C.5.</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 25%">
@@ -1553,7 +1553,7 @@ Note
 <tr class="odd">
 <td><code>profile_id</code></td>
 <td>string</td>
-<td>ID from the published profile pool (or registered alternative).</td>
+<td>A unique respondent identifier you assign (unique within the submission).</td>
 </tr>
 <tr class="even">
 <td><code>condition</code></td>
@@ -1563,7 +1563,7 @@ Note
 <tr class="odd">
 <td><code>gender</code>, <code>age_band</code>, <code>race</code>, <code>education</code>, <code>income</code>, <code>party</code></td>
 <td>factor</td>
-<td>The six moderators, levels per codebook (derivable from the profile pool).</td>
+<td>The six moderators, levels per codebook (from your own profiles).</td>
 </tr>
 <tr class="even">
 <td><code>trust_multidimensional</code> + 12 trust items</td>
@@ -3148,7 +3148,7 @@ Feuerriegel, Stefan, Christopher Barrie, M. J. Crockett, Laura K. Globig, Killia
 <span id="cb10-118"><a href="#cb10-118" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-119"><a href="#cb10-119" aria-hidden="true" tabindex="-1"></a>Participation is by invitation to teams with a track record in simulating human participants or forecasting experimental results. The procedure for each team is:</span>
 <span id="cb10-120"><a href="#cb10-120" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Accept the invitation.** Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, (optionally) our standardized profile pool, the registration template, and the submission validator.</span>
+<span id="cb10-121"><a href="#cb10-121" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>**Accept the invitation.** Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, the registration template, and the submission validator. No participant pool is shipped—each team constructs its own profiles (see C.3).</span>
 <span id="cb10-122"><a href="#cb10-122" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>**Build the pipeline.** Use any AI-based approach: any models, personas, prompts, fine-tuning, retrieval, or prior literature. Teams never receive any human outcome data.</span>
 <span id="cb10-123"><a href="#cb10-123" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>**Register &amp; lock.** Complete the method-registration form (see *Method registration*), generate the predictions, and deposit both on Zenodo—publicly, or partly escrowed under the disclosure policy. The deposit is hashed and time-stamped before the prediction lock date.</span>
 <span id="cb10-124"><a href="#cb10-124" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>**Scoring &amp; publication.** Once human data collection completes, every submission runs through the preregistered analysis pipeline unchanged. Results are reported on a public leaderboard alongside the human–human ceiling, and in a joint manuscript with all participating teams as co-authors.</span>
@@ -3241,9 +3241,9 @@ Feuerriegel, Stefan, Christopher Barrie, M. J. Crockett, Laura K. Globig, Killia
 <span id="cb10-211"><a href="#cb10-211" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-212"><a href="#cb10-212" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Item <span class="pp">|</span> Name <span class="pp">|</span> What to report <span class="pp">|</span></span>
 <span id="cb10-213"><a href="#cb10-213" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|--------|</span></span>
-<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> C.3 ★ <span class="pp">|</span> Profile source <span class="pp">|</span> Source of demographic profiles: the provided GSS-based pool / ANES / Census / other survey / fully synthetic / none. If the provided pool is not used as published — including its condition assignments — register the deviation and procedure. <span class="pp">|</span></span>
+<span id="cb10-214"><a href="#cb10-214" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> C.3 ★ <span class="pp">|</span> Profile source <span class="pp">|</span> Source of demographic profiles you constructed: a public survey (e.g. GSS / ANES / Census), other survey, fully synthetic, or none. The benchmark ships no participant pool; report how you built yours, including how profiles were assigned to conditions. <span class="pp">|</span></span>
 <span id="cb10-215"><a href="#cb10-215" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> C.4 ★ <span class="pp">|</span> Profile verbalization <span class="pp">|</span> Which profile variables are encoded and exactly how they are rendered into text — fixed template vs. LLM-generated persona narratives (if the latter: the generating model and prompt, recursively subject to this form). <span class="pp">|</span></span>
-<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> C.5 ★ <span class="pp">|</span> Assignment &amp; weighting <span class="pp">|</span> Number of personas, assignment to conditions (between- vs. within-subjects), reuse across conditions, and any weighting or matching to a target population. <span class="pp">|</span></span>
+<span id="cb10-216"><a href="#cb10-216" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> C.5 ★ <span class="pp">|</span> Assignment &amp; weighting <span class="pp">|</span> Number of personas, assignment to conditions (between- vs. within-subjects)—the team's responsibility, covering all 17 conditions—reuse across conditions, and any weighting or matching to a target population. <span class="pp">|</span></span>
 <span id="cb10-217"><a href="#cb10-217" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-218"><a href="#cb10-218" aria-hidden="true" tabindex="-1"></a>**C★★ · Stimulus and survey administration ★**</span>
 <span id="cb10-219"><a href="#cb10-219" aria-hidden="true" tabindex="-1"></a></span>
@@ -3365,13 +3365,13 @@ Feuerriegel, Stefan, Christopher Barrie, M. J. Crockett, Laura K. Globig, Killia
 <span id="cb10-335"><a href="#cb10-335" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-336"><a href="#cb10-336" aria-hidden="true" tabindex="-1"></a><span class="fu">### Tier 1 — individual-level dataset</span></span>
 <span id="cb10-337"><a href="#cb10-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-338"><a href="#cb10-338" aria-hidden="true" tabindex="-1"></a>One row per synthetic respondent, matching the structure of the cleaned analysis data (<span class="in">`cleaned_llm.rds`</span> schema). Teams are strongly encouraged to use the published profile pool with its fixed condition assignments (N = 9,000), so that <span class="in">`profile_id`</span> links submissions across teams; deviations must be registered under C.3/C.5.</span>
+<span id="cb10-338"><a href="#cb10-338" aria-hidden="true" tabindex="-1"></a>One row per synthetic respondent, matching the structure of the cleaned analysis data (<span class="in">`cleaned_llm.rds`</span> schema). Each team supplies its own synthetic respondents: <span class="in">`profile_id`</span> is a team-assigned identifier, unique within the submission, and assignment of respondents to conditions (between-subjects, covering all 17 conditions) is the team's responsibility, registered under C.3/C.5.</span>
 <span id="cb10-339"><a href="#cb10-339" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb10-340"><a href="#cb10-340" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Column(s) <span class="pp">|</span> Type <span class="pp">|</span> Specification <span class="pp">|</span></span>
 <span id="cb10-341"><a href="#cb10-341" aria-hidden="true" tabindex="-1"></a><span class="pp">|---|---|------|</span></span>
-<span id="cb10-342"><a href="#cb10-342" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`profile_id`</span> <span class="pp">|</span> string <span class="pp">|</span> ID from the published profile pool (or registered alternative). <span class="pp">|</span></span>
+<span id="cb10-342"><a href="#cb10-342" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`profile_id`</span> <span class="pp">|</span> string <span class="pp">|</span> A unique respondent identifier you assign (unique within the submission). <span class="pp">|</span></span>
 <span id="cb10-343"><a href="#cb10-343" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`condition`</span> <span class="pp">|</span> factor <span class="pp">|</span> Control or one of the 16 intervention labels, exactly as in the codebook. <span class="pp">|</span></span>
-<span id="cb10-344"><a href="#cb10-344" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`gender`</span>, <span class="in">`age_band`</span>, <span class="in">`race`</span>, <span class="in">`education`</span>, <span class="in">`income`</span>, <span class="in">`party`</span> <span class="pp">|</span> factor <span class="pp">|</span> The six moderators, levels per codebook (derivable from the profile pool). <span class="pp">|</span></span>
+<span id="cb10-344"><a href="#cb10-344" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`gender`</span>, <span class="in">`age_band`</span>, <span class="in">`race`</span>, <span class="in">`education`</span>, <span class="in">`income`</span>, <span class="in">`party`</span> <span class="pp">|</span> factor <span class="pp">|</span> The six moderators, levels per codebook (from your own profiles). <span class="pp">|</span></span>
 <span id="cb10-345"><a href="#cb10-345" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`trust_multidimensional`</span> + 12 trust items <span class="pp">|</span> numeric <span class="pp">|</span> Primary composite 0–100; the 12 underlying items per codebook scale. <span class="pp">|</span></span>
 <span id="cb10-346"><a href="#cb10-346" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`trust_post`</span>, <span class="in">`distrust_post`</span>, <span class="in">`funding_perceptions`</span>, <span class="in">`policy_role_mean`</span>, <span class="in">`inst_trust_mean`</span> <span class="pp">|</span> numeric <span class="pp">|</span> Secondary outcomes, original scales per codebook. <span class="pp">|</span></span>
 <span id="cb10-347"><a href="#cb10-347" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> <span class="in">`belief_post`</span>, <span class="in">`concern_mean`</span>, <span class="in">`policy_general`</span>, <span class="in">`policy_specific_mean`</span>, <span class="in">`behavior_mean`</span> <span class="pp">|</span> numeric <span class="pp">|</span> Tertiary outcomes, original scales per codebook. <span class="pp">|</span></span>

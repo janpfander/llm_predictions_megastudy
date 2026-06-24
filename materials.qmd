@@ -17,3 +17,10 @@ example so a fresh clone already passes the self-check, showing you the exact ta
 
 The **submission file schemas** and the **human target sample** (recruitment, census-based quotas, and
 the quota table) are specified in the **[benchmark amendment](amendment_preregistration.qmd)**.
+
+::: {.callout-note}
+**No participant pool is shipped.** You build your own synthetic respondents — any source (a public
+survey such as GSS/ANES/Census, fully synthetic personas, or none) — and assign them to conditions
+yourself; declare your choice in registration item C.3. If you want to match the human target
+population, the amendment's census-based quota table is available to sample against.
+:::

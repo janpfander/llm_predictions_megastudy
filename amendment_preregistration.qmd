@@ -114,7 +114,7 @@ Gender, age, and race are the only mandatory survey items (needed to fill the qu
 
 Participation is by invitation to teams with a track record in simulating human participants or forecasting experimental results. The procedure for each team is:
 
-1. **Accept the invitation.** Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, (optionally) our standardized profile pool, the registration template, and the submission validator.
+1. **Accept the invitation.** Confirm the team and receive the materials package: the intervention texts, the full survey instrument, the codebook, the registration template, and the submission validator. No participant pool is shipped—each team constructs its own profiles (see C.3).
 2. **Build the pipeline.** Use any AI-based approach: any models, personas, prompts, fine-tuning, retrieval, or prior literature. Teams never receive any human outcome data.
 3. **Register & lock.** Complete the method-registration form (see *Method registration*), generate the predictions, and deposit both on Zenodo—publicly, or partly escrowed under the disclosure policy. The deposit is hashed and time-stamped before the prediction lock date.
 4. **Scoring & publication.** Once human data collection completes, every submission runs through the preregistered analysis pipeline unchanged. Results are reported on a public leaderboard alongside the human–human ceiling, and in a joint manuscript with all participating teams as co-authors.
@@ -207,9 +207,9 @@ Items concerning human participants or sensitive-data privacy (GUIDE-LLM D.1) ar
 
 | Item | Name | What to report |
 |---|---|--------|
-| C.3 ★ | Profile source | Source of demographic profiles: the provided GSS-based pool / ANES / Census / other survey / fully synthetic / none. If the provided pool is not used as published — including its condition assignments — register the deviation and procedure. |
+| C.3 ★ | Profile source | Source of demographic profiles you constructed: a public survey (e.g. GSS / ANES / Census), other survey, fully synthetic, or none. The benchmark ships no participant pool; report how you built yours, including how profiles were assigned to conditions. |
 | C.4 ★ | Profile verbalization | Which profile variables are encoded and exactly how they are rendered into text — fixed template vs. LLM-generated persona narratives (if the latter: the generating model and prompt, recursively subject to this form). |
-| C.5 ★ | Assignment & weighting | Number of personas, assignment to conditions (between- vs. within-subjects), reuse across conditions, and any weighting or matching to a target population. |
+| C.5 ★ | Assignment & weighting | Number of personas, assignment to conditions (between- vs. within-subjects)—the team's responsibility, covering all 17 conditions—reuse across conditions, and any weighting or matching to a target population. |
 
 **C★★ · Stimulus and survey administration ★**
 
@@ -331,13 +331,13 @@ A submission is a Zenodo deposit (ideally generated from a release on a linked G
 
 ### Tier 1 — individual-level dataset
 
-One row per synthetic respondent, matching the structure of the cleaned analysis data (`cleaned_llm.rds` schema). Teams are strongly encouraged to use the published profile pool with its fixed condition assignments (N = 9,000), so that `profile_id` links submissions across teams; deviations must be registered under C.3/C.5.
+One row per synthetic respondent, matching the structure of the cleaned analysis data (`cleaned_llm.rds` schema). Each team supplies its own synthetic respondents: `profile_id` is a team-assigned identifier, unique within the submission, and assignment of respondents to conditions (between-subjects, covering all 17 conditions) is the team's responsibility, registered under C.3/C.5.
 
 | Column(s) | Type | Specification |
 |---|---|------|
-| `profile_id` | string | ID from the published profile pool (or registered alternative). |
+| `profile_id` | string | A unique respondent identifier you assign (unique within the submission). |
 | `condition` | factor | Control or one of the 16 intervention labels, exactly as in the codebook. |
-| `gender`, `age_band`, `race`, `education`, `income`, `party` | factor | The six moderators, levels per codebook (derivable from the profile pool). |
+| `gender`, `age_band`, `race`, `education`, `income`, `party` | factor | The six moderators, levels per codebook (from your own profiles). |
 | `trust_multidimensional` + 12 trust items | numeric | Primary composite 0–100; the 12 underlying items per codebook scale. |
 | `trust_post`, `distrust_post`, `funding_perceptions`, `policy_role_mean`, `inst_trust_mean` | numeric | Secondary outcomes, original scales per codebook. |
 | `belief_post`, `concern_mean`, `policy_general`, `policy_specific_mean`, `behavior_mean` | numeric | Tertiary outcomes, original scales per codebook. |

@@ -190,9 +190,9 @@ format:
       <tr><td class="item-code">C.2</td><td>System-wide instructions</td><td>Any system-level instructions guiding the model's general behavior.</td></tr>
 
       <tr class="grp"><td colspan="3">C · Persona / profile construction <span class="small">(Tiers 1–2)</span></td></tr>
-      <tr><td class="item-code">C.3</td><td>Profile source</td><td>Source of demographic profiles: the provided GSS-based pool / ANES / Census / other survey / fully synthetic / none. If the provided pool is not used as published — including its condition assignments — register the deviation and procedure.</td></tr>
+      <tr><td class="item-code">C.3</td><td>Profile source</td><td>Source of demographic profiles you constructed: a public survey (e.g. GSS / ANES / Census), other survey, fully synthetic, or none. The benchmark ships no participant pool; report how you built yours, including how profiles were assigned to conditions.</td></tr>
       <tr><td class="item-code">C.4</td><td>Profile verbalization</td><td>Which profile variables are encoded and exactly how they are rendered into text — fixed template vs. LLM-generated persona narratives (if the latter: the generating model and prompt, recursively subject to this form).</td></tr>
-      <tr><td class="item-code">C.5</td><td>Assignment &amp; weighting</td><td>Number of personas, assignment to conditions (between- vs. within-subjects), reuse across conditions, and any weighting or matching to a target population.</td></tr>
+      <tr><td class="item-code">C.5</td><td>Assignment &amp; weighting</td><td>Number of personas, assignment to conditions (between- vs. within-subjects)—the team's responsibility, covering all 17 conditions—reuse across conditions, and any weighting or matching to a target population.</td></tr>
 
       <tr class="grp"><td colspan="3">C · Stimulus and survey administration</td></tr>
       <tr><td class="item-code">C.6</td><td>Stimulus presentation</td><td>How interventions are shown to the model: verbatim text vs. paraphrase or summary; how state-contingent content (e.g., the extreme-weather intervention) is handled.</td></tr>
@@ -293,13 +293,13 @@ format:
 <!-- ============================== STEPS ============================== -->
 <section id="steps">
   <div class="sec-head"><span class="no">05</span><h2>Steps</h2></div>
-  <p>Participation is by invitation. Once you accept, you build your pipeline with any AI-based approach — any models, personas, prompts, fine-tuning, retrieval, or prior literature — using the intervention texts, the full survey instrument, and (optionally) our standardized profile pool, but never any human outcome data. You then register the approach and deposit your predictions before the lock. The roadmap marks which milestones are your team's responsibility (<span class="who you">Your task</span>) and which are the core team's (<span class="who core">Core team</span>).</p>
+  <p>Participation is by invitation. Once you accept, you build your pipeline with any AI-based approach — any models, personas, prompts, fine-tuning, retrieval, or prior literature — using the intervention texts and the full survey instrument, and constructing your own participant profiles (the benchmark ships no pool), but never any human outcome data. You then register the approach and deposit your predictions before the lock. The roadmap marks which milestones are your team's responsibility (<span class="who you">Your task</span>) and which are the core team's (<span class="who core">Core team</span>).</p>
 
   <div class="timeline">
     <div class="tl-item">
       <span class="date">July 01, 2026 <span class="who core">Core team</span></span>
       <h4>Invitations &amp; materials</h4>
-      <p>Invited teams receive the intervention texts, the survey instrument, the profile pool, the codebook, the registration template, and the validator — never any human outcome data.</p>
+      <p>Invited teams receive the intervention texts, the survey instrument, the codebook, the registration template, and the validator — never a participant pool (teams build their own) and never any human outcome data.</p>
     </div>
     <div class="tl-item has-action">
       <div class="tl-body">
