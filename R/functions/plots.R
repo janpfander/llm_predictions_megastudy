@@ -400,3 +400,62 @@ plot_items_model <- function(predicted_effects,
 }
 
 
+# ---------------------------------------------------------------------------
+# Amendment addition (Silicon Sample Tournament leaderboard)
+#
+# Forest-plot leaderboard. Not used by the original preregistration. Each row
+# is a contribution (approach / team); one panel per evaluation metric. The
+# human–human ceiling is pinned at the top with a dotted vertical reference
+# line dropped from its value through the panel; an optional grey dotted null
+# line is drawn per metric where one is meaningful (omitted otherwise).
+#
+# `data` is long: submission, metric (factor; its levels set the panel order
+# and labels), value, lo, hi. `sort_metric` is the metric label used to order
+# the rows. `null_lines` is a named numeric keyed by metric label.
+# ---------------------------------------------------------------------------
+plot_leaderboard_forest <- function(data,
+                                    sort_metric,
+                                    ceiling_label = "Human–human ceiling",
+                                    null_lines    = NULL,
+                                    point_colour  = met.brewer("Egypt")[2]) {
+
+  # Row order: contributions ranked by `sort_metric`, ceiling pinned on top.
+  ranked <- data |>
+    filter(as.character(metric) == sort_metric, submission != ceiling_label) |>
+    arrange(value) |>
+    pull(submission) |>
+    unique()
+  data <- data |>
+    mutate(submission = factor(submission,
+                               levels = c(ranked, ceiling_label)))
+
+  ceiling_df <- data |>
+    filter(submission == ceiling_label) |>
+    distinct(metric, xint = value)
+
+  p <- ggplot(data, aes(x = value, y = submission))
+
+  if (!is.null(null_lines)) {
+    null_df <- tibble(metric = factor(names(null_lines),
+                                      levels = levels(data$metric)),
+                      xint   = unname(null_lines)) |>
+      filter(!is.na(metric))
+    p <- p + geom_vline(data = null_df, aes(xintercept = xint),
+                        linetype = "dotted", colour = "grey75", linewidth = 0.4)
+  }
+
+  p +
+    geom_vline(data = ceiling_df, aes(xintercept = xint),
+               linetype = "dotted", colour = "grey50", linewidth = 0.4) +
+    geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0,
+                   linewidth = 0.5, colour = "grey40") +
+    geom_point(aes(fill = submission == ceiling_label),
+               shape = 21, size = 2.4, colour = "white", stroke = 0.4) +
+    scale_fill_manual(values = c(`TRUE` = "grey20", `FALSE` = point_colour),
+                      guide = "none") +
+    facet_wrap(~ metric, scales = "free_x", nrow = 1) +
+    labs(x = NULL, y = NULL) +
+    plot_theme
+}
+
+

@@ -25,7 +25,6 @@ ul.task-list li input[type="checkbox"] {
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -247,7 +246,7 @@ ul.task-list li input[type="checkbox"] {
     <div class="tier">
       <span class="t-code">Tier 2 · Cell-level</span>
       <h4 class="anchored">Group-level predictions</h4>
-      <p>Predicted cell statistics — mean, SD, and effective N — per condition × outcome, and per condition × moderator-level × outcome. For approaches that simulate or reason about groups rather than individuals.</p>
+      <p>A predicted mean and a 95% prediction interval on that mean per cell — per condition × outcome, and per condition × moderator-level × outcome. For approaches that simulate or reason about groups rather than individuals.</p>
       <p><strong>Eligible for:</strong> ATEs, calibration, subgroup heterogeneity, and demographic baselines. Not eligible for distribution-shape metrics (OVL, KS) or predictability regressions.</p>
       <div class="grain">Grain: 1 row = 1 cell (condition × [moderator level ×] outcome)</div>
     </div>
@@ -324,7 +323,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 
   </div>
-  <p class="small">* For Tier 3, inferential agreement and equivalence (TOST) are evaluated against the submitted 95% prediction intervals rather than model-based standard errors. For Tiers 1–2, standard errors fall out of the fitted models, so no separate uncertainty input is required.</p>
+  <p class="small">* For Tiers 2 and 3, inferential agreement and equivalence (TOST) are evaluated against the submitted 95% prediction intervals rather than model-based standard errors. For Tier 1, standard errors fall out of the fitted models, so no separate uncertainty input is required.</p>
 </section>
 
 <!-- ============================== REGISTRATION ============================== -->
@@ -542,7 +541,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="odd">
 <td class="item-code">E.2</td>
 <td>Post-processing</td>
-<td>Parsing rules from raw output to response scales; handling of refusals, malformed, missing, and out-of-range responses (re-prompt / drop / clip / impute); any exclusion criteria; the resulting effective N per condition. Refusal handling alone can move distributions substantially — report counts.</td>
+<td>Parsing rules from raw output to response scales; handling of refusals, malformed, missing, and out-of-range responses (re-prompt / drop / clip / impute); any exclusion criteria. For approaches that generate individual responses, also report the resulting effective N per condition (counts of valid generations behind each cell — this is descriptive disclosure, not a scoring input). Refusal handling alone can move distributions substantially — report counts.</td>
 </tr>
 <tr class="even">
 <td class="item-code">E.3</td>
@@ -663,7 +662,7 @@ ul.task-list li input[type="checkbox"] {
     <p>Scoring follows the <a href="preregistration.html">preregistered analysis plan</a> without modification. A preregistered random seed splits the human sample in half. Every submission is scored against <strong>Human 1</strong>. The agreement between <strong>Human 1 and Human 2</strong> is the human–human baseline: how closely two independent halves of the human sample agree on the same estimands. This is a natural reference point for interpreting every method's scores, and it is reported in the same row format as every team.</p>
   </div>
 
-  <p>Every submission is scored against <strong>Human 1</strong> on every metric and comparison its <a href="#rules">tier</a> supports, across all 13 outcomes. The ATE-recovery ladder runs from least to most strict — knowing on which rung an approach breaks is more informative than any single pass/fail verdict.</p>
+  <p>Every submission is scored against <strong>Human 1</strong> on every metric and comparison its <a href="#rules">tier</a> supports, across all 13 outcomes. The ATE-recovery ladder runs from least to most strict — knowing on which rung an approach breaks is more informative than any single pass/fail verdict. The scored effect for each outcome is a <strong>between-subjects post-treatment contrast</strong> — the intervention-group mean minus the control-group mean. There is no baseline adjustment; the survey's pre-treatment measures are not used in scoring.</p>
   <div class="tbl-wrap">
   
 <table class="caption-top table">

@@ -999,3 +999,92 @@ compare_demographic_predictability <- function(human_data, llm_data,
     coefficients = map_dfr(results, "coefficients")
   )
 }
+
+
+# ---------------------------------------------------------------------------
+# Amendment additions (Silicon Sample Tournament leaderboard)
+#
+# These functions are NOT used by the original preregistration; they are added
+# for the cross-team leaderboard in `amendment_preregistration.qmd`. The
+# original preregistration reports the comparison metrics as point estimates
+# only — the bootstrap intervals below are introduced by the amendment so that
+# every approach can be shown on a forest plot with an uncertainty band.
+# ---------------------------------------------------------------------------
+
+# Pooled metric ladder for a set of intervention × outcome ATE pairs.
+# Expects pre-joined pairs with columns estimate_h, se_h, p_adj_h (reference =
+# Human 1) and estimate_l, se_l, infer_l (the submission). Mirrors
+# compare_estimates(), but operates on pairs pooled across outcomes. Pooled
+# RMSE is intentionally omitted (not comparable across outcome scales).
+pooled_metrics <- function(pairs) {
+  pairs |>
+    mutate(
+      delta      = 0.5 * abs(estimate_h),
+      diff       = estimate_h - estimate_l,
+      se_diff    = sqrt(se_h^2 + se_l^2),
+      p_tost     = pmax(pnorm((diff + delta) / se_diff, lower.tail = FALSE),
+                        pnorm((diff - delta) / se_diff)),
+      equivalent = p_tost < 0.05,
+      same_sign  = sign(estimate_h) == sign(estimate_l),
+      infer_h    = case_when(
+        !is.na(p_adj_h) & p_adj_h < .05 & estimate_h > 0 ~ "pos",
+        !is.na(p_adj_h) & p_adj_h < .05 & estimate_h < 0 ~ "neg",
+        TRUE                                             ~ "ns"
+      )
+    ) |>
+    summarise(
+      directional_pct = mean(same_sign, na.rm = TRUE) * 100,
+      spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
+                            use = "pairwise.complete.obs"),
+      pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs"),
+      inferential_pct = mean(infer_h == infer_l, na.rm = TRUE) * 100,
+      tost_pct        = mean(equivalent, na.rm = TRUE) * 100
+    )
+}
+
+# Signed-effect metrics for estimate-only pairs (no SE / inferential category).
+# Used for the subgroup-heterogeneity leaderboard, where the pooled comparison
+# mirrors the original preregistration's rq3 pooled row (directional agreement,
+# Spearman ρ, Pearson r only).
+signed_metrics <- function(pairs) {
+  pairs |>
+    summarise(
+      directional_pct = mean(sign(estimate_h) == sign(estimate_l), na.rm = TRUE) * 100,
+      spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
+                            use = "pairwise.complete.obs"),
+      pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs")
+    )
+}
+
+# Generic cluster bootstrap. Resamples the levels of `cluster` with
+# replacement, applies the summary function `f` (which returns a one-row tibble
+# of named metrics) to each replicate, and returns the point estimate (from `f`
+# on the full data) together with percentile confidence intervals, in long
+# form: one row per metric with columns value, lo, hi.
+cluster_boot <- function(df, f, cluster = "condition", n_boot = 1000,
+                         conf = 0.95, seed = 2026) {
+  if (!is.null(seed)) set.seed(seed)
+
+  point <- f(df) |>
+    pivot_longer(everything(), names_to = "metric", values_to = "value")
+
+  parts    <- split(df, as.character(df[[cluster]]))
+  cl_names <- names(parts)
+
+  boot <- map_dfr(seq_len(n_boot), function(b) {
+    drawn <- sample(cl_names, length(cl_names), replace = TRUE)
+    f(bind_rows(parts[drawn])) |>
+      pivot_longer(everything(), names_to = "metric", values_to = "value")
+  })
+
+  alpha <- (1 - conf) / 2
+  point |>
+    left_join(
+      boot |>
+        group_by(metric) |>
+        summarise(lo = quantile(value, alpha,     na.rm = TRUE),
+                  hi = quantile(value, 1 - alpha, na.rm = TRUE),
+                  .groups = "drop"),
+      by = "metric"
+    )
+}

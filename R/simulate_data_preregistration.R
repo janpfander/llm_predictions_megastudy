@@ -313,38 +313,130 @@ simulate_dataset <- function(seed) {
 # Generate and save both datasets
 ############################################################
 
-dir.create("data/simulation", showWarnings = FALSE, recursive = TRUE)
+# All mock datasets live alongside the other preregistration data, where both
+# preregistration.qmd and amendment_preregistration.qmd read them from.
+out_dir <- "data/simulation_preregistration"
+dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
 human_data <- simulate_dataset(seed = 123)
-saveRDS(human_data, "data/simulation/human_data_preregistration.rds")
-write_csv(human_data, "data/simulation/human_data_preregistration.csv")
+saveRDS(human_data, file.path(out_dir, "human_data_preregistration.rds"))
+write_csv(human_data, file.path(out_dir, "human_data_preregistration.csv"))
 cat("Human data saved. N =", nrow(human_data), "\n")
 
 llm_data <- simulate_dataset(seed = 456)
-saveRDS(llm_data, "data/simulation/llm_data_preregistration.rds")
-write_csv(llm_data, "data/simulation/llm_data_preregistration.csv")
+saveRDS(llm_data, file.path(out_dir, "llm_data_preregistration.rds"))
+write_csv(llm_data, file.path(out_dir, "llm_data_preregistration.csv"))
 cat("LLM data saved.   N =", nrow(llm_data), "\n")
 
 ############################################################
 # Multi-team placeholder data (amendment preregistration)
 #
-# Five mock prediction "teams", each a full LLM-style
-# simulation drawn with a distinct seed, stacked into one
-# dataset with a `team` label. This lets the cross-team
-# leaderboard code in amendment_preregistration.qmd run on
-# correctly structured placeholder data before any real
-# submissions exist.
+# Five mock prediction "teams" for the cross-team leaderboard
+# demonstration in amendment_preregistration.qmd. Rather than
+# re-simulating from scratch, each team is a stratified bootstrap
+# resample (within condition) of the single LLM placeholder
+# dataset above — the same individual-level data, re-sampled for
+# several teams. This keeps the design balanced and the teams
+# comparable, differing only by sampling noise, and avoids any
+# fresh mock-data simulation. ids are reassigned within team.
 ############################################################
+
+resample_team <- function(base_data, seed) {
+  set.seed(seed)
+  base_data |>
+    group_by(condition) |>
+    slice_sample(prop = 1, replace = TRUE) |>
+    ungroup() |>
+    mutate(id = row_number())
+}
 
 team_seeds <- set_names(4561:4565, paste0("team_", 1:5))
 
 llm_data_teams <- imap_dfr(team_seeds, function(seed, team_name) {
-  simulate_dataset(seed = seed) |>
+  resample_team(llm_data, seed = seed) |>
     mutate(team = team_name)
 }) |>
   mutate(team = factor(team, levels = names(team_seeds)))
 
-saveRDS(llm_data_teams, "data/simulation/llm_data_preregistration_teams.rds")
-write_csv(llm_data_teams, "data/simulation/llm_data_preregistration_teams.csv")
+saveRDS(llm_data_teams, file.path(out_dir, "llm_data_preregistration_teams.rds"))
+write_csv(llm_data_teams, file.path(out_dir, "llm_data_preregistration_teams.csv"))
 cat("Multi-team LLM data saved. N =", nrow(llm_data_teams),
     "across", length(team_seeds), "teams\n")
+
+############################################################
+# Mock Tier-2 and Tier-3 submissions (amendment preregistration)
+#
+# The amendment demonstrates all three tier code paths. Tier 1
+# is an individual-level dataset (the per-team data above, used
+# directly). Tiers 2 and 3 are collapsed views, generated here
+# rather than inside amendment_preregistration.qmd so that no
+# mock-data simulation lives in the preregistration scripts.
+#
+# The collapse logic mirrors the submission-template example
+# generator (silicon-sample-submission/maintainer/make_examples.R):
+# a Tier-2 cell-level file (mean plus a 95% PI on the cell mean) and
+# a Tier-3 effect-level file (ATE vs. control with a 95% PI).
+############################################################
+
+# Continuous outcomes the amendment leaderboard pools over.
+outcomes_continuous <- c(
+  "trust_multidimensional",
+  "trust_post", "distrust_post", "funding_perceptions",
+  "policy_role_mean", "inst_trust_mean",
+  "belief_post", "concern_mean", "policy_general",
+  "policy_specific_mean", "behavior_mean"
+)
+
+z95 <- qnorm(0.975)
+
+# Collapse one team's individual-level data to raw cell statistics
+# (condition x outcome). Internal helper: `sd` and `n` are used here to
+# derive the submitted schemas (a cell-mean PI for Tier 2, an effect PI
+# for Tier 3); they are not themselves part of any submission file.
+cell_stats <- function(team_data) {
+  team_data |>
+    select(condition, all_of(outcomes_continuous)) |>
+    pivot_longer(-condition, names_to = "outcome", values_to = "value") |>
+    group_by(condition, outcome) |>
+    summarise(
+      mean = mean(value, na.rm = TRUE),
+      sd   = sd(value, na.rm = TRUE),
+      n    = sum(!is.na(value)),
+      .groups = "drop"
+    )
+}
+
+# Mock Tier-2 submission: team_4 cell means with a widened 95% prediction
+# interval on each mean standing in for the team's epistemic uncertainty.
+# Submitted schema: condition, outcome, mean, pi_lower, pi_upper.
+cells_t2 <- cell_stats(llm_data_teams |> filter(team == "team_4")) |>
+  mutate(
+    se_mean  = sd / sqrt(n),
+    pi_lower = mean - z95 * 2 * se_mean,
+    pi_upper = mean + z95 * 2 * se_mean
+  ) |>
+  select(condition, outcome, mean, pi_lower, pi_upper)
+saveRDS(cells_t2, file.path(out_dir, "mock_submission_tier2_cells.rds"))
+
+# Mock Tier-3 submission: team_5 ATEs vs. control with a widened 95%
+# prediction interval standing in for a team's epistemic uncertainty.
+# Derived from the same raw cell statistics, as in make_examples.R.
+cells_team5  <- cell_stats(llm_data_teams |> filter(team == "team_5"))
+control_cells <- cells_team5 |>
+  filter(condition == "control") |>
+  transmute(outcome, mean_ctrl = mean, sd_ctrl = sd, n_ctrl = n)
+
+effects_t3 <- cells_team5 |>
+  filter(condition != "control") |>
+  left_join(control_cells, by = "outcome") |>
+  mutate(
+    ate      = mean - mean_ctrl,
+    se       = sqrt(sd^2 / n + sd_ctrl^2 / n_ctrl),
+    pi_lower = ate - z95 * 2 * se,
+    pi_upper = ate + z95 * 2 * se
+  ) |>
+  select(condition, outcome, ate, pi_lower, pi_upper)
+saveRDS(effects_t3, file.path(out_dir, "mock_submission_tier3_effects.rds"))
+
+cat("Mock Tier-2 cells saved.   rows =", nrow(cells_t2), "\n")
+cat("Mock Tier-3 effects saved. rows =", nrow(effects_t3), "\n")

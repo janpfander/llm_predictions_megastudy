@@ -18,6 +18,7 @@ website:
   navbar:
     background: dark
     foreground: light
+    pinned: true
     left:
       - text: "Home"
         href: index.qmd
