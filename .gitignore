@@ -33,3 +33,6 @@ slides/05_26_mpg_berlin.qmd
 docs/slides/05_26_mpg_berlin.html
 docs/slides/05_26_mpg_berlin_files/
 _freeze/slides/05_26_mpg_berlin/
+
+# Invitation emails: contact lists and send scripts stay local only.
+emails/
