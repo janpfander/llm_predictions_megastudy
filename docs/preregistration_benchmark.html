@@ -306,7 +306,7 @@ window.Quarto = {
 <div>
   <div class="abstract">
     <div class="block-title">Abstract</div>
-    <p>This is the preregistration for the <strong>Silicon Sample Benchmark</strong>, a multi-team prediction benchmark. We invite independent research teams to predict the results of a novel behavioral megastudy (16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample of ~18,000) using any AI-based approach they choose—behavioral clones, group-level simulation, or direct effect forecasting. Submissions enter at one of <strong>three tiers</strong> defined by the granularity of the prediction (individual-level synthetic data, cell-level statistics, or effect-level estimates with uncertainty intervals), and every approach is scored on the same preregistered metric ladder against the same human replication reference. This document is <strong>self-contained</strong>: it restates the full analysis plan so that a participating team never needs to consult the project’s earlier, single-team preregistration (v1); the section <em>About this preregistration</em> narrates what it keeps from v1 and what it changes. At the time of writing, human data are partially collected (~10,000 of the ~18,000 responses); none of these data have been shared, published, or made accessible to any prospective team, and no team will be granted access before the prediction lock. Before any human data are released, every team registers its approach using a standardized method-registration form (an extended version of the GUIDE-LLM reporting checklist) and deposits its predictions on Zenodo—publicly, or partly escrowed under a disclosure policy that keeps every entry locked and verifiable even where it cannot be fully public.</p>
+    <p>This is the preregistration for the <strong>Silicon Sample Benchmark</strong>, a multi-team prediction benchmark. We invite independent research teams to predict the results of a novel behavioral megastudy (16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample of ~18,000) using any AI-based approach they choose—behavioral clones, group-level simulation, or direct effect forecasting. Submissions enter at one of <strong>three tiers</strong> defined by the granularity of the prediction (individual-level synthetic data, cell-level statistics, or effect-level estimates with uncertainty intervals), and every approach is scored on the same preregistered metric ladder against the same human replication reference. This document is <strong>self-contained</strong>: it restates the full analysis plan so that a participating team never needs to consult the project’s earlier, single-team preregistration (v1); the section <em>About this preregistration</em> narrates what it keeps from v1 and what it changes. At the time of writing, human data are partially collected (~16,000 of the ~18,000 responses); none of these data have been shared, published, or made accessible to any prospective team, and no team will be granted access before the prediction lock. Before any human data are released, every team registers its approach using a standardized method-registration form (an extended version of the GUIDE-LLM reporting checklist) and deposits its predictions on Zenodo—publicly, or partly escrowed under a disclosure policy that keeps every entry locked and verifiable even where it cannot be fully public.</p>
   </div>
 </div>
 
@@ -870,8 +870,8 @@ Table&nbsp;2: Sampling quota targets (N ≈ 18,000), from the 2024 U.S. Census B
 <section id="benchmark-design" class="level2">
 <h2 class="anchored" data-anchor-id="benchmark-design">Benchmark design</h2>
 <p>Participation is by invitation. Each team builds an AI-based prediction pipeline from the shipped materials (intervention texts, the full survey instrument, the codebook, the registration template, and the validator).</p>
-<p>Teams can use any models, personas, prompts, fine-tuning, retrieval, or prior literature they want. They will receive <strong>no participant pool</strong> (each team builds its own profiles) and <strong>never any human outcome data</strong>. Before the deadline for the prediction lock, each team registers its approach by depositing its synthetic sample/predictions and materials on Zenodo, hashed and time-stamped. After the prediction lock deadline (and once the human data collection is finished), every submission runs through the preregistered analysis pipeline unchanged and is reported on a public leaderboard alongside the human replication reference, and in a joint manuscript with all participating teams as co-authors. Three ground rules define a valid entry and matter for the analysis. <strong>Blinding is absolute</strong>: no team accesses, solicits, or is shown any human outcome data before the lock (at registration time only ~10,000 of the planned ~18,000 responses had been collected and none released). Pipelines are <strong>AI-based and automated</strong>. <strong>Everything is registered though not necessarily public</strong> (see the disclosure policy below). The full procedure, ground rules, timeline, and incentives are in the <a href="index.html">call for participation</a>.</p>
-<p><strong>Organizer access and firewall.</strong> Blinding constrains the organizers too, so we state who has seen what. Interim human data (the ~10,000 responses collected at the time of writing) have been accessed only by the research lead, Jan Pfänder, for data-quality monitoring. As a result, members or affiliates of the core team who have had <strong>no access to any human outcome data</strong> may enter the benchmark as regular teams under the same rules as everyone else (same registration form, same blinding attestation, same deadlines).</p>
+<p>Teams can use any models, personas, prompts, fine-tuning, retrieval, or prior literature they want. They will receive <strong>no participant pool</strong> (each team builds its own profiles) and <strong>never any human outcome data</strong>. Before the deadline for the prediction lock, each team registers its approach by depositing its synthetic sample/predictions and materials on Zenodo, hashed and time-stamped. After the prediction lock deadline (and once the human data collection is finished), every submission runs through the preregistered analysis pipeline unchanged and is reported on a public leaderboard alongside the human replication reference, and in a joint manuscript with all participating teams as co-authors. Three ground rules define a valid entry and matter for the analysis. <strong>Blinding is absolute</strong>: no team accesses, solicits, or is shown any human outcome data before the lock (at registration time ~16,000 of the planned ~18,000 responses had been collected and none released). Pipelines are <strong>AI-based and automated</strong>. <strong>Everything is registered though not necessarily public</strong> (see the disclosure policy below). The full procedure, ground rules, timeline, and incentives are in the <a href="index.html">call for participation</a>.</p>
+<p><strong>Organizer access and firewall.</strong> Blinding constrains the organizers too, so we state who has seen what. Interim human data (the ~16,000 responses collected at the time of writing) have been accessed only by the research lead, Jan Pfänder, for data-quality monitoring. As a result, members or affiliates of the core team who have had <strong>no access to any human outcome data</strong> may enter the benchmark as regular teams under the same rules as everyone else (same registration form, same blinding attestation, same deadlines).</p>
 <p>For full disclosure, Jan Pfänder presented some very preliminary results (human megastudy sample at the time N ≈ 3000) from an initial simulation attempt (following preregistration <strong>v1</strong>) in a 5min talk at a closed academic workshop at the Max Planck Institute for Human Development in Berlin (May 2026). This is the only presentation that has targeted an audience of potential collaborators on the benchmark study. It focused on the prediction ability of the simulation approach and revealed nothing about how humans behaved in the megastudy. Two other talks were explicitly about the human megastudy results: Jan Pfänder presented preliminary results from the human megastudy at an invited talk at the Max Planck Institute for Human Development in Berlin (May 2026, N at the time ≈ 3000 of 22000), and at a small conference at the University of Hohenheim (June 2026, N at the time ≈ 13000 of 22000). No one in the audience of these talks will be invited to participate in the benchmark study. In addition, since we ask for extensive disclosure of materials, a “cheating” prompt (e.g., “make sure intervention XX does best”) would surface in the reporting framework that teams are required to fill out.</p>
 <section id="three-ways-to-compete" class="level3">
 <h3 class="anchored" data-anchor-id="three-ways-to-compete">Three ways to compete</h3>
@@ -1900,7 +1900,7 @@ Note
 <span id="cb34-57"><a href="#cb34-57" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb34-58"><a href="#cb34-58" aria-hidden="true" tabindex="-1"></a>outcome_label_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb34-59"><a href="#cb34-59" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_multidimensional =</span> <span class="st">"Multidimensional trust (primary)"</span>,</span>
-<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_post             =</span> <span class="st">"Overall trust"</span>,</span>
+<span id="cb34-60"><a href="#cb34-60" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_post             =</span> <span class="st">"Single-item trust"</span>,</span>
 <span id="cb34-61"><a href="#cb34-61" aria-hidden="true" tabindex="-1"></a>  <span class="at">distrust_post          =</span> <span class="st">"Distrust"</span>,</span>
 <span id="cb34-62"><a href="#cb34-62" aria-hidden="true" tabindex="-1"></a>  <span class="at">funding_perceptions    =</span> <span class="st">"Funding perceptions"</span>,</span>
 <span id="cb34-63"><a href="#cb34-63" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_role_mean       =</span> <span class="st">"Policy role"</span>,</span>
@@ -2297,23 +2297,23 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
 </figcaption>
 <div aria-describedby="tbl-field-summary-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="bitshmmoxg" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#bitshmmoxg table {
+<div id="bmileimrip" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bmileimrip table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#bitshmmoxg thead, #bitshmmoxg tbody, #bitshmmoxg tfoot, #bitshmmoxg tr, #bitshmmoxg td, #bitshmmoxg th {
+#bmileimrip thead, #bmileimrip tbody, #bmileimrip tfoot, #bmileimrip tr, #bmileimrip td, #bmileimrip th {
   border-style: none;
 }
 
-#bitshmmoxg p {
+#bmileimrip p {
   margin: 0;
   padding: 0;
 }
 
-#bitshmmoxg .gt_table {
+#bmileimrip .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2339,12 +2339,12 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-left-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_caption {
+#bmileimrip .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#bitshmmoxg .gt_title {
+#bmileimrip .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2356,7 +2356,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-bottom-width: 0;
 }
 
-#bitshmmoxg .gt_subtitle {
+#bmileimrip .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2368,7 +2368,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-top-width: 0;
 }
 
-#bitshmmoxg .gt_heading {
+#bmileimrip .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2380,13 +2380,13 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-right-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_bottom_border {
+#bmileimrip .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_col_headings {
+#bmileimrip .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2401,7 +2401,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-right-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_col_heading {
+#bmileimrip .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2421,7 +2421,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   overflow-x: hidden;
 }
 
-#bitshmmoxg .gt_column_spanner_outer {
+#bmileimrip .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2433,15 +2433,15 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   padding-right: 4px;
 }
 
-#bitshmmoxg .gt_column_spanner_outer:first-child {
+#bmileimrip .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#bitshmmoxg .gt_column_spanner_outer:last-child {
+#bmileimrip .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#bitshmmoxg .gt_column_spanner {
+#bmileimrip .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -2453,11 +2453,11 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   width: 100%;
 }
 
-#bitshmmoxg .gt_spanner_row {
+#bmileimrip .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#bitshmmoxg .gt_group_heading {
+#bmileimrip .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2483,7 +2483,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   text-align: left;
 }
 
-#bitshmmoxg .gt_empty_group_heading {
+#bmileimrip .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -2498,15 +2498,15 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   vertical-align: middle;
 }
 
-#bitshmmoxg .gt_from_md > :first-child {
+#bmileimrip .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#bitshmmoxg .gt_from_md > :last-child {
+#bmileimrip .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#bitshmmoxg .gt_row {
+#bmileimrip .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2525,7 +2525,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   overflow-x: hidden;
 }
 
-#bitshmmoxg .gt_stub {
+#bmileimrip .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2538,7 +2538,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   padding-right: 5px;
 }
 
-#bitshmmoxg .gt_stub_row_group {
+#bmileimrip .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -2552,15 +2552,15 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   vertical-align: top;
 }
 
-#bitshmmoxg .gt_row_group_first td {
+#bmileimrip .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#bitshmmoxg .gt_row_group_first th {
+#bmileimrip .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#bitshmmoxg .gt_summary_row {
+#bmileimrip .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2570,16 +2570,16 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   padding-right: 5px;
 }
 
-#bitshmmoxg .gt_first_summary_row {
+#bmileimrip .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_first_summary_row.thick {
+#bmileimrip .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#bitshmmoxg .gt_last_summary_row {
+#bmileimrip .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2589,7 +2589,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-bottom-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_grand_summary_row {
+#bmileimrip .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -2599,7 +2599,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   padding-right: 5px;
 }
 
-#bitshmmoxg .gt_first_grand_summary_row {
+#bmileimrip .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2609,7 +2609,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-top-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_last_grand_summary_row_top {
+#bmileimrip .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -2619,11 +2619,11 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-bottom-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_striped {
+#bmileimrip .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#bitshmmoxg .gt_table_body {
+#bmileimrip .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2632,7 +2632,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-bottom-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_footnotes {
+#bmileimrip .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2646,7 +2646,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-right-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_footnote {
+#bmileimrip .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -2655,7 +2655,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   padding-right: 5px;
 }
 
-#bitshmmoxg .gt_sourcenotes {
+#bmileimrip .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -2669,7 +2669,7 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   border-right-color: #D3D3D3;
 }
 
-#bitshmmoxg .gt_sourcenote {
+#bmileimrip .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -2677,72 +2677,72 @@ Table&nbsp;3: Field summary (placeholder data): centre and spread of each pooled
   padding-right: 5px;
 }
 
-#bitshmmoxg .gt_left {
+#bmileimrip .gt_left {
   text-align: left;
 }
 
-#bitshmmoxg .gt_center {
+#bmileimrip .gt_center {
   text-align: center;
 }
 
-#bitshmmoxg .gt_right {
+#bmileimrip .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#bitshmmoxg .gt_font_normal {
+#bmileimrip .gt_font_normal {
   font-weight: normal;
 }
 
-#bitshmmoxg .gt_font_bold {
+#bmileimrip .gt_font_bold {
   font-weight: bold;
 }
 
-#bitshmmoxg .gt_font_italic {
+#bmileimrip .gt_font_italic {
   font-style: italic;
 }
 
-#bitshmmoxg .gt_super {
+#bmileimrip .gt_super {
   font-size: 65%;
 }
 
-#bitshmmoxg .gt_footnote_marks {
+#bmileimrip .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#bitshmmoxg .gt_asterisk {
+#bmileimrip .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#bitshmmoxg .gt_indent_1 {
+#bmileimrip .gt_indent_1 {
   text-indent: 5px;
 }
 
-#bitshmmoxg .gt_indent_2 {
+#bmileimrip .gt_indent_2 {
   text-indent: 10px;
 }
 
-#bitshmmoxg .gt_indent_3 {
+#bmileimrip .gt_indent_3 {
   text-indent: 15px;
 }
 
-#bitshmmoxg .gt_indent_4 {
+#bmileimrip .gt_indent_4 {
   text-indent: 20px;
 }
 
-#bitshmmoxg .gt_indent_5 {
+#bmileimrip .gt_indent_5 {
   text-indent: 25px;
 }
 
-#bitshmmoxg .katex-display {
+#bmileimrip .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#bitshmmoxg div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#bmileimrip div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -2876,23 +2876,23 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
 </figcaption>
 <div aria-describedby="tbl-topk-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="rzwyzkhbjc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rzwyzkhbjc table {
+<div id="greekdqhic" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#greekdqhic table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#rzwyzkhbjc thead, #rzwyzkhbjc tbody, #rzwyzkhbjc tfoot, #rzwyzkhbjc tr, #rzwyzkhbjc td, #rzwyzkhbjc th {
+#greekdqhic thead, #greekdqhic tbody, #greekdqhic tfoot, #greekdqhic tr, #greekdqhic td, #greekdqhic th {
   border-style: none;
 }
 
-#rzwyzkhbjc p {
+#greekdqhic p {
   margin: 0;
   padding: 0;
 }
 
-#rzwyzkhbjc .gt_table {
+#greekdqhic .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -2918,12 +2918,12 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-left-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_caption {
+#greekdqhic .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#rzwyzkhbjc .gt_title {
+#greekdqhic .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -2935,7 +2935,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-bottom-width: 0;
 }
 
-#rzwyzkhbjc .gt_subtitle {
+#greekdqhic .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -2947,7 +2947,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-top-width: 0;
 }
 
-#rzwyzkhbjc .gt_heading {
+#greekdqhic .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -2959,13 +2959,13 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-right-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_bottom_border {
+#greekdqhic .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_col_headings {
+#greekdqhic .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -2980,7 +2980,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-right-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_col_heading {
+#greekdqhic .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3000,7 +3000,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   overflow-x: hidden;
 }
 
-#rzwyzkhbjc .gt_column_spanner_outer {
+#greekdqhic .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3012,15 +3012,15 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   padding-right: 4px;
 }
 
-#rzwyzkhbjc .gt_column_spanner_outer:first-child {
+#greekdqhic .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#rzwyzkhbjc .gt_column_spanner_outer:last-child {
+#greekdqhic .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#rzwyzkhbjc .gt_column_spanner {
+#greekdqhic .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3032,11 +3032,11 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   width: 100%;
 }
 
-#rzwyzkhbjc .gt_spanner_row {
+#greekdqhic .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#rzwyzkhbjc .gt_group_heading {
+#greekdqhic .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3062,7 +3062,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   text-align: left;
 }
 
-#rzwyzkhbjc .gt_empty_group_heading {
+#greekdqhic .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3077,15 +3077,15 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   vertical-align: middle;
 }
 
-#rzwyzkhbjc .gt_from_md > :first-child {
+#greekdqhic .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#rzwyzkhbjc .gt_from_md > :last-child {
+#greekdqhic .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#rzwyzkhbjc .gt_row {
+#greekdqhic .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3104,7 +3104,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   overflow-x: hidden;
 }
 
-#rzwyzkhbjc .gt_stub {
+#greekdqhic .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3117,7 +3117,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   padding-right: 5px;
 }
 
-#rzwyzkhbjc .gt_stub_row_group {
+#greekdqhic .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3131,15 +3131,15 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   vertical-align: top;
 }
 
-#rzwyzkhbjc .gt_row_group_first td {
+#greekdqhic .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#rzwyzkhbjc .gt_row_group_first th {
+#greekdqhic .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#rzwyzkhbjc .gt_summary_row {
+#greekdqhic .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3149,16 +3149,16 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   padding-right: 5px;
 }
 
-#rzwyzkhbjc .gt_first_summary_row {
+#greekdqhic .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_first_summary_row.thick {
+#greekdqhic .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#rzwyzkhbjc .gt_last_summary_row {
+#greekdqhic .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3168,7 +3168,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-bottom-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_grand_summary_row {
+#greekdqhic .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3178,7 +3178,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   padding-right: 5px;
 }
 
-#rzwyzkhbjc .gt_first_grand_summary_row {
+#greekdqhic .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3188,7 +3188,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-top-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_last_grand_summary_row_top {
+#greekdqhic .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3198,11 +3198,11 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-bottom-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_striped {
+#greekdqhic .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#rzwyzkhbjc .gt_table_body {
+#greekdqhic .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3211,7 +3211,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-bottom-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_footnotes {
+#greekdqhic .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3225,7 +3225,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-right-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_footnote {
+#greekdqhic .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -3234,7 +3234,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   padding-right: 5px;
 }
 
-#rzwyzkhbjc .gt_sourcenotes {
+#greekdqhic .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3248,7 +3248,7 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   border-right-color: #D3D3D3;
 }
 
-#rzwyzkhbjc .gt_sourcenote {
+#greekdqhic .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3256,72 +3256,72 @@ Table&nbsp;4: Top-3 intervention selection (placeholder data): per approach, the
   padding-right: 5px;
 }
 
-#rzwyzkhbjc .gt_left {
+#greekdqhic .gt_left {
   text-align: left;
 }
 
-#rzwyzkhbjc .gt_center {
+#greekdqhic .gt_center {
   text-align: center;
 }
 
-#rzwyzkhbjc .gt_right {
+#greekdqhic .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#rzwyzkhbjc .gt_font_normal {
+#greekdqhic .gt_font_normal {
   font-weight: normal;
 }
 
-#rzwyzkhbjc .gt_font_bold {
+#greekdqhic .gt_font_bold {
   font-weight: bold;
 }
 
-#rzwyzkhbjc .gt_font_italic {
+#greekdqhic .gt_font_italic {
   font-style: italic;
 }
 
-#rzwyzkhbjc .gt_super {
+#greekdqhic .gt_super {
   font-size: 65%;
 }
 
-#rzwyzkhbjc .gt_footnote_marks {
+#greekdqhic .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#rzwyzkhbjc .gt_asterisk {
+#greekdqhic .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#rzwyzkhbjc .gt_indent_1 {
+#greekdqhic .gt_indent_1 {
   text-indent: 5px;
 }
 
-#rzwyzkhbjc .gt_indent_2 {
+#greekdqhic .gt_indent_2 {
   text-indent: 10px;
 }
 
-#rzwyzkhbjc .gt_indent_3 {
+#greekdqhic .gt_indent_3 {
   text-indent: 15px;
 }
 
-#rzwyzkhbjc .gt_indent_4 {
+#greekdqhic .gt_indent_4 {
   text-indent: 20px;
 }
 
-#rzwyzkhbjc .gt_indent_5 {
+#greekdqhic .gt_indent_5 {
   text-indent: 25px;
 }
 
-#rzwyzkhbjc .katex-display {
+#greekdqhic .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#rzwyzkhbjc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#greekdqhic div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -3672,23 +3672,23 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
 </figcaption>
 <div aria-describedby="tbl-field-by-outcome-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="rlqcibygiw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#rlqcibygiw table {
+<div id="wtifdyoaxl" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#wtifdyoaxl table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#rlqcibygiw thead, #rlqcibygiw tbody, #rlqcibygiw tfoot, #rlqcibygiw tr, #rlqcibygiw td, #rlqcibygiw th {
+#wtifdyoaxl thead, #wtifdyoaxl tbody, #wtifdyoaxl tfoot, #wtifdyoaxl tr, #wtifdyoaxl td, #wtifdyoaxl th {
   border-style: none;
 }
 
-#rlqcibygiw p {
+#wtifdyoaxl p {
   margin: 0;
   padding: 0;
 }
 
-#rlqcibygiw .gt_table {
+#wtifdyoaxl .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -3714,12 +3714,12 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-left-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_caption {
+#wtifdyoaxl .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#rlqcibygiw .gt_title {
+#wtifdyoaxl .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3731,7 +3731,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-bottom-width: 0;
 }
 
-#rlqcibygiw .gt_subtitle {
+#wtifdyoaxl .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3743,7 +3743,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-top-width: 0;
 }
 
-#rlqcibygiw .gt_heading {
+#wtifdyoaxl .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3755,13 +3755,13 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-right-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_bottom_border {
+#wtifdyoaxl .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_col_headings {
+#wtifdyoaxl .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3776,7 +3776,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-right-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_col_heading {
+#wtifdyoaxl .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3796,7 +3796,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   overflow-x: hidden;
 }
 
-#rlqcibygiw .gt_column_spanner_outer {
+#wtifdyoaxl .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3808,15 +3808,15 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   padding-right: 4px;
 }
 
-#rlqcibygiw .gt_column_spanner_outer:first-child {
+#wtifdyoaxl .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#rlqcibygiw .gt_column_spanner_outer:last-child {
+#wtifdyoaxl .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#rlqcibygiw .gt_column_spanner {
+#wtifdyoaxl .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3828,11 +3828,11 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   width: 100%;
 }
 
-#rlqcibygiw .gt_spanner_row {
+#wtifdyoaxl .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#rlqcibygiw .gt_group_heading {
+#wtifdyoaxl .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3858,7 +3858,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   text-align: left;
 }
 
-#rlqcibygiw .gt_empty_group_heading {
+#wtifdyoaxl .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3873,15 +3873,15 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   vertical-align: middle;
 }
 
-#rlqcibygiw .gt_from_md > :first-child {
+#wtifdyoaxl .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#rlqcibygiw .gt_from_md > :last-child {
+#wtifdyoaxl .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#rlqcibygiw .gt_row {
+#wtifdyoaxl .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3900,7 +3900,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   overflow-x: hidden;
 }
 
-#rlqcibygiw .gt_stub {
+#wtifdyoaxl .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3913,7 +3913,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   padding-right: 5px;
 }
 
-#rlqcibygiw .gt_stub_row_group {
+#wtifdyoaxl .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3927,15 +3927,15 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   vertical-align: top;
 }
 
-#rlqcibygiw .gt_row_group_first td {
+#wtifdyoaxl .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#rlqcibygiw .gt_row_group_first th {
+#wtifdyoaxl .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#rlqcibygiw .gt_summary_row {
+#wtifdyoaxl .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3945,16 +3945,16 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   padding-right: 5px;
 }
 
-#rlqcibygiw .gt_first_summary_row {
+#wtifdyoaxl .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_first_summary_row.thick {
+#wtifdyoaxl .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#rlqcibygiw .gt_last_summary_row {
+#wtifdyoaxl .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3964,7 +3964,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-bottom-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_grand_summary_row {
+#wtifdyoaxl .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3974,7 +3974,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   padding-right: 5px;
 }
 
-#rlqcibygiw .gt_first_grand_summary_row {
+#wtifdyoaxl .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3984,7 +3984,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-top-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_last_grand_summary_row_top {
+#wtifdyoaxl .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3994,11 +3994,11 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-bottom-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_striped {
+#wtifdyoaxl .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#rlqcibygiw .gt_table_body {
+#wtifdyoaxl .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4007,7 +4007,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-bottom-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_footnotes {
+#wtifdyoaxl .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4021,7 +4021,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-right-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_footnote {
+#wtifdyoaxl .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4030,7 +4030,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   padding-right: 5px;
 }
 
-#rlqcibygiw .gt_sourcenotes {
+#wtifdyoaxl .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4044,7 +4044,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   border-right-color: #D3D3D3;
 }
 
-#rlqcibygiw .gt_sourcenote {
+#wtifdyoaxl .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4052,72 +4052,72 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
   padding-right: 5px;
 }
 
-#rlqcibygiw .gt_left {
+#wtifdyoaxl .gt_left {
   text-align: left;
 }
 
-#rlqcibygiw .gt_center {
+#wtifdyoaxl .gt_center {
   text-align: center;
 }
 
-#rlqcibygiw .gt_right {
+#wtifdyoaxl .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#rlqcibygiw .gt_font_normal {
+#wtifdyoaxl .gt_font_normal {
   font-weight: normal;
 }
 
-#rlqcibygiw .gt_font_bold {
+#wtifdyoaxl .gt_font_bold {
   font-weight: bold;
 }
 
-#rlqcibygiw .gt_font_italic {
+#wtifdyoaxl .gt_font_italic {
   font-style: italic;
 }
 
-#rlqcibygiw .gt_super {
+#wtifdyoaxl .gt_super {
   font-size: 65%;
 }
 
-#rlqcibygiw .gt_footnote_marks {
+#wtifdyoaxl .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#rlqcibygiw .gt_asterisk {
+#wtifdyoaxl .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#rlqcibygiw .gt_indent_1 {
+#wtifdyoaxl .gt_indent_1 {
   text-indent: 5px;
 }
 
-#rlqcibygiw .gt_indent_2 {
+#wtifdyoaxl .gt_indent_2 {
   text-indent: 10px;
 }
 
-#rlqcibygiw .gt_indent_3 {
+#wtifdyoaxl .gt_indent_3 {
   text-indent: 15px;
 }
 
-#rlqcibygiw .gt_indent_4 {
+#wtifdyoaxl .gt_indent_4 {
   text-indent: 20px;
 }
 
-#rlqcibygiw .gt_indent_5 {
+#wtifdyoaxl .gt_indent_5 {
   text-indent: 25px;
 }
 
-#rlqcibygiw .katex-display {
+#wtifdyoaxl .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#rlqcibygiw div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#wtifdyoaxl div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -4149,7 +4149,7 @@ Table&nbsp;5: Field summary by outcome (placeholder data): median across approac
 <td class="gt_row gt_right" headers="TOST %">100 (100)</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center" headers="outcome">Overall trust</td>
+<td class="gt_row gt_center" headers="outcome">Single-item trust</td>
 <td class="gt_row gt_right" headers="Directional %">48 (50)</td>
 <td class="gt_row gt_right" headers="Spearman ρ">0.03 (-0.00)</td>
 <td class="gt_row gt_right" headers="Pearson r">0.10 (0.06)</td>
@@ -4304,23 +4304,23 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
 </figcaption>
 <div aria-describedby="tbl-field-by-intervention-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="cghpnnawfo" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#cghpnnawfo table {
+<div id="fmdhfxpfqs" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#fmdhfxpfqs table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#cghpnnawfo thead, #cghpnnawfo tbody, #cghpnnawfo tfoot, #cghpnnawfo tr, #cghpnnawfo td, #cghpnnawfo th {
+#fmdhfxpfqs thead, #fmdhfxpfqs tbody, #fmdhfxpfqs tfoot, #fmdhfxpfqs tr, #fmdhfxpfqs td, #fmdhfxpfqs th {
   border-style: none;
 }
 
-#cghpnnawfo p {
+#fmdhfxpfqs p {
   margin: 0;
   padding: 0;
 }
 
-#cghpnnawfo .gt_table {
+#fmdhfxpfqs .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -4346,12 +4346,12 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-left-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_caption {
+#fmdhfxpfqs .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cghpnnawfo .gt_title {
+#fmdhfxpfqs .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -4363,7 +4363,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-bottom-width: 0;
 }
 
-#cghpnnawfo .gt_subtitle {
+#fmdhfxpfqs .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -4375,7 +4375,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-top-width: 0;
 }
 
-#cghpnnawfo .gt_heading {
+#fmdhfxpfqs .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -4387,13 +4387,13 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-right-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_bottom_border {
+#fmdhfxpfqs .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_col_headings {
+#fmdhfxpfqs .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4408,7 +4408,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-right-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_col_heading {
+#fmdhfxpfqs .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4428,7 +4428,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   overflow-x: hidden;
 }
 
-#cghpnnawfo .gt_column_spanner_outer {
+#fmdhfxpfqs .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4440,15 +4440,15 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   padding-right: 4px;
 }
 
-#cghpnnawfo .gt_column_spanner_outer:first-child {
+#fmdhfxpfqs .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cghpnnawfo .gt_column_spanner_outer:last-child {
+#fmdhfxpfqs .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cghpnnawfo .gt_column_spanner {
+#fmdhfxpfqs .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -4460,11 +4460,11 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   width: 100%;
 }
 
-#cghpnnawfo .gt_spanner_row {
+#fmdhfxpfqs .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#cghpnnawfo .gt_group_heading {
+#fmdhfxpfqs .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4490,7 +4490,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   text-align: left;
 }
 
-#cghpnnawfo .gt_empty_group_heading {
+#fmdhfxpfqs .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -4505,15 +4505,15 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   vertical-align: middle;
 }
 
-#cghpnnawfo .gt_from_md > :first-child {
+#fmdhfxpfqs .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cghpnnawfo .gt_from_md > :last-child {
+#fmdhfxpfqs .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cghpnnawfo .gt_row {
+#fmdhfxpfqs .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4532,7 +4532,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   overflow-x: hidden;
 }
 
-#cghpnnawfo .gt_stub {
+#fmdhfxpfqs .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4545,7 +4545,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   padding-right: 5px;
 }
 
-#cghpnnawfo .gt_stub_row_group {
+#fmdhfxpfqs .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -4559,15 +4559,15 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   vertical-align: top;
 }
 
-#cghpnnawfo .gt_row_group_first td {
+#fmdhfxpfqs .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cghpnnawfo .gt_row_group_first th {
+#fmdhfxpfqs .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#cghpnnawfo .gt_summary_row {
+#fmdhfxpfqs .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4577,16 +4577,16 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   padding-right: 5px;
 }
 
-#cghpnnawfo .gt_first_summary_row {
+#fmdhfxpfqs .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_first_summary_row.thick {
+#fmdhfxpfqs .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cghpnnawfo .gt_last_summary_row {
+#fmdhfxpfqs .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4596,7 +4596,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-bottom-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_grand_summary_row {
+#fmdhfxpfqs .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -4606,7 +4606,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   padding-right: 5px;
 }
 
-#cghpnnawfo .gt_first_grand_summary_row {
+#fmdhfxpfqs .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4616,7 +4616,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-top-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_last_grand_summary_row_top {
+#fmdhfxpfqs .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -4626,11 +4626,11 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-bottom-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_striped {
+#fmdhfxpfqs .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cghpnnawfo .gt_table_body {
+#fmdhfxpfqs .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -4639,7 +4639,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-bottom-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_footnotes {
+#fmdhfxpfqs .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4653,7 +4653,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-right-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_footnote {
+#fmdhfxpfqs .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -4662,7 +4662,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   padding-right: 5px;
 }
 
-#cghpnnawfo .gt_sourcenotes {
+#fmdhfxpfqs .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -4676,7 +4676,7 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   border-right-color: #D3D3D3;
 }
 
-#cghpnnawfo .gt_sourcenote {
+#fmdhfxpfqs .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -4684,72 +4684,72 @@ Table&nbsp;6: Field summary by intervention (placeholder data): median across ap
   padding-right: 5px;
 }
 
-#cghpnnawfo .gt_left {
+#fmdhfxpfqs .gt_left {
   text-align: left;
 }
 
-#cghpnnawfo .gt_center {
+#fmdhfxpfqs .gt_center {
   text-align: center;
 }
 
-#cghpnnawfo .gt_right {
+#fmdhfxpfqs .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cghpnnawfo .gt_font_normal {
+#fmdhfxpfqs .gt_font_normal {
   font-weight: normal;
 }
 
-#cghpnnawfo .gt_font_bold {
+#fmdhfxpfqs .gt_font_bold {
   font-weight: bold;
 }
 
-#cghpnnawfo .gt_font_italic {
+#fmdhfxpfqs .gt_font_italic {
   font-style: italic;
 }
 
-#cghpnnawfo .gt_super {
+#fmdhfxpfqs .gt_super {
   font-size: 65%;
 }
 
-#cghpnnawfo .gt_footnote_marks {
+#fmdhfxpfqs .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#cghpnnawfo .gt_asterisk {
+#fmdhfxpfqs .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cghpnnawfo .gt_indent_1 {
+#fmdhfxpfqs .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cghpnnawfo .gt_indent_2 {
+#fmdhfxpfqs .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cghpnnawfo .gt_indent_3 {
+#fmdhfxpfqs .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cghpnnawfo .gt_indent_4 {
+#fmdhfxpfqs .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cghpnnawfo .gt_indent_5 {
+#fmdhfxpfqs .gt_indent_5 {
   text-indent: 25px;
 }
 
-#cghpnnawfo .katex-display {
+#fmdhfxpfqs .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#cghpnnawfo div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#fmdhfxpfqs div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -5107,23 +5107,23 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
 </figcaption>
 <div aria-describedby="tbl-field-subgroup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="zmjojziquy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#zmjojziquy table {
+<div id="qtfeqctoqh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#qtfeqctoqh table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#zmjojziquy thead, #zmjojziquy tbody, #zmjojziquy tfoot, #zmjojziquy tr, #zmjojziquy td, #zmjojziquy th {
+#qtfeqctoqh thead, #qtfeqctoqh tbody, #qtfeqctoqh tfoot, #qtfeqctoqh tr, #qtfeqctoqh td, #qtfeqctoqh th {
   border-style: none;
 }
 
-#zmjojziquy p {
+#qtfeqctoqh p {
   margin: 0;
   padding: 0;
 }
 
-#zmjojziquy .gt_table {
+#qtfeqctoqh .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -5149,12 +5149,12 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-left-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_caption {
+#qtfeqctoqh .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#zmjojziquy .gt_title {
+#qtfeqctoqh .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -5166,7 +5166,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-bottom-width: 0;
 }
 
-#zmjojziquy .gt_subtitle {
+#qtfeqctoqh .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -5178,7 +5178,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-top-width: 0;
 }
 
-#zmjojziquy .gt_heading {
+#qtfeqctoqh .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -5190,13 +5190,13 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-right-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_bottom_border {
+#qtfeqctoqh .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_col_headings {
+#qtfeqctoqh .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5211,7 +5211,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-right-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_col_heading {
+#qtfeqctoqh .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5231,7 +5231,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   overflow-x: hidden;
 }
 
-#zmjojziquy .gt_column_spanner_outer {
+#qtfeqctoqh .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5243,15 +5243,15 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   padding-right: 4px;
 }
 
-#zmjojziquy .gt_column_spanner_outer:first-child {
+#qtfeqctoqh .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#zmjojziquy .gt_column_spanner_outer:last-child {
+#qtfeqctoqh .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#zmjojziquy .gt_column_spanner {
+#qtfeqctoqh .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -5263,11 +5263,11 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   width: 100%;
 }
 
-#zmjojziquy .gt_spanner_row {
+#qtfeqctoqh .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#zmjojziquy .gt_group_heading {
+#qtfeqctoqh .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5293,7 +5293,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   text-align: left;
 }
 
-#zmjojziquy .gt_empty_group_heading {
+#qtfeqctoqh .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -5308,15 +5308,15 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   vertical-align: middle;
 }
 
-#zmjojziquy .gt_from_md > :first-child {
+#qtfeqctoqh .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#zmjojziquy .gt_from_md > :last-child {
+#qtfeqctoqh .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#zmjojziquy .gt_row {
+#qtfeqctoqh .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5335,7 +5335,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   overflow-x: hidden;
 }
 
-#zmjojziquy .gt_stub {
+#qtfeqctoqh .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5348,7 +5348,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   padding-right: 5px;
 }
 
-#zmjojziquy .gt_stub_row_group {
+#qtfeqctoqh .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5362,15 +5362,15 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   vertical-align: top;
 }
 
-#zmjojziquy .gt_row_group_first td {
+#qtfeqctoqh .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#zmjojziquy .gt_row_group_first th {
+#qtfeqctoqh .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#zmjojziquy .gt_summary_row {
+#qtfeqctoqh .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5380,16 +5380,16 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   padding-right: 5px;
 }
 
-#zmjojziquy .gt_first_summary_row {
+#qtfeqctoqh .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_first_summary_row.thick {
+#qtfeqctoqh .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#zmjojziquy .gt_last_summary_row {
+#qtfeqctoqh .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5399,7 +5399,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-bottom-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_grand_summary_row {
+#qtfeqctoqh .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5409,7 +5409,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   padding-right: 5px;
 }
 
-#zmjojziquy .gt_first_grand_summary_row {
+#qtfeqctoqh .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5419,7 +5419,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-top-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_last_grand_summary_row_top {
+#qtfeqctoqh .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5429,11 +5429,11 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-bottom-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_striped {
+#qtfeqctoqh .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#zmjojziquy .gt_table_body {
+#qtfeqctoqh .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5442,7 +5442,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-bottom-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_footnotes {
+#qtfeqctoqh .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5456,7 +5456,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-right-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_footnote {
+#qtfeqctoqh .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -5465,7 +5465,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   padding-right: 5px;
 }
 
-#zmjojziquy .gt_sourcenotes {
+#qtfeqctoqh .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -5479,7 +5479,7 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   border-right-color: #D3D3D3;
 }
 
-#zmjojziquy .gt_sourcenote {
+#qtfeqctoqh .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -5487,72 +5487,72 @@ Table&nbsp;7: Field summary of subgroup recovery (placeholder data, Tier 1): cen
   padding-right: 5px;
 }
 
-#zmjojziquy .gt_left {
+#qtfeqctoqh .gt_left {
   text-align: left;
 }
 
-#zmjojziquy .gt_center {
+#qtfeqctoqh .gt_center {
   text-align: center;
 }
 
-#zmjojziquy .gt_right {
+#qtfeqctoqh .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#zmjojziquy .gt_font_normal {
+#qtfeqctoqh .gt_font_normal {
   font-weight: normal;
 }
 
-#zmjojziquy .gt_font_bold {
+#qtfeqctoqh .gt_font_bold {
   font-weight: bold;
 }
 
-#zmjojziquy .gt_font_italic {
+#qtfeqctoqh .gt_font_italic {
   font-style: italic;
 }
 
-#zmjojziquy .gt_super {
+#qtfeqctoqh .gt_super {
   font-size: 65%;
 }
 
-#zmjojziquy .gt_footnote_marks {
+#qtfeqctoqh .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#zmjojziquy .gt_asterisk {
+#qtfeqctoqh .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#zmjojziquy .gt_indent_1 {
+#qtfeqctoqh .gt_indent_1 {
   text-indent: 5px;
 }
 
-#zmjojziquy .gt_indent_2 {
+#qtfeqctoqh .gt_indent_2 {
   text-indent: 10px;
 }
 
-#zmjojziquy .gt_indent_3 {
+#qtfeqctoqh .gt_indent_3 {
   text-indent: 15px;
 }
 
-#zmjojziquy .gt_indent_4 {
+#qtfeqctoqh .gt_indent_4 {
   text-indent: 20px;
 }
 
-#zmjojziquy .gt_indent_5 {
+#qtfeqctoqh .gt_indent_5 {
   text-indent: 25px;
 }
 
-#zmjojziquy .katex-display {
+#qtfeqctoqh .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#zmjojziquy div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#qtfeqctoqh div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -5710,23 +5710,23 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
 </figcaption>
 <div aria-describedby="tbl-field-distribution-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="wpnjuskcqc" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#wpnjuskcqc table {
+<div id="uudumazlcu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#uudumazlcu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#wpnjuskcqc thead, #wpnjuskcqc tbody, #wpnjuskcqc tfoot, #wpnjuskcqc tr, #wpnjuskcqc td, #wpnjuskcqc th {
+#uudumazlcu thead, #uudumazlcu tbody, #uudumazlcu tfoot, #uudumazlcu tr, #uudumazlcu td, #uudumazlcu th {
   border-style: none;
 }
 
-#wpnjuskcqc p {
+#uudumazlcu p {
   margin: 0;
   padding: 0;
 }
 
-#wpnjuskcqc .gt_table {
+#uudumazlcu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -5752,12 +5752,12 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-left-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_caption {
+#uudumazlcu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#wpnjuskcqc .gt_title {
+#uudumazlcu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -5769,7 +5769,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-bottom-width: 0;
 }
 
-#wpnjuskcqc .gt_subtitle {
+#uudumazlcu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -5781,7 +5781,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-top-width: 0;
 }
 
-#wpnjuskcqc .gt_heading {
+#uudumazlcu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -5793,13 +5793,13 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-right-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_bottom_border {
+#uudumazlcu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_col_headings {
+#uudumazlcu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -5814,7 +5814,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-right-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_col_heading {
+#uudumazlcu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5834,7 +5834,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   overflow-x: hidden;
 }
 
-#wpnjuskcqc .gt_column_spanner_outer {
+#uudumazlcu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5846,15 +5846,15 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   padding-right: 4px;
 }
 
-#wpnjuskcqc .gt_column_spanner_outer:first-child {
+#uudumazlcu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#wpnjuskcqc .gt_column_spanner_outer:last-child {
+#uudumazlcu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#wpnjuskcqc .gt_column_spanner {
+#uudumazlcu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -5866,11 +5866,11 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   width: 100%;
 }
 
-#wpnjuskcqc .gt_spanner_row {
+#uudumazlcu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#wpnjuskcqc .gt_group_heading {
+#uudumazlcu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5896,7 +5896,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   text-align: left;
 }
 
-#wpnjuskcqc .gt_empty_group_heading {
+#uudumazlcu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -5911,15 +5911,15 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   vertical-align: middle;
 }
 
-#wpnjuskcqc .gt_from_md > :first-child {
+#uudumazlcu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#wpnjuskcqc .gt_from_md > :last-child {
+#uudumazlcu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#wpnjuskcqc .gt_row {
+#uudumazlcu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -5938,7 +5938,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   overflow-x: hidden;
 }
 
-#wpnjuskcqc .gt_stub {
+#uudumazlcu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5951,7 +5951,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   padding-right: 5px;
 }
 
-#wpnjuskcqc .gt_stub_row_group {
+#uudumazlcu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -5965,15 +5965,15 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   vertical-align: top;
 }
 
-#wpnjuskcqc .gt_row_group_first td {
+#uudumazlcu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#wpnjuskcqc .gt_row_group_first th {
+#uudumazlcu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#wpnjuskcqc .gt_summary_row {
+#uudumazlcu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -5983,16 +5983,16 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   padding-right: 5px;
 }
 
-#wpnjuskcqc .gt_first_summary_row {
+#uudumazlcu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_first_summary_row.thick {
+#uudumazlcu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#wpnjuskcqc .gt_last_summary_row {
+#uudumazlcu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6002,7 +6002,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-bottom-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_grand_summary_row {
+#uudumazlcu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6012,7 +6012,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   padding-right: 5px;
 }
 
-#wpnjuskcqc .gt_first_grand_summary_row {
+#uudumazlcu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6022,7 +6022,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-top-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_last_grand_summary_row_top {
+#uudumazlcu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6032,11 +6032,11 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-bottom-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_striped {
+#uudumazlcu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#wpnjuskcqc .gt_table_body {
+#uudumazlcu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6045,7 +6045,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-bottom-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_footnotes {
+#uudumazlcu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6059,7 +6059,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-right-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_footnote {
+#uudumazlcu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -6068,7 +6068,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   padding-right: 5px;
 }
 
-#wpnjuskcqc .gt_sourcenotes {
+#uudumazlcu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6082,7 +6082,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   border-right-color: #D3D3D3;
 }
 
-#wpnjuskcqc .gt_sourcenote {
+#uudumazlcu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -6090,72 +6090,72 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
   padding-right: 5px;
 }
 
-#wpnjuskcqc .gt_left {
+#uudumazlcu .gt_left {
   text-align: left;
 }
 
-#wpnjuskcqc .gt_center {
+#uudumazlcu .gt_center {
   text-align: center;
 }
 
-#wpnjuskcqc .gt_right {
+#uudumazlcu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#wpnjuskcqc .gt_font_normal {
+#uudumazlcu .gt_font_normal {
   font-weight: normal;
 }
 
-#wpnjuskcqc .gt_font_bold {
+#uudumazlcu .gt_font_bold {
   font-weight: bold;
 }
 
-#wpnjuskcqc .gt_font_italic {
+#uudumazlcu .gt_font_italic {
   font-style: italic;
 }
 
-#wpnjuskcqc .gt_super {
+#uudumazlcu .gt_super {
   font-size: 65%;
 }
 
-#wpnjuskcqc .gt_footnote_marks {
+#uudumazlcu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#wpnjuskcqc .gt_asterisk {
+#uudumazlcu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#wpnjuskcqc .gt_indent_1 {
+#uudumazlcu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#wpnjuskcqc .gt_indent_2 {
+#uudumazlcu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#wpnjuskcqc .gt_indent_3 {
+#uudumazlcu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#wpnjuskcqc .gt_indent_4 {
+#uudumazlcu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#wpnjuskcqc .gt_indent_5 {
+#uudumazlcu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#wpnjuskcqc .katex-display {
+#uudumazlcu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#wpnjuskcqc div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#uudumazlcu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -6179,7 +6179,7 @@ Table&nbsp;8: Field summary of response-shape recovery by outcome (placeholder d
 <td class="gt_row gt_right" headers="Variance ratio">1.08 (1.02)</td>
 </tr>
 <tr class="even">
-<td class="gt_row gt_center" headers="outcome">Overall trust</td>
+<td class="gt_row gt_center" headers="outcome">Single-item trust</td>
 <td class="gt_row gt_right" headers="Overlap (OVL)">0.90 (0.90)</td>
 <td class="gt_row gt_right" headers="Wasserstein-1">1.17 (0.86)</td>
 <td class="gt_row gt_right" headers="KS distance">0.04 (0.03)</td>
@@ -6323,23 +6323,23 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
 </figcaption>
 <div aria-describedby="tbl-leaderboard-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tegzlrunax" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tegzlrunax table {
+<div id="smafrtratj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#smafrtratj table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tegzlrunax thead, #tegzlrunax tbody, #tegzlrunax tfoot, #tegzlrunax tr, #tegzlrunax td, #tegzlrunax th {
+#smafrtratj thead, #smafrtratj tbody, #smafrtratj tfoot, #smafrtratj tr, #smafrtratj td, #smafrtratj th {
   border-style: none;
 }
 
-#tegzlrunax p {
+#smafrtratj p {
   margin: 0;
   padding: 0;
 }
 
-#tegzlrunax .gt_table {
+#smafrtratj .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -6365,12 +6365,12 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-left-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_caption {
+#smafrtratj .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tegzlrunax .gt_title {
+#smafrtratj .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -6382,7 +6382,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-bottom-width: 0;
 }
 
-#tegzlrunax .gt_subtitle {
+#smafrtratj .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -6394,7 +6394,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-top-width: 0;
 }
 
-#tegzlrunax .gt_heading {
+#smafrtratj .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -6406,13 +6406,13 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-right-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_bottom_border {
+#smafrtratj .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_col_headings {
+#smafrtratj .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6427,7 +6427,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-right-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_col_heading {
+#smafrtratj .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6447,7 +6447,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   overflow-x: hidden;
 }
 
-#tegzlrunax .gt_column_spanner_outer {
+#smafrtratj .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6459,15 +6459,15 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   padding-right: 4px;
 }
 
-#tegzlrunax .gt_column_spanner_outer:first-child {
+#smafrtratj .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tegzlrunax .gt_column_spanner_outer:last-child {
+#smafrtratj .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tegzlrunax .gt_column_spanner {
+#smafrtratj .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -6479,11 +6479,11 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   width: 100%;
 }
 
-#tegzlrunax .gt_spanner_row {
+#smafrtratj .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tegzlrunax .gt_group_heading {
+#smafrtratj .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6509,7 +6509,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   text-align: left;
 }
 
-#tegzlrunax .gt_empty_group_heading {
+#smafrtratj .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -6524,15 +6524,15 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   vertical-align: middle;
 }
 
-#tegzlrunax .gt_from_md > :first-child {
+#smafrtratj .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tegzlrunax .gt_from_md > :last-child {
+#smafrtratj .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tegzlrunax .gt_row {
+#smafrtratj .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6551,7 +6551,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   overflow-x: hidden;
 }
 
-#tegzlrunax .gt_stub {
+#smafrtratj .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6564,7 +6564,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   padding-right: 5px;
 }
 
-#tegzlrunax .gt_stub_row_group {
+#smafrtratj .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -6578,15 +6578,15 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   vertical-align: top;
 }
 
-#tegzlrunax .gt_row_group_first td {
+#smafrtratj .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tegzlrunax .gt_row_group_first th {
+#smafrtratj .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tegzlrunax .gt_summary_row {
+#smafrtratj .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6596,16 +6596,16 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   padding-right: 5px;
 }
 
-#tegzlrunax .gt_first_summary_row {
+#smafrtratj .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_first_summary_row.thick {
+#smafrtratj .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tegzlrunax .gt_last_summary_row {
+#smafrtratj .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6615,7 +6615,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-bottom-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_grand_summary_row {
+#smafrtratj .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -6625,7 +6625,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   padding-right: 5px;
 }
 
-#tegzlrunax .gt_first_grand_summary_row {
+#smafrtratj .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6635,7 +6635,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-top-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_last_grand_summary_row_top {
+#smafrtratj .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -6645,11 +6645,11 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-bottom-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_striped {
+#smafrtratj .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tegzlrunax .gt_table_body {
+#smafrtratj .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -6658,7 +6658,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-bottom-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_footnotes {
+#smafrtratj .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6672,7 +6672,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-right-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_footnote {
+#smafrtratj .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -6681,7 +6681,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   padding-right: 5px;
 }
 
-#tegzlrunax .gt_sourcenotes {
+#smafrtratj .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -6695,7 +6695,7 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   border-right-color: #D3D3D3;
 }
 
-#tegzlrunax .gt_sourcenote {
+#smafrtratj .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -6703,72 +6703,72 @@ Table&nbsp;9: Cross-team leaderboard (placeholder data). Pooled ATE-recovery met
   padding-right: 5px;
 }
 
-#tegzlrunax .gt_left {
+#smafrtratj .gt_left {
   text-align: left;
 }
 
-#tegzlrunax .gt_center {
+#smafrtratj .gt_center {
   text-align: center;
 }
 
-#tegzlrunax .gt_right {
+#smafrtratj .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tegzlrunax .gt_font_normal {
+#smafrtratj .gt_font_normal {
   font-weight: normal;
 }
 
-#tegzlrunax .gt_font_bold {
+#smafrtratj .gt_font_bold {
   font-weight: bold;
 }
 
-#tegzlrunax .gt_font_italic {
+#smafrtratj .gt_font_italic {
   font-style: italic;
 }
 
-#tegzlrunax .gt_super {
+#smafrtratj .gt_super {
   font-size: 65%;
 }
 
-#tegzlrunax .gt_footnote_marks {
+#smafrtratj .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tegzlrunax .gt_asterisk {
+#smafrtratj .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tegzlrunax .gt_indent_1 {
+#smafrtratj .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tegzlrunax .gt_indent_2 {
+#smafrtratj .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tegzlrunax .gt_indent_3 {
+#smafrtratj .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tegzlrunax .gt_indent_4 {
+#smafrtratj .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tegzlrunax .gt_indent_5 {
+#smafrtratj .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tegzlrunax .katex-display {
+#smafrtratj .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tegzlrunax div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#smafrtratj div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -7420,23 +7420,23 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
 </figcaption>
 <div aria-describedby="tbl-metric-consistency-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="tkebuphiul" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#tkebuphiul table {
+<div id="ubdeoyaqix" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ubdeoyaqix table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#tkebuphiul thead, #tkebuphiul tbody, #tkebuphiul tfoot, #tkebuphiul tr, #tkebuphiul td, #tkebuphiul th {
+#ubdeoyaqix thead, #ubdeoyaqix tbody, #ubdeoyaqix tfoot, #ubdeoyaqix tr, #ubdeoyaqix td, #ubdeoyaqix th {
   border-style: none;
 }
 
-#tkebuphiul p {
+#ubdeoyaqix p {
   margin: 0;
   padding: 0;
 }
 
-#tkebuphiul .gt_table {
+#ubdeoyaqix .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -7462,12 +7462,12 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-left-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_caption {
+#ubdeoyaqix .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#tkebuphiul .gt_title {
+#ubdeoyaqix .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -7479,7 +7479,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-bottom-width: 0;
 }
 
-#tkebuphiul .gt_subtitle {
+#ubdeoyaqix .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -7491,7 +7491,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-top-width: 0;
 }
 
-#tkebuphiul .gt_heading {
+#ubdeoyaqix .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -7503,13 +7503,13 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-right-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_bottom_border {
+#ubdeoyaqix .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_col_headings {
+#ubdeoyaqix .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -7524,7 +7524,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-right-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_col_heading {
+#ubdeoyaqix .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -7544,7 +7544,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   overflow-x: hidden;
 }
 
-#tkebuphiul .gt_column_spanner_outer {
+#ubdeoyaqix .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -7556,15 +7556,15 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   padding-right: 4px;
 }
 
-#tkebuphiul .gt_column_spanner_outer:first-child {
+#ubdeoyaqix .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#tkebuphiul .gt_column_spanner_outer:last-child {
+#ubdeoyaqix .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#tkebuphiul .gt_column_spanner {
+#ubdeoyaqix .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -7576,11 +7576,11 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   width: 100%;
 }
 
-#tkebuphiul .gt_spanner_row {
+#ubdeoyaqix .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#tkebuphiul .gt_group_heading {
+#ubdeoyaqix .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -7606,7 +7606,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   text-align: left;
 }
 
-#tkebuphiul .gt_empty_group_heading {
+#ubdeoyaqix .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -7621,15 +7621,15 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   vertical-align: middle;
 }
 
-#tkebuphiul .gt_from_md > :first-child {
+#ubdeoyaqix .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#tkebuphiul .gt_from_md > :last-child {
+#ubdeoyaqix .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#tkebuphiul .gt_row {
+#ubdeoyaqix .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -7648,7 +7648,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   overflow-x: hidden;
 }
 
-#tkebuphiul .gt_stub {
+#ubdeoyaqix .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -7661,7 +7661,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   padding-right: 5px;
 }
 
-#tkebuphiul .gt_stub_row_group {
+#ubdeoyaqix .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -7675,15 +7675,15 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   vertical-align: top;
 }
 
-#tkebuphiul .gt_row_group_first td {
+#ubdeoyaqix .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#tkebuphiul .gt_row_group_first th {
+#ubdeoyaqix .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#tkebuphiul .gt_summary_row {
+#ubdeoyaqix .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -7693,16 +7693,16 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   padding-right: 5px;
 }
 
-#tkebuphiul .gt_first_summary_row {
+#ubdeoyaqix .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_first_summary_row.thick {
+#ubdeoyaqix .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#tkebuphiul .gt_last_summary_row {
+#ubdeoyaqix .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -7712,7 +7712,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-bottom-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_grand_summary_row {
+#ubdeoyaqix .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -7722,7 +7722,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   padding-right: 5px;
 }
 
-#tkebuphiul .gt_first_grand_summary_row {
+#ubdeoyaqix .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -7732,7 +7732,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-top-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_last_grand_summary_row_top {
+#ubdeoyaqix .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -7742,11 +7742,11 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-bottom-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_striped {
+#ubdeoyaqix .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#tkebuphiul .gt_table_body {
+#ubdeoyaqix .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -7755,7 +7755,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-bottom-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_footnotes {
+#ubdeoyaqix .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -7769,7 +7769,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-right-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_footnote {
+#ubdeoyaqix .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -7778,7 +7778,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   padding-right: 5px;
 }
 
-#tkebuphiul .gt_sourcenotes {
+#ubdeoyaqix .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -7792,7 +7792,7 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   border-right-color: #D3D3D3;
 }
 
-#tkebuphiul .gt_sourcenote {
+#ubdeoyaqix .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -7800,72 +7800,72 @@ Table&nbsp;10: Cross-metric rank consistency (placeholder data): Spearman correl
   padding-right: 5px;
 }
 
-#tkebuphiul .gt_left {
+#ubdeoyaqix .gt_left {
   text-align: left;
 }
 
-#tkebuphiul .gt_center {
+#ubdeoyaqix .gt_center {
   text-align: center;
 }
 
-#tkebuphiul .gt_right {
+#ubdeoyaqix .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#tkebuphiul .gt_font_normal {
+#ubdeoyaqix .gt_font_normal {
   font-weight: normal;
 }
 
-#tkebuphiul .gt_font_bold {
+#ubdeoyaqix .gt_font_bold {
   font-weight: bold;
 }
 
-#tkebuphiul .gt_font_italic {
+#ubdeoyaqix .gt_font_italic {
   font-style: italic;
 }
 
-#tkebuphiul .gt_super {
+#ubdeoyaqix .gt_super {
   font-size: 65%;
 }
 
-#tkebuphiul .gt_footnote_marks {
+#ubdeoyaqix .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#tkebuphiul .gt_asterisk {
+#ubdeoyaqix .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#tkebuphiul .gt_indent_1 {
+#ubdeoyaqix .gt_indent_1 {
   text-indent: 5px;
 }
 
-#tkebuphiul .gt_indent_2 {
+#ubdeoyaqix .gt_indent_2 {
   text-indent: 10px;
 }
 
-#tkebuphiul .gt_indent_3 {
+#ubdeoyaqix .gt_indent_3 {
   text-indent: 15px;
 }
 
-#tkebuphiul .gt_indent_4 {
+#ubdeoyaqix .gt_indent_4 {
   text-indent: 20px;
 }
 
-#tkebuphiul .gt_indent_5 {
+#ubdeoyaqix .gt_indent_5 {
   text-indent: 25px;
 }
 
-#tkebuphiul .katex-display {
+#ubdeoyaqix .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#tkebuphiul div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ubdeoyaqix div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -8027,23 +8027,23 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
 </figcaption>
 <div aria-describedby="tbl-design-analysis-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="ewbowmzfwr" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ewbowmzfwr table {
+<div id="ymlsurlxic" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#ymlsurlxic table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ewbowmzfwr thead, #ewbowmzfwr tbody, #ewbowmzfwr tfoot, #ewbowmzfwr tr, #ewbowmzfwr td, #ewbowmzfwr th {
+#ymlsurlxic thead, #ymlsurlxic tbody, #ymlsurlxic tfoot, #ymlsurlxic tr, #ymlsurlxic td, #ymlsurlxic th {
   border-style: none;
 }
 
-#ewbowmzfwr p {
+#ymlsurlxic p {
   margin: 0;
   padding: 0;
 }
 
-#ewbowmzfwr .gt_table {
+#ymlsurlxic .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -8069,12 +8069,12 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-left-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_caption {
+#ymlsurlxic .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ewbowmzfwr .gt_title {
+#ymlsurlxic .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -8086,7 +8086,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-bottom-width: 0;
 }
 
-#ewbowmzfwr .gt_subtitle {
+#ymlsurlxic .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -8098,7 +8098,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-top-width: 0;
 }
 
-#ewbowmzfwr .gt_heading {
+#ymlsurlxic .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -8110,13 +8110,13 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-right-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_bottom_border {
+#ymlsurlxic .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_col_headings {
+#ymlsurlxic .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -8131,7 +8131,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-right-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_col_heading {
+#ymlsurlxic .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8151,7 +8151,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   overflow-x: hidden;
 }
 
-#ewbowmzfwr .gt_column_spanner_outer {
+#ymlsurlxic .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8163,15 +8163,15 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   padding-right: 4px;
 }
 
-#ewbowmzfwr .gt_column_spanner_outer:first-child {
+#ymlsurlxic .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ewbowmzfwr .gt_column_spanner_outer:last-child {
+#ymlsurlxic .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ewbowmzfwr .gt_column_spanner {
+#ymlsurlxic .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -8183,11 +8183,11 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   width: 100%;
 }
 
-#ewbowmzfwr .gt_spanner_row {
+#ymlsurlxic .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ewbowmzfwr .gt_group_heading {
+#ymlsurlxic .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8213,7 +8213,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   text-align: left;
 }
 
-#ewbowmzfwr .gt_empty_group_heading {
+#ymlsurlxic .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -8228,15 +8228,15 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   vertical-align: middle;
 }
 
-#ewbowmzfwr .gt_from_md > :first-child {
+#ymlsurlxic .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ewbowmzfwr .gt_from_md > :last-child {
+#ymlsurlxic .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ewbowmzfwr .gt_row {
+#ymlsurlxic .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8255,7 +8255,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   overflow-x: hidden;
 }
 
-#ewbowmzfwr .gt_stub {
+#ymlsurlxic .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8268,7 +8268,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   padding-right: 5px;
 }
 
-#ewbowmzfwr .gt_stub_row_group {
+#ymlsurlxic .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8282,15 +8282,15 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   vertical-align: top;
 }
 
-#ewbowmzfwr .gt_row_group_first td {
+#ymlsurlxic .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ewbowmzfwr .gt_row_group_first th {
+#ymlsurlxic .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ewbowmzfwr .gt_summary_row {
+#ymlsurlxic .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -8300,16 +8300,16 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   padding-right: 5px;
 }
 
-#ewbowmzfwr .gt_first_summary_row {
+#ymlsurlxic .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_first_summary_row.thick {
+#ymlsurlxic .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ewbowmzfwr .gt_last_summary_row {
+#ymlsurlxic .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8319,7 +8319,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-bottom-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_grand_summary_row {
+#ymlsurlxic .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -8329,7 +8329,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   padding-right: 5px;
 }
 
-#ewbowmzfwr .gt_first_grand_summary_row {
+#ymlsurlxic .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8339,7 +8339,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-top-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_last_grand_summary_row_top {
+#ymlsurlxic .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8349,11 +8349,11 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-bottom-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_striped {
+#ymlsurlxic .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ewbowmzfwr .gt_table_body {
+#ymlsurlxic .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -8362,7 +8362,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-bottom-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_footnotes {
+#ymlsurlxic .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -8376,7 +8376,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-right-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_footnote {
+#ymlsurlxic .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -8385,7 +8385,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   padding-right: 5px;
 }
 
-#ewbowmzfwr .gt_sourcenotes {
+#ymlsurlxic .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -8399,7 +8399,7 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   border-right-color: #D3D3D3;
 }
 
-#ewbowmzfwr .gt_sourcenote {
+#ymlsurlxic .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -8407,72 +8407,72 @@ Table&nbsp;11: Blinded design analysis (no data touched): expected values of key
   padding-right: 5px;
 }
 
-#ewbowmzfwr .gt_left {
+#ymlsurlxic .gt_left {
   text-align: left;
 }
 
-#ewbowmzfwr .gt_center {
+#ymlsurlxic .gt_center {
   text-align: center;
 }
 
-#ewbowmzfwr .gt_right {
+#ymlsurlxic .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ewbowmzfwr .gt_font_normal {
+#ymlsurlxic .gt_font_normal {
   font-weight: normal;
 }
 
-#ewbowmzfwr .gt_font_bold {
+#ymlsurlxic .gt_font_bold {
   font-weight: bold;
 }
 
-#ewbowmzfwr .gt_font_italic {
+#ymlsurlxic .gt_font_italic {
   font-style: italic;
 }
 
-#ewbowmzfwr .gt_super {
+#ymlsurlxic .gt_super {
   font-size: 65%;
 }
 
-#ewbowmzfwr .gt_footnote_marks {
+#ymlsurlxic .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ewbowmzfwr .gt_asterisk {
+#ymlsurlxic .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ewbowmzfwr .gt_indent_1 {
+#ymlsurlxic .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ewbowmzfwr .gt_indent_2 {
+#ymlsurlxic .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ewbowmzfwr .gt_indent_3 {
+#ymlsurlxic .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ewbowmzfwr .gt_indent_4 {
+#ymlsurlxic .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ewbowmzfwr .gt_indent_5 {
+#ymlsurlxic .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ewbowmzfwr .katex-display {
+#ymlsurlxic .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ewbowmzfwr div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#ymlsurlxic div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -8589,23 +8589,23 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
 </figcaption>
 <div aria-describedby="tbl-resplit-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
 <div class="cell-output-display">
-<div id="ydibsogytv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>#ydibsogytv table {
+<div id="zbqbjmjxnu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#zbqbjmjxnu table {
   font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-#ydibsogytv thead, #ydibsogytv tbody, #ydibsogytv tfoot, #ydibsogytv tr, #ydibsogytv td, #ydibsogytv th {
+#zbqbjmjxnu thead, #zbqbjmjxnu tbody, #zbqbjmjxnu tfoot, #zbqbjmjxnu tr, #zbqbjmjxnu td, #zbqbjmjxnu th {
   border-style: none;
 }
 
-#ydibsogytv p {
+#zbqbjmjxnu p {
   margin: 0;
   padding: 0;
 }
 
-#ydibsogytv .gt_table {
+#zbqbjmjxnu .gt_table {
   display: table;
   border-collapse: collapse;
   line-height: normal;
@@ -8631,12 +8631,12 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-left-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_caption {
+#zbqbjmjxnu .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ydibsogytv .gt_title {
+#zbqbjmjxnu .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -8648,7 +8648,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-bottom-width: 0;
 }
 
-#ydibsogytv .gt_subtitle {
+#zbqbjmjxnu .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -8660,7 +8660,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-top-width: 0;
 }
 
-#ydibsogytv .gt_heading {
+#zbqbjmjxnu .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -8672,13 +8672,13 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-right-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_bottom_border {
+#zbqbjmjxnu .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_col_headings {
+#zbqbjmjxnu .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -8693,7 +8693,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-right-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_col_heading {
+#zbqbjmjxnu .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8713,7 +8713,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   overflow-x: hidden;
 }
 
-#ydibsogytv .gt_column_spanner_outer {
+#zbqbjmjxnu .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8725,15 +8725,15 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   padding-right: 4px;
 }
 
-#ydibsogytv .gt_column_spanner_outer:first-child {
+#zbqbjmjxnu .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ydibsogytv .gt_column_spanner_outer:last-child {
+#zbqbjmjxnu .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ydibsogytv .gt_column_spanner {
+#zbqbjmjxnu .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -8745,11 +8745,11 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   width: 100%;
 }
 
-#ydibsogytv .gt_spanner_row {
+#zbqbjmjxnu .gt_spanner_row {
   border-bottom-style: hidden;
 }
 
-#ydibsogytv .gt_group_heading {
+#zbqbjmjxnu .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8775,7 +8775,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   text-align: left;
 }
 
-#ydibsogytv .gt_empty_group_heading {
+#zbqbjmjxnu .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -8790,15 +8790,15 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   vertical-align: middle;
 }
 
-#ydibsogytv .gt_from_md > :first-child {
+#zbqbjmjxnu .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ydibsogytv .gt_from_md > :last-child {
+#zbqbjmjxnu .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ydibsogytv .gt_row {
+#zbqbjmjxnu .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8817,7 +8817,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   overflow-x: hidden;
 }
 
-#ydibsogytv .gt_stub {
+#zbqbjmjxnu .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8830,7 +8830,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   padding-right: 5px;
 }
 
-#ydibsogytv .gt_stub_row_group {
+#zbqbjmjxnu .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -8844,15 +8844,15 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   vertical-align: top;
 }
 
-#ydibsogytv .gt_row_group_first td {
+#zbqbjmjxnu .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ydibsogytv .gt_row_group_first th {
+#zbqbjmjxnu .gt_row_group_first th {
   border-top-width: 2px;
 }
 
-#ydibsogytv .gt_summary_row {
+#zbqbjmjxnu .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -8862,16 +8862,16 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   padding-right: 5px;
 }
 
-#ydibsogytv .gt_first_summary_row {
+#zbqbjmjxnu .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_first_summary_row.thick {
+#zbqbjmjxnu .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ydibsogytv .gt_last_summary_row {
+#zbqbjmjxnu .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8881,7 +8881,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-bottom-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_grand_summary_row {
+#zbqbjmjxnu .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -8891,7 +8891,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   padding-right: 5px;
 }
 
-#ydibsogytv .gt_first_grand_summary_row {
+#zbqbjmjxnu .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8901,7 +8901,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-top-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_last_grand_summary_row_top {
+#zbqbjmjxnu .gt_last_grand_summary_row_top {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -8911,11 +8911,11 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-bottom-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_striped {
+#zbqbjmjxnu .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ydibsogytv .gt_table_body {
+#zbqbjmjxnu .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -8924,7 +8924,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-bottom-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_footnotes {
+#zbqbjmjxnu .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -8938,7 +8938,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-right-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_footnote {
+#zbqbjmjxnu .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-top: 4px;
@@ -8947,7 +8947,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   padding-right: 5px;
 }
 
-#ydibsogytv .gt_sourcenotes {
+#zbqbjmjxnu .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -8961,7 +8961,7 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   border-right-color: #D3D3D3;
 }
 
-#ydibsogytv .gt_sourcenote {
+#zbqbjmjxnu .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -8969,72 +8969,72 @@ Table&nbsp;12: Split-seed sensitivity of the human replication reference (placeh
   padding-right: 5px;
 }
 
-#ydibsogytv .gt_left {
+#zbqbjmjxnu .gt_left {
   text-align: left;
 }
 
-#ydibsogytv .gt_center {
+#zbqbjmjxnu .gt_center {
   text-align: center;
 }
 
-#ydibsogytv .gt_right {
+#zbqbjmjxnu .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ydibsogytv .gt_font_normal {
+#zbqbjmjxnu .gt_font_normal {
   font-weight: normal;
 }
 
-#ydibsogytv .gt_font_bold {
+#zbqbjmjxnu .gt_font_bold {
   font-weight: bold;
 }
 
-#ydibsogytv .gt_font_italic {
+#zbqbjmjxnu .gt_font_italic {
   font-style: italic;
 }
 
-#ydibsogytv .gt_super {
+#zbqbjmjxnu .gt_super {
   font-size: 65%;
 }
 
-#ydibsogytv .gt_footnote_marks {
+#zbqbjmjxnu .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
   position: initial;
 }
 
-#ydibsogytv .gt_asterisk {
+#zbqbjmjxnu .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ydibsogytv .gt_indent_1 {
+#zbqbjmjxnu .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ydibsogytv .gt_indent_2 {
+#zbqbjmjxnu .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ydibsogytv .gt_indent_3 {
+#zbqbjmjxnu .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ydibsogytv .gt_indent_4 {
+#zbqbjmjxnu .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ydibsogytv .gt_indent_5 {
+#zbqbjmjxnu .gt_indent_5 {
   text-indent: 25px;
 }
 
-#ydibsogytv .katex-display {
+#zbqbjmjxnu .katex-display {
   display: inline-flex !important;
   margin-bottom: 0.75em !important;
 }
 
-#ydibsogytv div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
+#zbqbjmjxnu div.Reactable > div.rt-table > div.rt-thead > div.rt-tr.rt-tr-group-header > div.rt-th-group:after {
   height: 0px !important;
 }
 </style>
@@ -9627,7 +9627,7 @@ Park, Joon Sung, Carolyn Q. Zou, Jonne Kamphorst, Niles Egan, Aaron Shaw, Benjam
 <span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "The Silicon Sample Benchmark: A multi-team preregistration for predicting behavioral-experiment effects"</span></span>
 <span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="an">abstract:</span><span class="co"> |</span></span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co">    This is the preregistration for the **Silicon Sample Benchmark**, a multi-team prediction benchmark. We invite independent research teams to predict the results of a novel behavioral megastudy (16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample of ~18,000) using any AI-based approach they choose—behavioral clones, group-level simulation, or direct effect forecasting. Submissions enter at one of **three tiers** defined by the granularity of the prediction (individual-level synthetic data, cell-level statistics, or effect-level estimates with uncertainty intervals), and every approach is scored on the same preregistered metric ladder against the same human replication reference. This document is **self-contained**: it restates the full analysis plan so that a participating team never needs to consult the project's earlier, single-team preregistration (v1); the section *About this preregistration* narrates what it keeps from v1 and what it changes. At the time of writing, human data are partially collected (~10,000 of the ~18,000 responses); none of these data have been shared, published, or made accessible to any prospective team, and no team will be granted access before the prediction lock. Before any human data are released, every team registers its approach using a standardized method-registration form (an extended version of the GUIDE-LLM reporting checklist) and deposits its predictions on Zenodo—publicly, or partly escrowed under a disclosure policy that keeps every entry locked and verifiable even where it cannot be fully public.</span></span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="co">    This is the preregistration for the **Silicon Sample Benchmark**, a multi-team prediction benchmark. We invite independent research teams to predict the results of a novel behavioral megastudy (16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample of ~18,000) using any AI-based approach they choose—behavioral clones, group-level simulation, or direct effect forecasting. Submissions enter at one of **three tiers** defined by the granularity of the prediction (individual-level synthetic data, cell-level statistics, or effect-level estimates with uncertainty intervals), and every approach is scored on the same preregistered metric ladder against the same human replication reference. This document is **self-contained**: it restates the full analysis plan so that a participating team never needs to consult the project's earlier, single-team preregistration (v1); the section *About this preregistration* narrates what it keeps from v1 and what it changes. At the time of writing, human data are partially collected (~16,000 of the ~18,000 responses); none of these data have been shared, published, or made accessible to any prospective team, and no team will be granted access before the prediction lock. Before any human data are released, every team registers its approach using a standardized method-registration form (an extended version of the GUIDE-LLM reporting checklist) and deposits its predictions on Zenodo—publicly, or partly escrowed under a disclosure policy that keeps every entry locked and verifiable even where it cannot be fully public.</span></span>
 <span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2026-06-11"</span></span>
 <span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a></span>
@@ -9863,9 +9863,9 @@ Park, Joon Sung, Carolyn Q. Zou, Jonne Kamphorst, Niles Egan, Aaron Shaw, Benjam
 <span id="cb57-244"><a href="#cb57-244" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb57-245"><a href="#cb57-245" aria-hidden="true" tabindex="-1"></a>Participation is by invitation. Each team builds an AI-based prediction pipeline from the shipped materials (intervention texts, the full survey instrument, the codebook, the registration template, and the validator). </span>
 <span id="cb57-246"><a href="#cb57-246" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-247"><a href="#cb57-247" aria-hidden="true" tabindex="-1"></a>Teams can use any models, personas, prompts, fine-tuning, retrieval, or prior literature they want. They will receive **no participant pool** (each team builds its own profiles) and **never any human outcome data**. Before the deadline for the prediction lock, each team registers its approach by depositing its synthetic sample/predictions and materials on Zenodo, hashed and time-stamped. After the prediction lock deadline (and once the human data collection is finished), every submission runs through the preregistered analysis pipeline unchanged and is reported on a public leaderboard alongside the human replication reference, and in a joint manuscript with all participating teams as co-authors. Three ground rules define a valid entry and matter for the analysis. **Blinding is absolute**: no team accesses, solicits, or is shown any human outcome data before the lock (at registration time only ~10,000 of the planned ~18,000 responses had been collected and none released). Pipelines are **AI-based and automated**. **Everything is registered though not necessarily public** (see the disclosure policy below). The full procedure, ground rules, timeline, and incentives are in the <span class="co">[</span><span class="ot">call for participation</span><span class="co">](index.html)</span>.</span>
+<span id="cb57-247"><a href="#cb57-247" aria-hidden="true" tabindex="-1"></a>Teams can use any models, personas, prompts, fine-tuning, retrieval, or prior literature they want. They will receive **no participant pool** (each team builds its own profiles) and **never any human outcome data**. Before the deadline for the prediction lock, each team registers its approach by depositing its synthetic sample/predictions and materials on Zenodo, hashed and time-stamped. After the prediction lock deadline (and once the human data collection is finished), every submission runs through the preregistered analysis pipeline unchanged and is reported on a public leaderboard alongside the human replication reference, and in a joint manuscript with all participating teams as co-authors. Three ground rules define a valid entry and matter for the analysis. **Blinding is absolute**: no team accesses, solicits, or is shown any human outcome data before the lock (at registration time ~16,000 of the planned ~18,000 responses had been collected and none released). Pipelines are **AI-based and automated**. **Everything is registered though not necessarily public** (see the disclosure policy below). The full procedure, ground rules, timeline, and incentives are in the <span class="co">[</span><span class="ot">call for participation</span><span class="co">](index.html)</span>.</span>
 <span id="cb57-248"><a href="#cb57-248" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb57-249"><a href="#cb57-249" aria-hidden="true" tabindex="-1"></a>**Organizer access and firewall.** Blinding constrains the organizers too, so we state who has seen what. Interim human data (the ~10,000 responses collected at the time of writing) have been accessed only by the research lead, Jan Pfänder, for data-quality monitoring. As a result, members or affiliates of the core team who have had **no access to any human outcome data** may enter the benchmark as regular teams under the same rules as everyone else (same registration form, same blinding attestation, same deadlines). </span>
+<span id="cb57-249"><a href="#cb57-249" aria-hidden="true" tabindex="-1"></a>**Organizer access and firewall.** Blinding constrains the organizers too, so we state who has seen what. Interim human data (the ~16,000 responses collected at the time of writing) have been accessed only by the research lead, Jan Pfänder, for data-quality monitoring. As a result, members or affiliates of the core team who have had **no access to any human outcome data** may enter the benchmark as regular teams under the same rules as everyone else (same registration form, same blinding attestation, same deadlines). </span>
 <span id="cb57-250"><a href="#cb57-250" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb57-251"><a href="#cb57-251" aria-hidden="true" tabindex="-1"></a>For full disclosure, Jan Pfänder presented some very preliminary results (human megastudy sample at the time N ≈ 3000) from an initial simulation attempt (following preregistration **v1**) in a 5min talk at a closed academic workshop at the Max Planck Institute for Human Development in Berlin (May 2026). This is the only presentation that has targeted an audience of potential collaborators on the benchmark study. It focused on the prediction ability of the simulation approach and revealed nothing about how humans behaved in the megastudy. Two other talks were explicitly about the human megastudy results: Jan Pfänder presented preliminary results from the human megastudy at an invited talk at the Max Planck Institute for Human Development in Berlin (May 2026, N at the time ≈ 3000 of 22000), and at a small conference at the University of Hohenheim (June 2026, N at the time ≈ 13000 of 22000). No one in the audience of these talks will be invited to participate in the benchmark study. In addition, since we ask for extensive disclosure of materials, a "cheating" prompt (e.g., "make sure intervention XX does best") would surface in the reporting framework that teams are required to fill out.</span>
 <span id="cb57-252"><a href="#cb57-252" aria-hidden="true" tabindex="-1"></a></span>
@@ -10239,7 +10239,7 @@ Park, Joon Sung, Carolyn Q. Zou, Jonne Kamphorst, Niles Egan, Aaron Shaw, Benjam
 <span id="cb57-622"><a href="#cb57-622" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb57-623"><a href="#cb57-623" aria-hidden="true" tabindex="-1"></a>outcome_label_map <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
 <span id="cb57-624"><a href="#cb57-624" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_multidimensional =</span> <span class="st">"Multidimensional trust (primary)"</span>,</span>
-<span id="cb57-625"><a href="#cb57-625" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_post             =</span> <span class="st">"Overall trust"</span>,</span>
+<span id="cb57-625"><a href="#cb57-625" aria-hidden="true" tabindex="-1"></a>  <span class="at">trust_post             =</span> <span class="st">"Single-item trust"</span>,</span>
 <span id="cb57-626"><a href="#cb57-626" aria-hidden="true" tabindex="-1"></a>  <span class="at">distrust_post          =</span> <span class="st">"Distrust"</span>,</span>
 <span id="cb57-627"><a href="#cb57-627" aria-hidden="true" tabindex="-1"></a>  <span class="at">funding_perceptions    =</span> <span class="st">"Funding perceptions"</span>,</span>
 <span id="cb57-628"><a href="#cb57-628" aria-hidden="true" tabindex="-1"></a>  <span class="at">policy_role_mean       =</span> <span class="st">"Policy role"</span>,</span>

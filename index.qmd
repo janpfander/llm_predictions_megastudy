@@ -354,7 +354,7 @@ format:
       <p>The joint manuscript is posted as a pre-print and submitted for publication, with all participating teams as co-authors.</p>
     </div>
   </div>
-  <p class="small">The human study was already partially fielded (≈10,000 of ≈18,000 responses) when the benchmark preregistration was drafted; none of these data have been shared, published, or made accessible to any prospective team.</p>
+  <p class="small">The human study was already partially fielded (≈16,000 of ≈18,000 responses) when the benchmark preregistration was drafted; none of these data have been shared, published, or made accessible to any prospective team.</p>
 
 </section>
 

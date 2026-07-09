@@ -132,7 +132,7 @@ moderators_cat <- c("party")
 
 outcome_label_map <- c(
   trust_multidimensional = "Multidimensional trust (primary)",
-  trust_post             = "Overall trust",
+  trust_post             = "Single-item trust",
   distrust_post          = "Distrust",
   donation_ams           = "Donation to AMS ($)",
   newsletter_signup      = "Newsletter sign-up",
