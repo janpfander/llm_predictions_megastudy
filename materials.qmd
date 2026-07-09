@@ -39,11 +39,11 @@ work stays in one place while only what you choose becomes public. This lets you
 without splitting your project across repositories.
 
 The **submission file schemas** and the **human target sample** (recruitment, census-based quotas, and
-the quota table) are specified in the **[benchmark amendment](amendment_preregistration.qmd)**.
+the quota table) are specified in the **[benchmark preregistration](preregistration_benchmark.qmd)**.
 
 ::: {.callout-note}
 **You build your own synthetic respondents.** Generate them from any source — a public survey such as
 GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare
 your choice in registration item C.4. If you want to match the human target population, the
-amendment's census-based quota table is available to sample against.
+benchmark preregistration's census-based quota table is available to sample against.
 :::

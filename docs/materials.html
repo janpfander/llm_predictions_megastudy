@@ -59,7 +59,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
 <script src="site_libs/clipboard/clipboard.min.js"></script>
 <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
 <script src="site_libs/quarto-search/fuse.min.js"></script>
@@ -75,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-f7dbb898f32835c928910a89c3a10b73.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-90e443af9a0acd40031433de8f96ad08.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-f97ead2a074e6e9718f9f229c69211ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -138,12 +137,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-preregistration">    
         <li>
-    <a class="dropdown-item" href="./preregistration.html">
- <span class="dropdown-text">Original preregistration</span></a>
+    <a class="dropdown-item" href="./preregistration_benchmark.html">
+ <span class="dropdown-text">Benchmark preregistration</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./amendment_preregistration.html">
- <span class="dropdown-text">Amendment — multi-team benchmark approach</span></a>
+    <a class="dropdown-item" href="./preregistration.html">
+ <span class="dropdown-text">Original preregistration (v1, superseded)</span></a>
   </li>  
     </ul>
   </li>
@@ -225,7 +224,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="blind-what-you-cant-share" class="level3">
 <h3 class="anchored" data-anchor-id="blind-what-you-cant-share">Blind what you can’t share</h3>
 <p>You can keep proprietary parts of your pipeline in the repository and simply <strong>gitignore</strong> them: your work stays in one place while only what you choose becomes public. This lets you respect the <a href="./index.html#disclosure">disclosure policy</a> — locked and verifiable is mandatory, public is not — without splitting your project across repositories.</p>
-<p>The <strong>submission file schemas</strong> and the <strong>human target sample</strong> (recruitment, census-based quotas, and the quota table) are specified in the <strong><a href="./amendment_preregistration.html">benchmark amendment</a></strong>.</p>
+<p>The <strong>submission file schemas</strong> and the <strong>human target sample</strong> (recruitment, census-based quotas, and the quota table) are specified in the <strong><a href="./preregistration_benchmark.html">benchmark preregistration</a></strong>.</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -236,7 +235,7 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p><strong>You build your own synthetic respondents.</strong> Generate them from any source — a public survey such as GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare your choice in registration item C.4. If you want to match the human target population, the amendment’s census-based quota table is available to sample against.</p>
+<p><strong>You build your own synthetic respondents.</strong> Generate them from any source — a public survey such as GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare your choice in registration item C.4. If you want to match the human target population, the benchmark preregistration’s census-based quota table is available to sample against.</p>
 </div>
 </div>
 
@@ -743,13 +742,13 @@ Note
 <span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>without splitting your project across repositories.</span>
 <span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>The **submission file schemas** and the **human target sample** (recruitment, census-based quotas, and</span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>the quota table) are specified in the **[benchmark amendment](amendment_preregistration.qmd)**.</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>the quota table) are specified in the **[benchmark preregistration](preregistration_benchmark.qmd)**.</span>
 <span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
 <span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>**You build your own synthetic respondents.** Generate them from any source — a public survey such as</span>
 <span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare</span>
 <span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>your choice in registration item C.4. If you want to match the human target population, the</span>
-<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>amendment's census-based quota table is available to sample against.</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>benchmark preregistration's census-based quota table is available to sample against.</span>
 <span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>:::</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

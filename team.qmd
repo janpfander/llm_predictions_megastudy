@@ -40,19 +40,13 @@ listing:
         path: https://www.sdmlab.psychol.cam.ac.uk/staff/miriam-remshard
         title: "[Miriam Remshard](https://www.sdmlab.psychol.cam.ac.uk/staff/miriam-remshard)"
         subtitle: PhD Candidate, [Cambridge Social Decision-Making Lab](https://www.sdmlab.psychol.cam.ac.uk/), University of Cambridge, *United Kingdom*
+        sortby: "7"
+
+      - image: images/sara.png
+        path: https://sustainability.stanford.edu/people/sara-constantino
+        title: "[Sara Constantino](https://sustainability.stanford.edu/people/sara-constantino)"
+        subtitle: Assistant Professor, Stanford University, *United States*
         sortby: "4"
-
-      # - image: images/madalina.jpg
-      #   path: https://profiles.stanford.edu/madalina-vlasceanu
-      #   title: "[Madalina Vlasceanu](https://profiles.stanford.edu/madalina-vlasceanu)"
-      #   subtitle: Assistant Professor, [Climate Cognition Lab](https://climatecognition.stanford.edu/) at Stanford University, *United States*
-      #   sortby: "7"
-
-      # - image: images/sara.png
-      #   path: https://sustainability.stanford.edu/people/sara-constantino
-      #   title: "[Sara Constantino](https://sustainability.stanford.edu/people/sara-constantino)"
-      #   subtitle: Assistant Professor, Stanford University, *United States*
-      #   sortby: "8"
 
     type: grid
     image-height: 325px

@@ -15,10 +15,14 @@ manuscript*
 
 data/
 
-# analysis.R outputs are derived from gitignored real data; keep the script,
+# analysis/old/ outputs are derived from gitignored real data; keep the script,
 # not the artifacts.
+analysis/old/results/
+analysis/old/figures/
+
+# Amendment render cache (cached() in the amendment qmd): derived from the
+# committed placeholder simulation, regenerated on first render if absent.
 analysis/results/
-analysis/figures/
 
 CONTEXT.md
 CLAUDE.md

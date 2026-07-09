@@ -1,6 +1,6 @@
 /*-- scss:defaults --*/
 
-@import url('https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&family=Press+Start+2P&family=VT323&display=swap');
 
 // design tokens — retro/arcade CRT palette, "synthwave / outrun" (navy-purple
 // base, multiple neon accents). Shared with tournament.css via :root export
@@ -33,9 +33,12 @@ $body-bg: $paper;
 $body-color: $ink;
 
 // arcade typography: pixel font for chrome (nav, H1, buttons, labels),
-// VT323 terminal font for headings, monospace body for legibility
+// VT323 terminal font for headings. Body text is Space Grotesk — derived from
+// Space Mono, so it keeps the techno/typewriter letterforms but is
+// proportional and readable in running prose (a full-mono body proved too
+// hard to read). IBM Plex Mono stays on code, labels, and table chrome.
 $pixel-font: "Press Start 2P", monospace;
-$font-family-sans-serif: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+$font-family-sans-serif: "Space Grotesk", system-ui, -apple-system, sans-serif;
 $font-family-monospace: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 $headings-font-family: "VT323", "IBM Plex Mono", monospace;
 $headings-font-weight: 400;

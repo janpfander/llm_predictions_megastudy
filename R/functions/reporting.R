@@ -108,3 +108,19 @@ print_a_function_from_file <- function(fun_name, file = here::here("R/functions/
   cat(lines[start:end], sep = "\n")
   cat("\n```\n")
 }
+
+## Render cache for the amendment's heavy analyses
+# Memoises one named result to analysis/results/<name>.rds. On a cache hit the
+# expression is never evaluated (R args are lazy), so the document reads the
+# stored object; on a miss it runs the real analysis code shown in the chunk
+# and writes it. This keeps the analysis code live and visible in the amendment
+# while paying the model-fitting / bootstrap cost only once. Delete the .rds
+# (analysis/refresh_amendment.R) to force regeneration.
+cached <- function(name, expr, dir = here::here("analysis/results")) {
+  path <- file.path(dir, paste0(name, ".rds"))
+  if (file.exists(path)) return(readRDS(path))
+  obj <- expr
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+  saveRDS(obj, path)
+  obj
+}

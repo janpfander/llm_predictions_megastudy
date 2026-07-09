@@ -1,9 +1,16 @@
 # Custom statistics functions
 
 # compare treatment effects
+# tost_delta (absolute, in outcome units) overrides the relative bound when
+# supplied: the |ATE_h|-relative bound is a function of the noisy estimate
+# under test (invalid as an alpha-level equivalence procedure, and degenerate
+# when reference SEs exceed typical effect sizes), so the benchmark
+# preregistration fixes delta in advance; the original preregistration keeps
+# the relative default unchanged.
 compare_estimates <- function(h_result, l_result,
                               join_by = "condition",
-                              tost_delta_pct = 0.5) {
+                              tost_delta_pct = 0.5,
+                              tost_delta = NULL) {
 
   # Standardize columns; SE derived from std.error or from 95% CI width if absent
   prep <- function(df, suffix) {
@@ -31,11 +38,13 @@ compare_estimates <- function(h_result, l_result,
     )
   }
 
-  # TOST: equivalence declared when |ATE_h - ATE_l| < delta = tost_delta_pct × |ATE_h|
+  # TOST: equivalence declared when |ATE_h - ATE_l| < delta
+  # (fixed tost_delta if supplied, else tost_delta_pct × |ATE_h|);
   # p_tost is the maximum of the two one-sided p-values; equivalent if p_tost < 0.05
   joined |>
     mutate(
-      delta      = tost_delta_pct * abs(estimate_h),
+      delta      = if (!is.null(tost_delta)) tost_delta
+                   else tost_delta_pct * abs(estimate_h),
       diff       = estimate_h - estimate_l,
       se_diff    = sqrt(se_h^2 + se_l^2),
       p_lower    = pnorm((diff + delta) / se_diff, lower.tail = FALSE),
@@ -66,44 +75,84 @@ compute_ovl <- function(x, y, n_grid = 512) {
   sum(pmin(d_h$y, d_l$y)) * (hi - lo) / n_grid
 }
 
+# Wasserstein-1 (earth mover's) distance between two samples: the integral of
+# the absolute ECDF difference over the observed range, in outcome scale
+# points. Bandwidth-free companion to the KDE-based OVL (whose value depends
+# on kernel bandwidth, and hence on the two samples' sizes, and leaks density
+# past the 0/100 scale bounds).
+compute_w1 <- function(x, y, n_grid = 512) {
+  lo <- min(c(x, y)); hi <- max(c(x, y))
+  if (lo == hi) return(0)
+  gr <- seq(lo, hi, length.out = n_grid)
+  mean(abs(ecdf(x)(gr) - ecdf(y)(gr))) * (hi - lo)
+}
+
 # calibration regression
-run_calibration <- function(h_result, l_result) {
+# robust = TRUE swaps classical for HC2 heteroskedasticity-robust inference:
+# the outcome side (ATE_h) carries known, condition-varying sampling error
+# that classical F-tests ignore. weight_by_precision = TRUE additionally
+# weights by 1/se_h^2 (needs a std.error column in h_result) — the benchmark's
+# sensitivity variant. Defaults reproduce the original preregistration exactly.
+run_calibration <- function(h_result, l_result,
+                            robust = FALSE, weight_by_precision = FALSE) {
   joined <- inner_join(
-    h_result |> select(condition, estimate_h = estimate),
+    h_result |>
+      mutate(se_h = if ("std.error" %in% names(h_result)) std.error else NA_real_) |>
+      select(condition, estimate_h = estimate, se_h),
     l_result |> select(condition, estimate_l = estimate),
     by = "condition"
   )
 
   # ATE_h = α + β × ATE_l
-  fit   <- lm(estimate_h ~ estimate_l, data = joined)
-  coefs <- broom::tidy(fit, conf.int = TRUE)
+  w <- if (weight_by_precision) 1 / joined$se_h^2 else NULL
+  fit <- lm(estimate_h ~ estimate_l, data = joined, weights = w)
+  V   <- if (robust) sandwich::vcovHC(fit, type = "HC2") else NULL
 
-  tibble(
-    alpha     = coefs$estimate[1],
-    alpha_lo  = coefs$conf.low[1],
-    alpha_hi  = coefs$conf.high[1],
-    beta      = coefs$estimate[2],
-    beta_lo   = coefs$conf.low[2],
-    beta_hi   = coefs$conf.high[2],
-    r_squared = broom::glance(fit)$r.squared,
-    # Joint F-test  H0: α = 0 AND β = 1  (perfect calibration on the original scale)
-    p_joint   = car::linearHypothesis(
-                  fit, c("(Intercept) = 0", "estimate_l = 1")
-                )$`Pr(>F)`[2],
-    # Slope-only F-test  H0: β = 1  (proportional calibration; constant offset allowed)
-    p_beta_1  = car::linearHypothesis(fit, "estimate_l = 1")$`Pr(>F)`[2]
-  )
+  # tidy() emits one row per restriction, each carrying the same joint F-test
+  # p-value; distinct() collapses them to the single test result
+  f_test_p <- function(hypothesis) {
+    (if (is.null(V)) car::linearHypothesis(fit, hypothesis)
+     else            car::linearHypothesis(fit, hypothesis, vcov. = V)) |>
+      broom::tidy() |>
+      distinct(p.value) |>
+      pull(p.value)
+  }
+
+  (if (is.null(V)) broom::tidy(fit, conf.int = TRUE)
+   else broom::tidy(lmtest::coeftest(fit, vcov. = V), conf.int = TRUE)) |>
+    mutate(term = if_else(term == "(Intercept)", "alpha", "beta")) |>
+    select(term, estimate, lo = conf.low, hi = conf.high) |>
+    pivot_wider(names_from = term, values_from = c(estimate, lo, hi),
+                names_glue = "{term}_{.value}") |>
+    transmute(
+      alpha     = alpha_estimate,
+      alpha_lo,
+      alpha_hi,
+      beta      = beta_estimate,
+      beta_lo,
+      beta_hi,
+      r_squared = broom::glance(fit) |> pull(r.squared),
+      # Joint F-test  H0: α = 0 AND β = 1  (perfect calibration on the original scale)
+      p_joint   = f_test_p(c("(Intercept) = 0", "estimate_l = 1")),
+      # Slope-only F-test  H0: β = 1  (proportional calibration; constant offset allowed)
+      p_beta_1  = f_test_p("estimate_l = 1")
+    )
 }
 
-compare_distributions <- function(human_data, llm_data, outcome, condition_val) {
+# include_w1 = TRUE adds the Wasserstein-1 distance (benchmark preregistration);
+# the default keeps the original preregistration's three-metric output unchanged.
+compare_distributions <- function(human_data, llm_data, outcome, condition_val,
+                                  include_w1 = FALSE) {
   x <- human_data |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
   y <- llm_data   |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
-  tibble(
+  out <- tibble(
     condition      = as.character(condition_val),
     ovl            = compute_ovl(x, y),
     ks_d           = suppressWarnings(ks.test(x, y)$statistic),
     variance_ratio = var(y) / var(x)  # > 1: clones more variable; < 1: less variable
   )
+  if (include_w1) out <- out |> mutate(w1 = compute_w1(x, y), .after = ovl)
+  out
 }
 
 
@@ -227,10 +276,11 @@ run_main_treatment_model_binary <- function(data,
 run_moderator_model <- function(data,
                                 outcome,
                                 moderator,
-                                condition_var = "condition",
-                                covariates    = NULL,
-                                weights       = NULL,
-                                adjust_method = "BH") {
+                                condition_var     = "condition",
+                                covariates        = NULL,
+                                weights           = NULL,
+                                adjust_method     = "BH",
+                                compute_predicted = TRUE) {
   
   rhs           <- paste(c(paste0(condition_var, " * ", moderator), covariates),
                          collapse = " + ")
@@ -262,8 +312,14 @@ run_moderator_model <- function(data,
     )
   
   is_numeric_mod <- is.numeric(data[[moderator]])
-  
-  if (!is_numeric_mod) {
+
+  # `predicted_effects` (marginal effects via marginaleffects) is the expensive
+  # part of this function. Callers that only need the interaction coefficients
+  # — e.g. the amendment's subgroup leaderboard, which scores estimate-only
+  # pairs across many mock teams — can skip it with compute_predicted = FALSE.
+  predicted_effects <- NULL
+
+  if (compute_predicted && !is_numeric_mod) {
     predicted_effects <- marginaleffects::avg_comparisons(
       fit,
       variables = condition_var,
@@ -288,8 +344,8 @@ run_moderator_model <- function(data,
       select(condition, moderator_level, estimate, conf.low, conf.high,
              p.value, p.value_adjusted, significant_adjusted, baseline)
   }
-  
-  if (is_numeric_mod) {
+
+  if (compute_predicted && is_numeric_mod) {
     predicted_effects <- marginaleffects::comparisons(
       fit,
       variables = condition_var,
@@ -936,10 +992,14 @@ run_stacked_model <- function(human_data, llm_data,
 
 # Compare cell-mean outcomes in the control condition across demographic groups.
 # r and RMSE measure how well clone baseline levels match human baseline levels.
+# min_cells_r: a Pearson r over 2 cell means is ±1 by construction and over 3
+# nearly so; the benchmark suppresses r below 4 cells (RMSE leads there). The
+# default 0 keeps the original preregistration's output unchanged.
 compare_demographic_baselines <- function(human_data, llm_data,
                                            outcome,
                                            moderators,
-                                           condition_var = "condition") {
+                                           condition_var = "condition",
+                                           min_cells_r = 0) {
   control_val <- levels(human_data[[condition_var]])[1]
 
   map_dfr(moderators, function(mod) {
@@ -956,7 +1016,8 @@ compare_demographic_baselines <- function(human_data, llm_data,
     inner_join(h_cells, l_cells, by = "cell") |>
       summarise(
         moderator = mod,
-        r         = cor(mean_h, mean_l, use = "pairwise.complete.obs"),
+        r         = if (n() >= min_cells_r)
+          cor(mean_h, mean_l, use = "pairwise.complete.obs") else NA_real_,
         rmse      = sqrt(mean((mean_h - mean_l)^2, na.rm = TRUE)),
         n_cells   = n()
       )
@@ -1004,8 +1065,8 @@ compare_demographic_predictability <- function(human_data, llm_data,
 # ---------------------------------------------------------------------------
 # Amendment additions (Silicon Sample Tournament leaderboard)
 #
-# These functions are NOT used by the original preregistration; they are added
-# for the cross-team leaderboard in `amendment_preregistration.qmd`. The
+# These functions are NOT used by the original preregistration (v1); they are
+# added for the cross-team leaderboard in `preregistration_benchmark.qmd`. The
 # original preregistration reports the comparison metrics as point estimates
 # only — the bootstrap intervals below are introduced by the amendment so that
 # every approach can be shown on a forest plot with an uncertainty band.
@@ -1016,10 +1077,58 @@ compare_demographic_predictability <- function(human_data, llm_data,
 # Human 1) and estimate_l, se_l, infer_l (the submission). Mirrors
 # compare_estimates(), but operates on pairs pooled across outcomes. Pooled
 # RMSE is intentionally omitted (not comparable across outcome scales).
-pooled_metrics <- function(pairs) {
-  pairs |>
+# Measurement-error-adjusted comparison metrics. The reference (human) effects
+# are noisy estimates of fixed true effects: estimate_h = true effect + sampling
+# error with known variance se_h^2. That noise cannot contribute to the
+# covariance with the predictions (it is independent of them) but it inflates
+# the observed variance of the reference effects, so the raw Pearson r is
+# biased toward zero. Subtracting the known noise variance from the reference
+# variance recovers the correlation with the *true* effects (Spearman
+# disattenuation with known error variances; the fixed-effects, method-of-
+# moments analogue of the two-stage meta-analytic r_adj in Hewitt et al.).
+# The same identity corrects the RMSE: E[(h - l)^2] = true squared error +
+# noise variance. Only the reference side is corrected — submission-side
+# sampling noise is handled at the source by the Tier-1 precision requirement,
+# and Tier-2/3 intervals express epistemic uncertainty, not sampling noise.
+# Guards: if the estimated true variance (or true squared error) is <= 0 the
+# noise swamps the signal and the adjusted value is undefined -> NA. The
+# adjusted correlation is truncated to [-1, 1]. Uncertainty intervals come from
+# the same cluster bootstrap as every other metric.
+adjusted_metrics <- function(pairs) {
+  ok <- pairs |> filter(!is.na(estimate_h), !is.na(estimate_l), !is.na(se_h))
+
+  if (nrow(ok) < 3) return(tibble(pearson_adj = NA_real_, rmse_adj = NA_real_))
+
+  var_true <- var(ok$estimate_h) - mean(ok$se_h^2)
+  mse_true <- mean((ok$estimate_h - ok$estimate_l)^2) - mean(ok$se_h^2)
+
+  tibble(
+    pearson_adj = if (var_true > 0 && sd(ok$estimate_l) > 0)
+      max(-1, min(1, cov(ok$estimate_l, ok$estimate_h) /
+                       (sd(ok$estimate_l) * sqrt(var_true))))
+      else NA_real_,
+    rmse_adj    = if (mse_true > 0) sqrt(mse_true) else NA_real_
+  )
+}
+
+# tost_delta is a FIXED, prespecified equivalence bound in outcome units —
+# either one number, or a named vector keyed by outcome (for pairs pooling
+# outcomes on different scales). The v1-style |ATE_h|-relative bound is not
+# used here: a bound computed from the noisy estimate under test is not a
+# valid alpha-level procedure, and at this design's reference SEs it leaves
+# the TOST rung with no dynamic range (see the design analysis in the
+# benchmark preregistration, which motivates the default of 3 scale points).
+# include_rmse = TRUE adds rmse and its noise-corrected companion rmse_adj —
+# only meaningful when all pairs share one outcome scale (the per-outcome and
+# per-intervention breakdowns), which is why the pooled default omits them.
+pooled_metrics <- function(pairs, tost_delta = 3, include_rmse = FALSE) {
+  delta_of <- function(outcome) {
+    if (length(tost_delta) == 1 && is.null(names(tost_delta))) tost_delta
+    else unname(tost_delta[outcome])
+  }
+  scored <- pairs |>
     mutate(
-      delta      = 0.5 * abs(estimate_h),
+      delta      = delta_of(outcome),
       diff       = estimate_h - estimate_l,
       se_diff    = sqrt(se_h^2 + se_l^2),
       p_tost     = pmax(pnorm((diff + delta) / se_diff, lower.tail = FALSE),
@@ -1031,7 +1140,9 @@ pooled_metrics <- function(pairs) {
         !is.na(p_adj_h) & p_adj_h < .05 & estimate_h < 0 ~ "neg",
         TRUE                                             ~ "ns"
       )
-    ) |>
+    )
+  adj <- adjusted_metrics(pairs)
+  out <- scored |>
     summarise(
       directional_pct = mean(same_sign, na.rm = TRUE) * 100,
       spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
@@ -1039,6 +1150,78 @@ pooled_metrics <- function(pairs) {
       pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs"),
       inferential_pct = mean(infer_h == infer_l, na.rm = TRUE) * 100,
       tost_pct        = mean(equivalent, na.rm = TRUE) * 100
+    ) |>
+    mutate(
+      pearson_adj = adj$pearson_adj,
+      # Fisher-z average of the per-outcome correlations: guards the pooled
+      # correlation against between-outcome inflation (a submission that only
+      # predicts which OUTCOMES move, while misranking interventions within
+      # every outcome, scores high pooled but low here — divergence between
+      # the two is the diagnostic).
+      pearson_fz  = fisher_z_avg(pairs, method = "pearson"),
+      spearman_fz = fisher_z_avg(pairs, method = "spearman")
+    ) |>
+    relocate(pearson_adj, .after = pearson_r)
+  if (include_rmse)
+    out <- out |>
+      mutate(rmse = sqrt(mean((pairs$estimate_h - pairs$estimate_l)^2, na.rm = TRUE)),
+             rmse_adj = adj$rmse_adj)
+  out
+}
+
+# Fisher-z-averaged per-outcome correlation: correlation within each outcome
+# (across interventions), z-transformed, averaged, back-transformed. Outcomes
+# with fewer than 3 pairs or zero variance drop out. NA when pairs carry no
+# outcome column (or a single outcome — then it equals the pooled value and
+# carries no extra information).
+fisher_z_avg <- function(pairs, method = "pearson") {
+  if (!"outcome" %in% names(pairs) || n_distinct(pairs$outcome) < 2) return(NA_real_)
+  z <- pairs |>
+    group_by(outcome) |>
+    summarise(
+      r = if (sum(!is.na(estimate_h) & !is.na(estimate_l)) >= 3)
+        suppressWarnings(cor(estimate_h, estimate_l, method = method,
+                             use = "pairwise.complete.obs")) else NA_real_,
+      .groups = "drop"
+    ) |>
+    filter(!is.na(r), abs(r) < 1) |>
+    pull(r) |> atanh()
+  if (length(z) == 0) return(NA_real_)
+  tanh(mean(z))
+}
+
+# Proper scoring of submitted 95% uncertainty intervals (Tiers 2-3). The
+# interval on each ATE is reconstructed from the pair's implied SE
+# (estimate_l ± z·se_l): for Tier 3 that is exactly the submitted interval
+# (se_l = width / 2z, symmetry assumed at submission); for Tier 2 it is the
+# ATE interval implied by the two submitted cell intervals. Two scores:
+# pi_coverage_pct — the share of reference ATEs falling inside (honest
+# intervals land near the nominal level); interval_score — the mean Winkler
+# score, width plus 2/alpha times the miss distance, a proper score minimized
+# by reporting one's true predictive interval, so neither padding intervals
+# wide nor squeezing them tight pays. The Winkler score is in outcome units:
+# pool it only across outcomes on a common scale. Not defined for Tier-1
+# submissions (their se_l is sampling, not epistemic, uncertainty) or the
+# reference rows.
+pi_metrics <- function(pairs, level = 0.95) {
+  z     <- qnorm(1 - (1 - level) / 2)
+  alpha <- 1 - level
+  ok <- pairs |>
+    filter(!is.na(estimate_h), !is.na(estimate_l), !is.na(se_l), se_l > 0)
+  if (nrow(ok) == 0)
+    return(tibble(pi_coverage_pct = NA_real_, interval_score = NA_real_))
+  ok |>
+    mutate(
+      lo      = estimate_l - z * se_l,
+      hi      = estimate_l + z * se_l,
+      covered = estimate_h >= lo & estimate_h <= hi,
+      winkler = (hi - lo) +
+        (2 / alpha) * pmax(0, lo - estimate_h) +
+        (2 / alpha) * pmax(0, estimate_h - hi)
+    ) |>
+    summarise(
+      pi_coverage_pct = mean(covered) * 100,
+      interval_score  = mean(winkler)
     )
 }
 
@@ -1047,13 +1230,95 @@ pooled_metrics <- function(pairs) {
 # mirrors the original preregistration's rq3 pooled row (directional agreement,
 # Spearman ρ, Pearson r only).
 signed_metrics <- function(pairs) {
-  pairs |>
+  out <- pairs |>
     summarise(
       directional_pct = mean(sign(estimate_h) == sign(estimate_l), na.rm = TRUE) * 100,
       spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
                             use = "pairwise.complete.obs"),
       pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs")
     )
+  # Adjusted correlation where the reference SEs travel with the pairs. This is
+  # where disattenuation earns its keep: small subgroup cells make reference
+  # noise non-uniform, so raw r is unevenly deflated across cells.
+  if ("se_h" %in% names(pairs))
+    out <- out |> mutate(pearson_adj = adjusted_metrics(pairs)$pearson_adj)
+  out
+}
+
+# Decision-relevant top-k selection. The practical purpose of a many-arm
+# megastudy is identifying which interventions work; the correlation rungs are
+# only a proxy for that decision. Per outcome: rank interventions by the
+# submission's predicted ATE, take the top k, and score the pick against the
+# truly best k (by the human reference ATEs) two ways — hit_rate (share of the
+# picked set that is in the true best set) and regret_ratio (mean true ATE of
+# the picked set / mean true ATE of the best set; 1 = perfect pick, scale-free
+# within outcome). regret_ratio is NA when the best achievable mean ATE is not
+# positive (no "winners" to find). with_ties = FALSE keeps the pick at exactly
+# k under ties, broken deterministically by row order (the order the pairs
+# were built in — condition order within outcome). Note the target itself is
+# noisy: the "truly best k" are the top k of the reference half-sample POINT
+# ESTIMATES, so with reference SEs comparable to the true ATE spread the
+# best-set identity is partly winner's-curse-driven and best_ate is
+# selection-inflated. The human-replication reference row carries the same
+# affliction symmetrically — read hit rates against its hit rate, not
+# against 1.
+topk_selection <- function(pairs, k = 3) {
+  pairs |>
+    group_by(outcome) |>
+    group_modify(function(d, key) {
+      picked <- d |> slice_max(estimate_l, n = k, with_ties = FALSE)
+      best   <- d |> slice_max(estimate_h, n = k, with_ties = FALSE)
+      tibble(
+        hit_rate     = length(intersect(picked$condition, best$condition)) / k,
+        picked_ate   = mean(picked$estimate_h),
+        best_ate     = mean(best$estimate_h),
+        regret_ratio = if (mean(best$estimate_h) > 0)
+          mean(picked$estimate_h) / mean(best$estimate_h) else NA_real_
+      )
+    }) |>
+    ungroup()
+}
+
+# Demographic parity gap (DPD, after Park et al. 2026): one bias number per
+# moderator. Per moderator level, the absolute error between the submission's
+# and the human control-condition group mean; the DPD is the gap between the
+# worst- and best-served group. 0 = the approach serves every group equally
+# well — or equally badly, which is why worst_abs_err (the worst-served
+# group's absolute error, Park et al.'s primary concern) is reported alongside
+# the gap. Large DPD values flag that baseline accuracy is concentrated in
+# some groups. Complements compare_demographic_baselines() (which averages
+# over groups and so can hide exactly this gap). Groups under min_n are
+# skipped: a group mean over few respondents has an SE of several scale
+# points, and the max-over-groups error is a max-of-noise statistic that is
+# mechanically positive even for a perfect approach — read the DPD against
+# the human-replication reference row, which carries the same affliction.
+demographic_parity_gap <- function(human_data, llm_data, outcome, moderators,
+                                   condition_val, min_n = 30) {
+  map_dfr(moderators, function(mod) {
+    groups <- levels(human_data[[mod]])
+    errs <- map_dbl(groups, function(grp) {
+      x <- human_data |>
+        filter(condition == condition_val, .data[[mod]] == grp) |>
+        pull(all_of(outcome)) |> na.omit()
+      y <- llm_data |>
+        filter(condition == condition_val, .data[[mod]] == grp) |>
+        pull(all_of(outcome)) |> na.omit()
+      if (length(x) < min_n || length(y) < min_n) return(NA_real_)
+      abs(mean(y) - mean(x))
+    })
+    if (all(is.na(errs))) {
+      tibble(moderator = mod, dpd = NA_real_, worst_abs_err = NA_real_,
+             worst_group = NA_character_, best_group = NA_character_)
+    } else {
+      tibble(
+        moderator     = mod,
+        dpd           = max(errs, na.rm = TRUE) - min(errs, na.rm = TRUE),
+        worst_abs_err = max(errs, na.rm = TRUE),
+        worst_group   = groups[which.max(errs)],
+        best_group    = groups[which.min(errs)]
+      )
+    }
+  })
 }
 
 # Generic cluster bootstrap. Resamples the levels of `cluster` with
@@ -1086,5 +1351,81 @@ cluster_boot <- function(df, f, cluster = "condition", n_boot = 1000,
                   hi = quantile(value, 1 - alpha, na.rm = TRUE),
                   .groups = "drop"),
       by = "metric"
+    )
+}
+
+# Paired cluster-bootstrap difference between two submissions. Ranking claims
+# ("A outperforms B") must not be read off overlapping marginal CIs — the
+# standard misreading; because every submission is scored against the SAME
+# reference on the SAME intervention clusters, the right comparison draws one
+# set of clusters per replicate and scores BOTH submissions on it, so the
+# common reference noise cancels within each replicate. Two submissions are
+# reported as distinguishable on a metric only when this paired difference CI
+# excludes zero. Returns one row per metric: the point difference f(a) - f(b)
+# and its percentile CI.
+cluster_boot_diff <- function(df_a, df_b, f, cluster = "condition",
+                              n_boot = 2000, conf = 0.95, seed = 2026) {
+  if (!is.null(seed)) set.seed(seed)
+
+  diff_row <- function(a, b) {
+    fa <- f(a); fb <- f(b)
+    as_tibble(map2(fa, fb, `-`)) |>
+      pivot_longer(everything(), names_to = "metric", values_to = "value")
+  }
+
+  parts_a <- split(df_a, as.character(df_a[[cluster]]))
+  parts_b <- split(df_b, as.character(df_b[[cluster]]))
+  cl <- intersect(names(parts_a), names(parts_b))
+
+  point <- diff_row(df_a, df_b)
+  boot <- map_dfr(seq_len(n_boot), function(b) {
+    drawn <- sample(cl, length(cl), replace = TRUE)
+    diff_row(bind_rows(parts_a[drawn]), bind_rows(parts_b[drawn]))
+  })
+
+  alpha <- (1 - conf) / 2
+  point |>
+    left_join(
+      boot |>
+        group_by(metric) |>
+        summarise(lo = quantile(value, alpha,     na.rm = TRUE),
+                  hi = quantile(value, 1 - alpha, na.rm = TRUE),
+                  .groups = "drop"),
+      by = "metric"
+    )
+}
+
+# Per-group metric ladder: applies a pooled-metric function (`pooled_metrics`
+# or `signed_metrics`) within each level of `group`, giving one score per group
+# instead of a single pooled score. With group = "outcome" it scores each
+# outcome across the interventions; with group = "condition" it scores each
+# intervention across the outcomes. Drives the field-distribution figures,
+# which show the spread of approaches per outcome / per intervention. Per
+# intervention the score is taken across `outcomes_continuous` (all on the same
+# 0-100 scale), so the correlation rungs are not scale-confounded.
+metrics_by_group <- function(pairs, group, f = pooled_metrics) {
+  pairs |>
+    group_by(.data[[group]]) |>
+    # .keep = TRUE: f may need the grouping column itself (e.g. the per-outcome
+    # TOST bound lookup in pooled_metrics)
+    group_modify(~ f(.x), .keep = TRUE) |>
+    ungroup()
+}
+
+# Distribution of a metric across approaches (one row per metric): mean,
+# median, sd, min, max over the submissions, excluding the human-replication
+# reference row. Feeds the companion table under the headline field-distribution
+# figure. Expects long input with columns submission, metric, value.
+summarise_field <- function(field_long, ceiling_label = "Human replication") {
+  field_long |>
+    filter(submission != ceiling_label) |>
+    group_by(metric) |>
+    summarise(
+      mean   = mean(value,   na.rm = TRUE),
+      median = median(value, na.rm = TRUE),
+      sd     = sd(value,     na.rm = TRUE),
+      min    = min(value,    na.rm = TRUE),
+      max    = max(value,    na.rm = TRUE),
+      .groups = "drop"
     )
 }

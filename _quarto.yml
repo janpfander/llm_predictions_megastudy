@@ -24,10 +24,10 @@ website:
         href: index.qmd
       - text: "Preregistration"
         menu:
-          - text: "Original preregistration"
+          - text: "Benchmark preregistration"
+            href: preregistration_benchmark.qmd
+          - text: "Original preregistration (v1, superseded)"
             href: preregistration.qmd
-          - text: "Amendment — multi-team benchmark approach"
-            href: amendment_preregistration.qmd
       - text: "Materials"
         menu:
           - text: "Submission template"

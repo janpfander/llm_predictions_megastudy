@@ -314,7 +314,7 @@ simulate_dataset <- function(seed) {
 ############################################################
 
 # All mock datasets live alongside the other preregistration data, where both
-# preregistration.qmd and amendment_preregistration.qmd read them from.
+# preregistration.qmd and preregistration_benchmark.qmd read them from.
 out_dir <- "data/simulation_preregistration"
 dir.create(out_dir, showWarnings = FALSE, recursive = TRUE)
 
@@ -329,16 +329,18 @@ write_csv(llm_data, file.path(out_dir, "llm_data_preregistration.csv"))
 cat("LLM data saved.   N =", nrow(llm_data), "\n")
 
 ############################################################
-# Multi-team placeholder data (amendment preregistration)
+# Multi-team placeholder data (benchmark preregistration)
 #
-# Five mock prediction "teams" for the cross-team leaderboard
-# demonstration in amendment_preregistration.qmd. Rather than
-# re-simulating from scratch, each team is a stratified bootstrap
-# resample (within condition) of the single LLM placeholder
-# dataset above — the same individual-level data, re-sampled for
-# several teams. This keeps the design balanced and the teams
-# comparable, differing only by sampling noise, and avoids any
-# fresh mock-data simulation. ids are reassigned within team.
+# Thirty mock prediction "teams" for the cross-team demonstration
+# in preregistration_benchmark.qmd. The benchmark's headline is the
+# *distribution* of predictive quality across the field of approaches,
+# so enough teams are simulated to show a meaningful spread. Rather
+# than re-simulating from scratch, each team is a stratified bootstrap
+# resample (within condition) of the single LLM placeholder dataset
+# above — the same individual-level data, re-sampled for each team.
+# This keeps the design balanced and the teams comparable, differing
+# only by sampling noise, and avoids any fresh mock-data simulation.
+# ids are reassigned within team.
 ############################################################
 
 resample_team <- function(base_data, seed) {
@@ -350,7 +352,8 @@ resample_team <- function(base_data, seed) {
     mutate(id = row_number())
 }
 
-team_seeds <- set_names(4561:4565, paste0("team_", 1:5))
+n_teams    <- 30
+team_seeds <- set_names(4561:(4560 + n_teams), paste0("team_", 1:n_teams))
 
 llm_data_teams <- imap_dfr(team_seeds, function(seed, team_name) {
   resample_team(llm_data, seed = seed) |>
@@ -364,12 +367,12 @@ cat("Multi-team LLM data saved. N =", nrow(llm_data_teams),
     "across", length(team_seeds), "teams\n")
 
 ############################################################
-# Mock Tier-2 and Tier-3 submissions (amendment preregistration)
+# Mock Tier-2 and Tier-3 submissions (benchmark preregistration)
 #
-# The amendment demonstrates all three tier code paths. Tier 1
+# The benchmark demonstrates all three tier code paths. Tier 1
 # is an individual-level dataset (the per-team data above, used
 # directly). Tiers 2 and 3 are collapsed views, generated here
-# rather than inside amendment_preregistration.qmd so that no
+# rather than inside preregistration_benchmark.qmd so that no
 # mock-data simulation lives in the preregistration scripts.
 #
 # The collapse logic mirrors the submission-template example
@@ -406,10 +409,12 @@ cell_stats <- function(team_data) {
     )
 }
 
-# Mock Tier-2 submission: team_4 cell means with a widened 95% prediction
+# Mock Tier-2 submission: team_29 cell means with a widened 95% prediction
 # interval on each mean standing in for the team's epistemic uncertainty.
-# Submitted schema: condition, outcome, mean, pi_lower, pi_upper.
-cells_t2 <- cell_stats(llm_data_teams |> filter(team == "team_4")) |>
+# Submitted schema: condition, outcome, mean, pi_lower, pi_upper. team_29 and
+# team_30 stand in as the cell-level / effect-level submissions, so the
+# remaining 28 teams are scored as individual-level (Tier 1) entries.
+cells_t2 <- cell_stats(llm_data_teams |> filter(team == "team_29")) |>
   mutate(
     se_mean  = sd / sqrt(n),
     pi_lower = mean - z95 * 2 * se_mean,
@@ -418,15 +423,15 @@ cells_t2 <- cell_stats(llm_data_teams |> filter(team == "team_4")) |>
   select(condition, outcome, mean, pi_lower, pi_upper)
 saveRDS(cells_t2, file.path(out_dir, "mock_submission_tier2_cells.rds"))
 
-# Mock Tier-3 submission: team_5 ATEs vs. control with a widened 95%
+# Mock Tier-3 submission: team_30 ATEs vs. control with a widened 95%
 # prediction interval standing in for a team's epistemic uncertainty.
 # Derived from the same raw cell statistics, as in make_examples.R.
-cells_team5  <- cell_stats(llm_data_teams |> filter(team == "team_5"))
-control_cells <- cells_team5 |>
+cells_team30  <- cell_stats(llm_data_teams |> filter(team == "team_30"))
+control_cells <- cells_team30 |>
   filter(condition == "control") |>
   transmute(outcome, mean_ctrl = mean, sd_ctrl = sd, n_ctrl = n)
 
-effects_t3 <- cells_team5 |>
+effects_t3 <- cells_team30 |>
   filter(condition != "control") |>
   left_join(control_cells, by = "outcome") |>
   mutate(
