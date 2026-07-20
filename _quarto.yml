@@ -34,6 +34,8 @@ website:
             href: materials.qmd
           - text: "Questionnaire"
             href: questionnaire.qmd
+      - text: "FAQ"
+        href: faq.qmd
       # Talks section hidden: the presentation reveals results that future
       # collaborator teams should not see. Kept local only (see .gitignore).
       # - text: "Talks"

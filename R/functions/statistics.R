@@ -1200,9 +1200,10 @@ fisher_z_avg <- function(pairs, method = "pearson") {
 # score, width plus 2/alpha times the miss distance, a proper score minimized
 # by reporting one's true predictive interval, so neither padding intervals
 # wide nor squeezing them tight pays. The Winkler score is in outcome units:
-# pool it only across outcomes on a common scale. Not defined for Tier-1
-# submissions (their se_l is sampling, not epistemic, uncertainty) or the
-# reference rows.
+# pool it only across outcomes on a common scale (the benchmark converts all
+# estimates to pp of scale range at pair-building, so there it pools across
+# all outcomes, like RMSE). Not defined for Tier-1 submissions (their se_l is
+# sampling, not epistemic, uncertainty) or the reference rows.
 pi_metrics <- function(pairs, level = 0.95) {
   z     <- qnorm(1 - (1 - level) / 2)
   alpha <- 1 - level
@@ -1279,10 +1280,12 @@ topk_selection <- function(pairs, k = 3) {
     ungroup()
 }
 
-# Demographic parity gap (DPD, after Park et al. 2026): one bias number per
-# moderator. Per moderator level, the absolute error between the submission's
-# and the human control-condition group mean; the DPD is the gap between the
-# worst- and best-served group. 0 = the approach serves every group equally
+# Demographic parity gap (DPD, after Park et al. 2026 — adapted: they take
+# the gap in per-group predictive accuracy over paired agent-person data; with
+# no person-level pairing here, the gap is over group-mean baseline errors):
+# one bias number per moderator. Per moderator level, the absolute error
+# between the submission's and the human control-condition group mean; the DPD
+# is the gap between the worst- and best-served group. 0 = the approach serves every group equally
 # well — or equally badly, which is why worst_abs_err (the worst-served
 # group's absolute error, Park et al.'s primary concern) is reported alongside
 # the gap. Large DPD values flag that baseline accuracy is concentrated in

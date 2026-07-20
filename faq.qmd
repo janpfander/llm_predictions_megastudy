@@ -1,0 +1,87 @@
+---
+title: "FAQ"
+subtitle: "Frequently asked questions about participating in the Silicon Sample Benchmark"
+css: tournament.css
+---
+
+Answers to the questions teams ask when they first read the [call for participation](index.qmd), the [benchmark preregistration](preregistration_benchmark.qmd), and the [submission template](https://github.com/janpfander/silicon-sample-submission). Hands-on, file-level questions (condition code names, control filler texts, missing cells, output logs, licensing) are answered in the template repository's [`FAQ.md`](https://github.com/janpfander/silicon-sample-submission/blob/main/FAQ.md). Where documents overlap, the call is canonical for the procedure and the preregistration for the analysis.
+
+## Participating
+
+### Who can participate?
+
+Participation is by invitation, open to teams with a published track record in silicon-sample research. Eligibility is checked through a short separate survey after you fill in the [interest form](https://forms.gle/Z8j1goLtPKQmESSr8) (by **July 24, 2026**). A team is at most two people, and an individual may join any number of teams. If you were invited and know other researchers who should be on the list, forward them the call. They register interest through the same form.
+
+### How many times can we enter?
+
+At most two entries per tier per team, so up to six in total. One entry is one method's complete set of predictions at a single tier, in its own repository and its own Zenodo deposit. Enter more than once only for genuinely different approaches (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. You mark one entry per tier as `primary`. The cross-team field statistics use primary entries, and every valid entry appears on the leaderboard.
+
+### Can we participate without making our method public?
+
+Yes. The benchmark separates verifiability from publicity. Every registration item must be locked and time-stamped, but items can be *escrowed* (readable only by the core team and auditors under confidentiality) or, for optional items, *withheld*. Your entry's disclosure class follows from its most restricted item. Escrowed entries (Class B) keep full standing. Entries with withheld items (Class C) are still scored and reported, with a badge, but are excluded from the design-choice analysis. A small core of items is non-waivable, marked ★ and † in the [registration form](index.qmd#registration-form). See the [disclosure policy](index.qmd#disclosure).
+
+### What do we commit to by entering?
+
+Once you deposit on Zenodo and email the DOI and file fingerprints, that snapshot is your locked submission. It cannot be revised, every locked entry runs through the preregistered scoring pipeline unchanged, and every entry is reported in the results table. In return, all participating teams are co-authors on the joint benchmark paper.
+
+## Building a submission
+
+### Which tier should we pick?
+
+The highest one your approach supports. **Tier 1 (individual-level synthetic data) is preferred.** It flows through every preregistered analysis, so a Tier-1 entry automatically yields the Tier-2 and Tier-3 metrics too. There is no reason to submit the same method again at a lower tier. Tiers 2 and 3 exist for approaches that genuinely operate at the group or effect level, such as direct forecasting from the literature.
+
+### Do we get a participant pool?
+
+No. The benchmark ships the survey, the codebook, the intervention texts, and a validator, but no profiles and never any human outcome data. You construct your own synthetic respondents from any source (a public survey such as GSS, ANES, or the Census, fully synthetic personas, or none) and assign them to the 17 conditions yourself. `profile_id` is simply a unique id you assign. If you want to match the human target population, the census-based quota table in the [benchmark preregistration](preregistration_benchmark.qmd#the-human-target-sample) is available to sample against, but using it is your choice. You declare how you built your profiles in registration items D.1 to D.3.
+
+### How many synthetic respondents do we need?
+
+For Tier 1, the preregistration sets a floor at the size of the human half you are scored against, meaning **500 per intervention and 1,000 in the control condition**. Below that, your effect estimates would be noisy for a reason that has nothing to do with your method. Going well beyond the floor is encouraged, since synthetic respondents are cheap and a larger pool makes your estimates reflect the method rather than a lucky draw. There is no benefit beyond precision. Statistical significance is evaluated at the human design's sample sizes for every submission, so a very large pool cannot buy a better inferential-agreement score. The template's `make check` warns when a prediction file is below the floor.
+
+### Can we predict only part of the study?
+
+Yes. Full coverage is all 16 interventions plus control across all 13 outcomes, but declared subsets are permitted. You state your coverage in `metadata.json` and are scored pairwise on what you cover. Be aware of the consequence, though. The primary leaderboard is restricted to full-coverage entries, so partial entries are reported in a separate annex with their coverage stated.
+
+### What exactly are `pi_lower` and `pi_upper` (Tiers 2 and 3)?
+
+A 95% uncertainty interval on the reported quantity itself, the cell mean (Tier 2) or the ATE (Tier 3). It is the interval you believe has a 95% chance of containing the value the human study will find. It is *not* the spread of individual responses, a reading that gives intervals roughly an order of magnitude too wide. The intervals are scored directly, for coverage and with an interval score that rewards honest, narrow intervals, so neither padding them wide nor squeezing them tight pays.
+
+### Do we have to use R or the template's `make` commands?
+
+No. The helper scripts happen to be in R, but a submission can be built in any language. The `make` commands (`clean`, `manifest`, `check`) are optional conveniences. What you owe regardless of tooling is prediction files matching the published schemas, a completed `registration.md`, and a SHA-256 fingerprint of each prediction file. Running the self-check before depositing is strongly recommended, since malformed submissions may not be scorable.
+
+## Rules and blinding
+
+### What exactly is off-limits under blinding?
+
+Only one thing, the human outcome data of this megastudy, including pilots. No team may access, solicit, or be shown any of it before the prediction lock, and a signed attestation is part of registration (item I.3). Everything else is allowed and simply declared. You may condition on published experiments, meta-analyses, and any external human datasets, including trust-in-science and climate-communication studies, for fine-tuning, retrieval, in-context examples, or calibration. You list them in item I.2. The blinding constrains the organizers too. Interim human data have been accessed only by the research lead for data-quality monitoring, and the preregistration states who has seen what.
+
+### Can our pipeline include human judgment?
+
+In the design phase, yes. That is where all the human effort goes, into models, prompts, personas, and validation strategy. At prediction time, no. Pipelines must run fully automated, with no human adjusting outputs, and you confirm this in item A.2.
+
+### Our model's training data may include this project's materials. Is that a problem?
+
+The survey, the intervention texts, and the preregistrations are public, so late-cutoff models may have seen them. That is expected and manageable. You report each model's training cutoff and any known exposure to the project's materials in item I.4. What no model can have seen is the human outcome data, which have never been released.
+
+## Scoring and results
+
+### What exactly are we predicting?
+
+The results of a between-subjects experiment with 16 text interventions and a control condition, across 13 preregistered outcomes. The scored effect per intervention and outcome is the post-treatment contrast, the intervention-group mean minus the control-group mean, with no baseline adjustment. For cross-team scoring every effect is expressed in percentage points of its outcome's scale range, so the sliders, the donation, and the signup probability share one unit.
+
+### What is the human replication reference?
+
+The human sample is split in half by a preregistered random seed. Every submission is scored against one half (Human 1). The other half (Human 2) is run through the identical scoring pipeline as if it were a submission, and its scores show how well a fresh human sample of the same size predicts the reference half. That is the natural point of comparison for every entry, reported in the same row format as every team. It is a reference, not a ceiling. An approach can in principle score above it.
+
+### Is there a single winner?
+
+No. Every approach is scored on a ladder of metrics of increasing strictness, and each metric is its own ranking. The headline result is the distribution of predictive quality across the whole field, not any team's rank. We expect different approaches to lead on different rungs, and the paper reports where each approach breaks down rather than crowning a champion. Any claim that one approach outperforms another must pass a preregistered paired bootstrap test. Otherwise the two are reported as statistically indistinguishable, the most common outcome among top performers in comparable benchmarks.
+
+### When do we learn our scores?
+
+Your deposit is acknowledged when you email the DOI and fingerprints. After the prediction lock (**August 30, 2026**) the human study completes and every submission is scored. Each team receives its own scores when the first manuscript draft is shared with all teams for comment (target **September 30, 2026**). No scores or human results are available to anyone before the lock.
+
+### Still have questions?
+
+File-level questions are covered in the template repository's [`FAQ.md`](https://github.com/janpfander/silicon-sample-submission/blob/main/FAQ.md). For everything else, head to the [contact page](contact.qmd).

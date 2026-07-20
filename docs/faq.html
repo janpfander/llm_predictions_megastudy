@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.24">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>FAQ – The Silicon Sample Benchmark</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-f7dbb898f32835c928910a89c3a10b73.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-f97ead2a074e6e9718f9f229c69211ba.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+
+
+<link rel="stylesheet" href="tournament.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="./index.html" class="navbar-brand navbar-brand-logo">
+    </a>
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">The Silicon Sample Benchmark</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-preregistration" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Preregistration</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-preregistration">    
+        <li>
+    <a class="dropdown-item" href="./preregistration_benchmark.html">
+ <span class="dropdown-text">Benchmark preregistration</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./preregistration.html">
+ <span class="dropdown-text">Original preregistration (v1, superseded)</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-materials" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Materials</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-materials">    
+        <li>
+    <a class="dropdown-item" href="./materials.html">
+ <span class="dropdown-text">Submission template</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="./questionnaire.html">
+ <span class="dropdown-text">Questionnaire</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link active" href="./faq.html" aria-current="page"> 
+<span class="menu-text">FAQ</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./team.html"> 
+<span class="menu-text">Team</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./contact.html"> 
+<span class="menu-text">Contact</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#participating" id="toc-participating" class="nav-link active" data-scroll-target="#participating">Participating</a>
+  <ul>
+  <li><a href="#who-can-participate" id="toc-who-can-participate" class="nav-link" data-scroll-target="#who-can-participate">Who can participate?</a></li>
+  <li><a href="#how-many-times-can-we-enter" id="toc-how-many-times-can-we-enter" class="nav-link" data-scroll-target="#how-many-times-can-we-enter">How many times can we enter?</a></li>
+  <li><a href="#can-we-participate-without-making-our-method-public" id="toc-can-we-participate-without-making-our-method-public" class="nav-link" data-scroll-target="#can-we-participate-without-making-our-method-public">Can we participate without making our method public?</a></li>
+  <li><a href="#what-do-we-commit-to-by-entering" id="toc-what-do-we-commit-to-by-entering" class="nav-link" data-scroll-target="#what-do-we-commit-to-by-entering">What do we commit to by entering?</a></li>
+  </ul></li>
+  <li><a href="#building-a-submission" id="toc-building-a-submission" class="nav-link" data-scroll-target="#building-a-submission">Building a submission</a>
+  <ul>
+  <li><a href="#which-tier-should-we-pick" id="toc-which-tier-should-we-pick" class="nav-link" data-scroll-target="#which-tier-should-we-pick">Which tier should we pick?</a></li>
+  <li><a href="#do-we-get-a-participant-pool" id="toc-do-we-get-a-participant-pool" class="nav-link" data-scroll-target="#do-we-get-a-participant-pool">Do we get a participant pool?</a></li>
+  <li><a href="#how-many-synthetic-respondents-do-we-need" id="toc-how-many-synthetic-respondents-do-we-need" class="nav-link" data-scroll-target="#how-many-synthetic-respondents-do-we-need">How many synthetic respondents do we need?</a></li>
+  <li><a href="#can-we-predict-only-part-of-the-study" id="toc-can-we-predict-only-part-of-the-study" class="nav-link" data-scroll-target="#can-we-predict-only-part-of-the-study">Can we predict only part of the study?</a></li>
+  <li><a href="#what-exactly-are-pi_lower-and-pi_upper-tiers-2-and-3" id="toc-what-exactly-are-pi_lower-and-pi_upper-tiers-2-and-3" class="nav-link" data-scroll-target="#what-exactly-are-pi_lower-and-pi_upper-tiers-2-and-3">What exactly are <code>pi_lower</code> and <code>pi_upper</code> (Tiers 2 and 3)?</a></li>
+  <li><a href="#do-we-have-to-use-r-or-the-templates-make-commands" id="toc-do-we-have-to-use-r-or-the-templates-make-commands" class="nav-link" data-scroll-target="#do-we-have-to-use-r-or-the-templates-make-commands">Do we have to use R or the template’s <code>make</code> commands?</a></li>
+  </ul></li>
+  <li><a href="#rules-and-blinding" id="toc-rules-and-blinding" class="nav-link" data-scroll-target="#rules-and-blinding">Rules and blinding</a>
+  <ul>
+  <li><a href="#what-exactly-is-off-limits-under-blinding" id="toc-what-exactly-is-off-limits-under-blinding" class="nav-link" data-scroll-target="#what-exactly-is-off-limits-under-blinding">What exactly is off-limits under blinding?</a></li>
+  <li><a href="#can-our-pipeline-include-human-judgment" id="toc-can-our-pipeline-include-human-judgment" class="nav-link" data-scroll-target="#can-our-pipeline-include-human-judgment">Can our pipeline include human judgment?</a></li>
+  <li><a href="#our-models-training-data-may-include-this-projects-materials.-is-that-a-problem" id="toc-our-models-training-data-may-include-this-projects-materials.-is-that-a-problem" class="nav-link" data-scroll-target="#our-models-training-data-may-include-this-projects-materials.-is-that-a-problem">Our model’s training data may include this project’s materials. Is that a problem?</a></li>
+  </ul></li>
+  <li><a href="#scoring-and-results" id="toc-scoring-and-results" class="nav-link" data-scroll-target="#scoring-and-results">Scoring and results</a>
+  <ul>
+  <li><a href="#what-exactly-are-we-predicting" id="toc-what-exactly-are-we-predicting" class="nav-link" data-scroll-target="#what-exactly-are-we-predicting">What exactly are we predicting?</a></li>
+  <li><a href="#what-is-the-human-replication-reference" id="toc-what-is-the-human-replication-reference" class="nav-link" data-scroll-target="#what-is-the-human-replication-reference">What is the human replication reference?</a></li>
+  <li><a href="#is-there-a-single-winner" id="toc-is-there-a-single-winner" class="nav-link" data-scroll-target="#is-there-a-single-winner">Is there a single winner?</a></li>
+  <li><a href="#when-do-we-learn-our-scores" id="toc-when-do-we-learn-our-scores" class="nav-link" data-scroll-target="#when-do-we-learn-our-scores">When do we learn our scores?</a></li>
+  <li><a href="#still-have-questions" id="toc-still-have-questions" class="nav-link" data-scroll-target="#still-have-questions">Still have questions?</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">FAQ</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+<p class="subtitle lead">Frequently asked questions about participating in the Silicon Sample Benchmark</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Answers to the questions teams ask when they first read the <a href="./index.html">call for participation</a>, the <a href="./preregistration_benchmark.html">benchmark preregistration</a>, and the <a href="https://github.com/janpfander/silicon-sample-submission">submission template</a>. Hands-on, file-level questions (condition code names, control filler texts, missing cells, output logs, licensing) are answered in the template repository’s <a href="https://github.com/janpfander/silicon-sample-submission/blob/main/FAQ.md"><code>FAQ.md</code></a>. Where documents overlap, the call is canonical for the procedure and the preregistration for the analysis.</p>
+<section id="participating" class="level2">
+<h2 class="anchored" data-anchor-id="participating">Participating</h2>
+<section id="who-can-participate" class="level3">
+<h3 class="anchored" data-anchor-id="who-can-participate">Who can participate?</h3>
+<p>Participation is by invitation, open to teams with a published track record in silicon-sample research. Eligibility is checked through a short separate survey after you fill in the <a href="https://forms.gle/Z8j1goLtPKQmESSr8">interest form</a> (by <strong>July 24, 2026</strong>). A team is at most two people, and an individual may join any number of teams. If you were invited and know other researchers who should be on the list, forward them the call. They register interest through the same form.</p>
+</section>
+<section id="how-many-times-can-we-enter" class="level3">
+<h3 class="anchored" data-anchor-id="how-many-times-can-we-enter">How many times can we enter?</h3>
+<p>At most two entries per tier per team, so up to six in total. One entry is one method’s complete set of predictions at a single tier, in its own repository and its own Zenodo deposit. Enter more than once only for genuinely different approaches (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. You mark one entry per tier as <code>primary</code>. The cross-team field statistics use primary entries, and every valid entry appears on the leaderboard.</p>
+</section>
+<section id="can-we-participate-without-making-our-method-public" class="level3">
+<h3 class="anchored" data-anchor-id="can-we-participate-without-making-our-method-public">Can we participate without making our method public?</h3>
+<p>Yes. The benchmark separates verifiability from publicity. Every registration item must be locked and time-stamped, but items can be <em>escrowed</em> (readable only by the core team and auditors under confidentiality) or, for optional items, <em>withheld</em>. Your entry’s disclosure class follows from its most restricted item. Escrowed entries (Class B) keep full standing. Entries with withheld items (Class C) are still scored and reported, with a badge, but are excluded from the design-choice analysis. A small core of items is non-waivable, marked ★ and † in the <a href="./index.html#registration-form">registration form</a>. See the <a href="./index.html#disclosure">disclosure policy</a>.</p>
+</section>
+<section id="what-do-we-commit-to-by-entering" class="level3">
+<h3 class="anchored" data-anchor-id="what-do-we-commit-to-by-entering">What do we commit to by entering?</h3>
+<p>Once you deposit on Zenodo and email the DOI and file fingerprints, that snapshot is your locked submission. It cannot be revised, every locked entry runs through the preregistered scoring pipeline unchanged, and every entry is reported in the results table. In return, all participating teams are co-authors on the joint benchmark paper.</p>
+</section>
+</section>
+<section id="building-a-submission" class="level2">
+<h2 class="anchored" data-anchor-id="building-a-submission">Building a submission</h2>
+<section id="which-tier-should-we-pick" class="level3">
+<h3 class="anchored" data-anchor-id="which-tier-should-we-pick">Which tier should we pick?</h3>
+<p>The highest one your approach supports. <strong>Tier 1 (individual-level synthetic data) is preferred.</strong> It flows through every preregistered analysis, so a Tier-1 entry automatically yields the Tier-2 and Tier-3 metrics too. There is no reason to submit the same method again at a lower tier. Tiers 2 and 3 exist for approaches that genuinely operate at the group or effect level, such as direct forecasting from the literature.</p>
+</section>
+<section id="do-we-get-a-participant-pool" class="level3">
+<h3 class="anchored" data-anchor-id="do-we-get-a-participant-pool">Do we get a participant pool?</h3>
+<p>No.&nbsp;The benchmark ships the survey, the codebook, the intervention texts, and a validator, but no profiles and never any human outcome data. You construct your own synthetic respondents from any source (a public survey such as GSS, ANES, or the Census, fully synthetic personas, or none) and assign them to the 17 conditions yourself. <code>profile_id</code> is simply a unique id you assign. If you want to match the human target population, the census-based quota table in the <a href="./preregistration_benchmark.html#the-human-target-sample">benchmark preregistration</a> is available to sample against, but using it is your choice. You declare how you built your profiles in registration items D.1 to D.3.</p>
+</section>
+<section id="how-many-synthetic-respondents-do-we-need" class="level3">
+<h3 class="anchored" data-anchor-id="how-many-synthetic-respondents-do-we-need">How many synthetic respondents do we need?</h3>
+<p>For Tier 1, the preregistration sets a floor at the size of the human half you are scored against, meaning <strong>500 per intervention and 1,000 in the control condition</strong>. Below that, your effect estimates would be noisy for a reason that has nothing to do with your method. Going well beyond the floor is encouraged, since synthetic respondents are cheap and a larger pool makes your estimates reflect the method rather than a lucky draw. There is no benefit beyond precision. Statistical significance is evaluated at the human design’s sample sizes for every submission, so a very large pool cannot buy a better inferential-agreement score. The template’s <code>make check</code> warns when a prediction file is below the floor.</p>
+</section>
+<section id="can-we-predict-only-part-of-the-study" class="level3">
+<h3 class="anchored" data-anchor-id="can-we-predict-only-part-of-the-study">Can we predict only part of the study?</h3>
+<p>Yes. Full coverage is all 16 interventions plus control across all 13 outcomes, but declared subsets are permitted. You state your coverage in <code>metadata.json</code> and are scored pairwise on what you cover. Be aware of the consequence, though. The primary leaderboard is restricted to full-coverage entries, so partial entries are reported in a separate annex with their coverage stated.</p>
+</section>
+<section id="what-exactly-are-pi_lower-and-pi_upper-tiers-2-and-3" class="level3">
+<h3 class="anchored" data-anchor-id="what-exactly-are-pi_lower-and-pi_upper-tiers-2-and-3">What exactly are <code>pi_lower</code> and <code>pi_upper</code> (Tiers 2 and 3)?</h3>
+<p>A 95% uncertainty interval on the reported quantity itself, the cell mean (Tier 2) or the ATE (Tier 3). It is the interval you believe has a 95% chance of containing the value the human study will find. It is <em>not</em> the spread of individual responses, a reading that gives intervals roughly an order of magnitude too wide. The intervals are scored directly, for coverage and with an interval score that rewards honest, narrow intervals, so neither padding them wide nor squeezing them tight pays.</p>
+</section>
+<section id="do-we-have-to-use-r-or-the-templates-make-commands" class="level3">
+<h3 class="anchored" data-anchor-id="do-we-have-to-use-r-or-the-templates-make-commands">Do we have to use R or the template’s <code>make</code> commands?</h3>
+<p>No.&nbsp;The helper scripts happen to be in R, but a submission can be built in any language. The <code>make</code> commands (<code>clean</code>, <code>manifest</code>, <code>check</code>) are optional conveniences. What you owe regardless of tooling is prediction files matching the published schemas, a completed <code>registration.md</code>, and a SHA-256 fingerprint of each prediction file. Running the self-check before depositing is strongly recommended, since malformed submissions may not be scorable.</p>
+</section>
+</section>
+<section id="rules-and-blinding" class="level2">
+<h2 class="anchored" data-anchor-id="rules-and-blinding">Rules and blinding</h2>
+<section id="what-exactly-is-off-limits-under-blinding" class="level3">
+<h3 class="anchored" data-anchor-id="what-exactly-is-off-limits-under-blinding">What exactly is off-limits under blinding?</h3>
+<p>Only one thing, the human outcome data of this megastudy, including pilots. No team may access, solicit, or be shown any of it before the prediction lock, and a signed attestation is part of registration (item I.3). Everything else is allowed and simply declared. You may condition on published experiments, meta-analyses, and any external human datasets, including trust-in-science and climate-communication studies, for fine-tuning, retrieval, in-context examples, or calibration. You list them in item I.2. The blinding constrains the organizers too. Interim human data have been accessed only by the research lead for data-quality monitoring, and the preregistration states who has seen what.</p>
+</section>
+<section id="can-our-pipeline-include-human-judgment" class="level3">
+<h3 class="anchored" data-anchor-id="can-our-pipeline-include-human-judgment">Can our pipeline include human judgment?</h3>
+<p>In the design phase, yes. That is where all the human effort goes, into models, prompts, personas, and validation strategy. At prediction time, no. Pipelines must run fully automated, with no human adjusting outputs, and you confirm this in item A.2.</p>
+</section>
+<section id="our-models-training-data-may-include-this-projects-materials.-is-that-a-problem" class="level3">
+<h3 class="anchored" data-anchor-id="our-models-training-data-may-include-this-projects-materials.-is-that-a-problem">Our model’s training data may include this project’s materials. Is that a problem?</h3>
+<p>The survey, the intervention texts, and the preregistrations are public, so late-cutoff models may have seen them. That is expected and manageable. You report each model’s training cutoff and any known exposure to the project’s materials in item I.4. What no model can have seen is the human outcome data, which have never been released.</p>
+</section>
+</section>
+<section id="scoring-and-results" class="level2">
+<h2 class="anchored" data-anchor-id="scoring-and-results">Scoring and results</h2>
+<section id="what-exactly-are-we-predicting" class="level3">
+<h3 class="anchored" data-anchor-id="what-exactly-are-we-predicting">What exactly are we predicting?</h3>
+<p>The results of a between-subjects experiment with 16 text interventions and a control condition, across 13 preregistered outcomes. The scored effect per intervention and outcome is the post-treatment contrast, the intervention-group mean minus the control-group mean, with no baseline adjustment. For cross-team scoring every effect is expressed in percentage points of its outcome’s scale range, so the sliders, the donation, and the signup probability share one unit.</p>
+</section>
+<section id="what-is-the-human-replication-reference" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-the-human-replication-reference">What is the human replication reference?</h3>
+<p>The human sample is split in half by a preregistered random seed. Every submission is scored against one half (Human 1). The other half (Human 2) is run through the identical scoring pipeline as if it were a submission, and its scores show how well a fresh human sample of the same size predicts the reference half. That is the natural point of comparison for every entry, reported in the same row format as every team. It is a reference, not a ceiling. An approach can in principle score above it.</p>
+</section>
+<section id="is-there-a-single-winner" class="level3">
+<h3 class="anchored" data-anchor-id="is-there-a-single-winner">Is there a single winner?</h3>
+<p>No.&nbsp;Every approach is scored on a ladder of metrics of increasing strictness, and each metric is its own ranking. The headline result is the distribution of predictive quality across the whole field, not any team’s rank. We expect different approaches to lead on different rungs, and the paper reports where each approach breaks down rather than crowning a champion. Any claim that one approach outperforms another must pass a preregistered paired bootstrap test. Otherwise the two are reported as statistically indistinguishable, the most common outcome among top performers in comparable benchmarks.</p>
+</section>
+<section id="when-do-we-learn-our-scores" class="level3">
+<h3 class="anchored" data-anchor-id="when-do-we-learn-our-scores">When do we learn our scores?</h3>
+<p>Your deposit is acknowledged when you email the DOI and fingerprints. After the prediction lock (<strong>August 30, 2026</strong>) the human study completes and every submission is scored. Each team receives its own scores when the first manuscript draft is shared with all teams for comment (target <strong>September 30, 2026</strong>). No scores or human results are available to anyone before the lock.</p>
+</section>
+<section id="still-have-questions" class="level3">
+<h3 class="anchored" data-anchor-id="still-have-questions">Still have questions?</h3>
+<p>File-level questions are covered in the template repository’s <a href="https://github.com/janpfander/silicon-sample-submission/blob/main/FAQ.md"><code>FAQ.md</code></a>. For everything else, head to the <a href="./contact.html">contact page</a>.</p>
+
+
+<!-- -->
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // target, if specified
+            link.setAttribute("target", "_blank");
+            if (link.getAttribute("rel") === null) {
+              link.setAttribute("rel", "noopener");
+            }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "FAQ"</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="an">subtitle:</span><span class="co"> "Frequently asked questions about participating in the Silicon Sample Benchmark"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="an">css:</span><span class="co"> tournament.css</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Answers to the questions teams ask when they first read the <span class="co">[</span><span class="ot">call for participation</span><span class="co">](index.qmd)</span>, the <span class="co">[</span><span class="ot">benchmark preregistration</span><span class="co">](preregistration_benchmark.qmd)</span>, and the <span class="co">[</span><span class="ot">submission template</span><span class="co">](https://github.com/janpfander/silicon-sample-submission)</span>. Hands-on, file-level questions (condition code names, control filler texts, missing cells, output logs, licensing) are answered in the template repository's <span class="co">[</span><span class="ot">`FAQ.md`</span><span class="co">](https://github.com/janpfander/silicon-sample-submission/blob/main/FAQ.md)</span>. Where documents overlap, the call is canonical for the procedure and the preregistration for the analysis.</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">## Participating</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">### Who can participate?</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>Participation is by invitation, open to teams with a published track record in silicon-sample research. Eligibility is checked through a short separate survey after you fill in the <span class="co">[</span><span class="ot">interest form</span><span class="co">](https://forms.gle/Z8j1goLtPKQmESSr8)</span> (by **July 24, 2026**). A team is at most two people, and an individual may join any number of teams. If you were invited and know other researchers who should be on the list, forward them the call. They register interest through the same form.</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">### How many times can we enter?</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>At most two entries per tier per team, so up to six in total. One entry is one method's complete set of predictions at a single tier, in its own repository and its own Zenodo deposit. Enter more than once only for genuinely different approaches (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. You mark one entry per tier as <span class="in">`primary`</span>. The cross-team field statistics use primary entries, and every valid entry appears on the leaderboard.</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">### Can we participate without making our method public?</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>Yes. The benchmark separates verifiability from publicity. Every registration item must be locked and time-stamped, but items can be *escrowed* (readable only by the core team and auditors under confidentiality) or, for optional items, *withheld*. Your entry's disclosure class follows from its most restricted item. Escrowed entries (Class B) keep full standing. Entries with withheld items (Class C) are still scored and reported, with a badge, but are excluded from the design-choice analysis. A small core of items is non-waivable, marked ★ and † in the <span class="co">[</span><span class="ot">registration form</span><span class="co">](index.qmd#registration-form)</span>. See the <span class="co">[</span><span class="ot">disclosure policy</span><span class="co">](index.qmd#disclosure)</span>.</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">### What do we commit to by entering?</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>Once you deposit on Zenodo and email the DOI and file fingerprints, that snapshot is your locked submission. It cannot be revised, every locked entry runs through the preregistered scoring pipeline unchanged, and every entry is reported in the results table. In return, all participating teams are co-authors on the joint benchmark paper.</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="fu">## Building a submission</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="fu">### Which tier should we pick?</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>The highest one your approach supports. **Tier 1 (individual-level synthetic data) is preferred.** It flows through every preregistered analysis, so a Tier-1 entry automatically yields the Tier-2 and Tier-3 metrics too. There is no reason to submit the same method again at a lower tier. Tiers 2 and 3 exist for approaches that genuinely operate at the group or effect level, such as direct forecasting from the literature.</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="fu">### Do we get a participant pool?</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>No. The benchmark ships the survey, the codebook, the intervention texts, and a validator, but no profiles and never any human outcome data. You construct your own synthetic respondents from any source (a public survey such as GSS, ANES, or the Census, fully synthetic personas, or none) and assign them to the 17 conditions yourself. <span class="in">`profile_id`</span> is simply a unique id you assign. If you want to match the human target population, the census-based quota table in the <span class="co">[</span><span class="ot">benchmark preregistration</span><span class="co">](preregistration_benchmark.qmd#the-human-target-sample)</span> is available to sample against, but using it is your choice. You declare how you built your profiles in registration items D.1 to D.3.</span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="fu">### How many synthetic respondents do we need?</span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>For Tier 1, the preregistration sets a floor at the size of the human half you are scored against, meaning **500 per intervention and 1,000 in the control condition**. Below that, your effect estimates would be noisy for a reason that has nothing to do with your method. Going well beyond the floor is encouraged, since synthetic respondents are cheap and a larger pool makes your estimates reflect the method rather than a lucky draw. There is no benefit beyond precision. Statistical significance is evaluated at the human design's sample sizes for every submission, so a very large pool cannot buy a better inferential-agreement score. The template's <span class="in">`make check`</span> warns when a prediction file is below the floor.</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">### Can we predict only part of the study?</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>Yes. Full coverage is all 16 interventions plus control across all 13 outcomes, but declared subsets are permitted. You state your coverage in <span class="in">`metadata.json`</span> and are scored pairwise on what you cover. Be aware of the consequence, though. The primary leaderboard is restricted to full-coverage entries, so partial entries are reported in a separate annex with their coverage stated.</span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="fu">### What exactly are `pi_lower` and `pi_upper` (Tiers 2 and 3)?</span></span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>A 95% uncertainty interval on the reported quantity itself, the cell mean (Tier 2) or the ATE (Tier 3). It is the interval you believe has a 95% chance of containing the value the human study will find. It is *not* the spread of individual responses, a reading that gives intervals roughly an order of magnitude too wide. The intervals are scored directly, for coverage and with an interval score that rewards honest, narrow intervals, so neither padding them wide nor squeezing them tight pays.</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a><span class="fu">### Do we have to use R or the template's `make` commands?</span></span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>No. The helper scripts happen to be in R, but a submission can be built in any language. The <span class="in">`make`</span> commands (<span class="in">`clean`</span>, <span class="in">`manifest`</span>, <span class="in">`check`</span>) are optional conveniences. What you owe regardless of tooling is prediction files matching the published schemas, a completed <span class="in">`registration.md`</span>, and a SHA-256 fingerprint of each prediction file. Running the self-check before depositing is strongly recommended, since malformed submissions may not be scorable.</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a><span class="fu">## Rules and blinding</span></span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a><span class="fu">### What exactly is off-limits under blinding?</span></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>Only one thing, the human outcome data of this megastudy, including pilots. No team may access, solicit, or be shown any of it before the prediction lock, and a signed attestation is part of registration (item I.3). Everything else is allowed and simply declared. You may condition on published experiments, meta-analyses, and any external human datasets, including trust-in-science and climate-communication studies, for fine-tuning, retrieval, in-context examples, or calibration. You list them in item I.2. The blinding constrains the organizers too. Interim human data have been accessed only by the research lead for data-quality monitoring, and the preregistration states who has seen what.</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a><span class="fu">### Can our pipeline include human judgment?</span></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-61"><a href="#cb1-61" aria-hidden="true" tabindex="-1"></a>In the design phase, yes. That is where all the human effort goes, into models, prompts, personas, and validation strategy. At prediction time, no. Pipelines must run fully automated, with no human adjusting outputs, and you confirm this in item A.2.</span>
+<span id="cb1-62"><a href="#cb1-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-63"><a href="#cb1-63" aria-hidden="true" tabindex="-1"></a><span class="fu">### Our model's training data may include this project's materials. Is that a problem?</span></span>
+<span id="cb1-64"><a href="#cb1-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-65"><a href="#cb1-65" aria-hidden="true" tabindex="-1"></a>The survey, the intervention texts, and the preregistrations are public, so late-cutoff models may have seen them. That is expected and manageable. You report each model's training cutoff and any known exposure to the project's materials in item I.4. What no model can have seen is the human outcome data, which have never been released.</span>
+<span id="cb1-66"><a href="#cb1-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-67"><a href="#cb1-67" aria-hidden="true" tabindex="-1"></a><span class="fu">## Scoring and results</span></span>
+<span id="cb1-68"><a href="#cb1-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-69"><a href="#cb1-69" aria-hidden="true" tabindex="-1"></a><span class="fu">### What exactly are we predicting?</span></span>
+<span id="cb1-70"><a href="#cb1-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-71"><a href="#cb1-71" aria-hidden="true" tabindex="-1"></a>The results of a between-subjects experiment with 16 text interventions and a control condition, across 13 preregistered outcomes. The scored effect per intervention and outcome is the post-treatment contrast, the intervention-group mean minus the control-group mean, with no baseline adjustment. For cross-team scoring every effect is expressed in percentage points of its outcome's scale range, so the sliders, the donation, and the signup probability share one unit.</span>
+<span id="cb1-72"><a href="#cb1-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a><span class="fu">### What is the human replication reference?</span></span>
+<span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>The human sample is split in half by a preregistered random seed. Every submission is scored against one half (Human 1). The other half (Human 2) is run through the identical scoring pipeline as if it were a submission, and its scores show how well a fresh human sample of the same size predicts the reference half. That is the natural point of comparison for every entry, reported in the same row format as every team. It is a reference, not a ceiling. An approach can in principle score above it.</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a><span class="fu">### Is there a single winner?</span></span>
+<span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>No. Every approach is scored on a ladder of metrics of increasing strictness, and each metric is its own ranking. The headline result is the distribution of predictive quality across the whole field, not any team's rank. We expect different approaches to lead on different rungs, and the paper reports where each approach breaks down rather than crowning a champion. Any claim that one approach outperforms another must pass a preregistered paired bootstrap test. Otherwise the two are reported as statistically indistinguishable, the most common outcome among top performers in comparable benchmarks.</span>
+<span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-81"><a href="#cb1-81" aria-hidden="true" tabindex="-1"></a><span class="fu">### When do we learn our scores?</span></span>
+<span id="cb1-82"><a href="#cb1-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-83"><a href="#cb1-83" aria-hidden="true" tabindex="-1"></a>Your deposit is acknowledged when you email the DOI and fingerprints. After the prediction lock (**August 30, 2026**) the human study completes and every submission is scored. Each team receives its own scores when the first manuscript draft is shared with all teams for comment (target **September 30, 2026**). No scores or human results are available to anyone before the lock.</span>
+<span id="cb1-84"><a href="#cb1-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-85"><a href="#cb1-85" aria-hidden="true" tabindex="-1"></a><span class="fu">### Still have questions?</span></span>
+<span id="cb1-86"><a href="#cb1-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-87"><a href="#cb1-87" aria-hidden="true" tabindex="-1"></a>File-level questions are covered in the template repository's <span class="co">[</span><span class="ot">`FAQ.md`</span><span class="co">](https://github.com/janpfander/silicon-sample-submission/blob/main/FAQ.md)</span>. For everything else, head to the <span class="co">[</span><span class="ot">contact page</span><span class="co">](contact.qmd)</span>.</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">
+<p>The Silicon Sample Benchmark · A multi-team benchmark of AI approaches for predicting behavioral-experiment effects · Jan Pfänder · 2026</p>
+</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+
+<script src="site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

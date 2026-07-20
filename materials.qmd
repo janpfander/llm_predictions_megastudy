@@ -44,6 +44,6 @@ the quota table) are specified in the **[benchmark preregistration](preregistrat
 ::: {.callout-note}
 **You build your own synthetic respondents.** Generate them from any source — a public survey such as
 GSS/ANES/Census, fully synthetic personas, or none — and assign them to conditions yourself; declare
-your choice in registration item C.4. If you want to match the human target population, the
+your choice in registration items D.1 and D.3. If you want to match the human target population, the
 benchmark preregistration's census-based quota table is available to sample against.
 :::

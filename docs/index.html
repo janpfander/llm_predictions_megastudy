@@ -127,6 +127,10 @@ ul.task-list li input[type="checkbox"] {
   </li>  
     </ul>
   </li>
+  <li class="nav-item">
+    <a class="nav-link" href="./faq.html"> 
+<span class="menu-text">FAQ</span></a>
+  </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
@@ -159,7 +163,7 @@ ul.task-list li input[type="checkbox"] {
   <div class="inner">
     <p class="eyebrow">Call for participation · Multi-team prediction benchmark</p>
     <h1>Can your silicon sample predict how <em>18,000 humans</em> will behave?</h1>
-    <p class="dek">We are fielding one of the largest behavioral megastudies to date — 16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample. The outcome data are locked and unpublished. Before they are released, we invite selected research teams to predict the results with any AI-based approach they choose: behavioral clones, group-level simulation, or direct effect forecasting. Every approach is registered, every prediction is locked, and every team is compared against the same human–human baseline. No single winner is crowned: the goal is a systematic, side-by-side overview of how different approaches perform across many metrics.</p>
+    <p class="dek">We are fielding one of the largest behavioral megastudies to date — 16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample. The outcome data are locked and unpublished. Before they are released, we invite selected research teams to predict the results with any AI-based approach they choose: behavioral clones, group-level simulation, or direct effect forecasting. Every approach is registered, every prediction is locked, and every team is compared against the same human replication reference — how well one half of the human sample predicts the other. No single winner is crowned: the goal is a systematic, side-by-side overview of how different approaches perform across many metrics.</p>
   </div>
   <div class="hero-links" aria-label="Take part">
     <a class="hero-link" href="https://forms.gle/Z8j1goLtPKQmESSr8" target="_blank" rel="noopener">
@@ -210,7 +214,7 @@ ul.task-list li input[type="checkbox"] {
   <p>This benchmark study addresses these problems. The target is a genuinely novel megastudy: none of the 16 interventions has ever been tested in this specific form on the specific outcomes. The human data are held exclusively by the core team, and every prediction must be deposited and time-stamped <strong>before</strong> any human data are released.</p>
   <p>What you get out of it:</p>
   <ul class="plain">
-    <li><strong>A credible test of your approach.</strong> Your method is evaluated on truly out-of-sample human behavior, against a preregistered human–human comparison.</li>
+    <li><strong>A credible test of your approach.</strong> Your method is evaluated on truly out-of-sample human behavior, against the preregistered human replication reference.</li>
     <li><strong>Co-authorship on the benchmark paper.</strong> All participating teams join the resulting publication, which reports the full results table and a structured catalogue of approaches.</li>
     <li><strong>A catalogue of the field.</strong> Each registered method becomes a structured, comparable entry describing how teams currently approach AI prediction of behavioral experiments — open- vs. closed-weight models, persona sources, administration protocols, fine-tuning, in-context learning — and which of these choices appear to matter.</li>
     <li><strong>No single winner.</strong> Approaches are scored on a ladder of metrics of increasing strictness — from directional agreement to formal equivalence — plus distributional fidelity and stereotyping diagnostics. We expect different approaches to do well on different rungs; the point is to map the design space and compare approaches across metrics, not to crown one champion.</li>
@@ -260,7 +264,7 @@ ul.task-list li input[type="checkbox"] {
     </div>
   </div>
 
-  <p class="small">There is <strong>no fixed or required number of synthetic respondents per condition</strong>, and pool size never enters scoring. A larger pool only shrinks the Monte-Carlo noise in your <em>own</em> cell estimates, with diminishing returns once the per-cell mean is stable — so simulate enough that your predicted means are not sampling artifacts, but there is no benefit to matching the human N. For reference, each submission is scored against <strong>one half of the human sample</strong> (≈500 per intervention, ≈1,000 in control).</p>
+  <p class="small"><strong>Tier 1 has a minimum pool size: 500 synthetic respondents per intervention and 1,000 in the control condition</strong> — the size of the human half every submission is scored against (the benchmark preregistration's <a href="preregistration_benchmark.html#tier-1-individual-level-dataset">precision requirement</a>). Below that floor, effect estimates are noisy for reasons unrelated to the method. Going well beyond it is encouraged — synthetic respondents are cheap, and a larger pool makes your estimates reflect the method rather than a lucky draw. Beyond precision there is no advantage: statistical significance is evaluated at the human design's sample sizes for every submission, so a huge pool cannot buy a better score.</p>
 
   <div class="sst-callout">
     <span class="tag">Multiple entries welcome</span>
@@ -684,8 +688,8 @@ ul.task-list li input[type="checkbox"] {
 <section id="scoring">
   <div class="sec-head"><span class="no">04</span><h2 class="anchored">Evaluation</h2></div>
   <div class="sst-callout">
-    <span class="tag">The human–human baseline</span>
-    <p>Scoring follows the <a href="preregistration_benchmark.html#preregistered-analysis-plan">preregistered analysis plan</a> without modification. A preregistered random seed splits the human sample in half. Every submission is scored against <strong>Human 1</strong>. The agreement between <strong>Human 1 and Human 2</strong> is the human–human baseline: how closely two independent halves of the human sample agree on the same estimands. This is a natural reference point for interpreting every method's scores, and it is reported in the same row format as every team.</p>
+    <span class="tag">The human replication reference</span>
+    <p>Scoring follows the <a href="preregistration_benchmark.html#preregistered-analysis-plan">preregistered analysis plan</a> without modification. A preregistered random seed splits the human sample in half. Every submission is scored against <strong>Human 1</strong>. The agreement between <strong>Human 1 and Human 2</strong> is the human replication reference: how well a fresh human sample of this size reproduces the reference half. This is a natural reference point for interpreting every method's scores — a reference, not a ceiling — and it is reported in the same row format as every team.</p>
   </div>
 
   <p>Every submission is scored against <strong>Human 1</strong> on every metric and comparison its <a href="#rules">tier</a> supports, across all 13 outcomes. The ATE-recovery ladder runs from least to most strict — knowing on which rung an approach breaks is more informative than any single pass/fail verdict. The scored effect for each outcome is a <strong>between-subjects post-treatment contrast</strong> — the intervention-group mean minus the control-group mean. There is no baseline adjustment; the survey's pre-treatment measures are not used in scoring.</p>
@@ -725,7 +729,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>TOST equivalence</td>
-<td>Is each predicted effect statistically equivalent to the human effect within ±50%?</td>
+<td>Is each predicted effect statistically equivalent to the human effect within a fixed bound of 3% of the outcome's scale range?</td>
 </tr>
 <tr class="grp even">
 <td colspan="2">Further comparisons — wherever the tier supports it</td>
@@ -783,9 +787,9 @@ ul.task-list li input[type="checkbox"] {
       </a>
     </div>
     <div class="tl-item">
-      <span class="date">July 30, 2026 <span class="who core">Core team</span></span>
-      <h4 class="anchored">Human data collection completes</h4>
-      <p>The remaining human responses (toward N ≈ 18,000) are collected and cleaned, then held sealed — not shared, released, or analyzed until after the prediction lock.</p>
+      <span class="date">July 2026 · Done <span class="who core">Core team</span></span>
+      <h4 class="anchored">Human data collection complete</h4>
+      <p>All ≈18,000 human responses are collected and cleaned, then held sealed — not shared, released, or analyzed until after the prediction lock.</p>
     </div>
     <div class="tl-item hard has-action">
       <div class="tl-body">
@@ -809,15 +813,16 @@ ul.task-list li input[type="checkbox"] {
       <p>The joint manuscript is posted as a pre-print and submitted for publication, with all participating teams as co-authors.</p>
     </div>
   </div>
-  <p class="small">The human study was already partially fielded (≈16,000 of ≈18,000 responses) when the benchmark preregistration was drafted; none of these data have been shared, published, or made accessible to any prospective team.</p>
+  <p class="small">Human data collection is already complete (≈18,000 responses); none of these data have been shared, published, or made accessible to any prospective team, and the data stay sealed until after the prediction lock.</p>
 
 </section>
 
 <!-- ============================== CONTACT ============================== -->
 <section id="contact">
   <div class="sec-head"><span class="no">06</span><h2 class="anchored">Questions &amp; contact</h2></div>
-  <p>Participation is by invitation; if you believe your team should be on the list, or you have questions about the registration form, the schemas, or edge cases of the rules, head to the contact page.</p>
+  <p>Common questions about eligibility, tiers, blinding, and scoring are answered on the <a href="faq.html">FAQ page</a>; file-level questions are covered in the submission template's <a href="https://github.com/janpfander/silicon-sample-submission/blob/main/FAQ.md" target="_blank" rel="noopener">FAQ.md</a>. If you believe your team should be on the list, or your question is not covered there, head to the contact page.</p>
   <div class="cta-row" style="margin-top:8px;display:flex;gap:14px;flex-wrap:wrap">
+    <a class="btn btn-primary" href="faq.html">Read the FAQ</a>
     <a class="btn btn-primary" href="contact.html">Go to the contact page</a>
   </div>
 </section>

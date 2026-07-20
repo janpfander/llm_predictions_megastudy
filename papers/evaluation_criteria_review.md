@@ -188,3 +188,92 @@ so small-sample attenuation doesn't penalize everyone equally, **(B) a top-inter
 selection metric** so the score reflects the megastudy's actual decision, and **(C) floor
 baselines** so field scores are readable between null and ceiling. D–G are lower-cost
 polish that turn warnings from this literature into things we explicitly report.
+
+---
+
+## 5. Verification addendum (2026-07-18)
+
+A final pre-invitation check re-read all four papers in full and verified every claim the
+benchmark preregistration makes about them. Everything checked out. Precise reference
+facts worth keeping on hand, beyond what sections 1–3 record:
+
+### Ashokkumar/Hewitt et al. (published version)
+- Reference values, confirmed: primary archive (70 experiments, 469 effects) r = .85
+  [.81, .88], r_adj = .92; megastudy archive (15 megastudies, 606 effects) is a
+  **meta-analytic mean of within-megastudy correlations**, r = .39, r_adj = .48; survey
+  megastudies r = .43 / r_adj = .52; text-based treatments r = .45 / r_adj = .54. These
+  megastudy figures — not the .85 — are the right comparison points for our setting.
+- Units: percentage points on original scales; explicitly no SD standardization (LLM
+  under-dispersion corrupts an SD denominator). Pooled RMSE reported **only** in the
+  primary archive (11.09 pp) because scales are comparable there; not for the megastudy
+  archive. The exact pp-of-scale-range convention lives in their SI, not the main text.
+- r_adj: two-stage random-effects meta-analysis via `metafor` — stage 1 extracts the
+  sampling covariance of the observed effects, stage 2 fits a bivariate normal to
+  (predicted, true) effects. Correction is on the human side only. Adjusted RMSE is
+  method-of-moments: sqrt(mean((x_i − y_i)² − θ_i²)). Our fixed-effects moments r_adj is
+  the assumption-free analogue (their version adds precision weighting + bivariate
+  normality).
+- Calibration: OLS of observed on predicted, b = 0.56 [.52, .60] → predictions ~2×
+  too large; b < 1 = exaggeration, same direction as our `run_calibration()`.
+- Their benchmark rows are human forecasters (lay n = 2,659: r = .84; experts: r = .26 on
+  megastudies), not a split-half replication; human+LLM ensemble r = .89 beat both.
+- Top-intervention selection: top-20% of arms (our k = 3 of 16 ≈ 19% matches); AI-augmented
+  expert picks had 6% larger true effects (8% picking the single best).
+- **Subgroup caveat we now cite in Section 2**: only ~7.7–18.3% of their effects were
+  significantly moderated (≈ the false-positive rate), so they state plainly that high
+  subgroup accuracy "could simply reflect generalized predictions." Worked attenuation
+  example: Black-subgroup r = .62 vs r_adj = .86, driven by n̄ = 179.5 vs 1,169.7.
+- They could not preregister (familiar with the test archives) — our design's main
+  advantage over the direct precedent.
+
+### Park et al.
+- Their DPD is the best-minus-worst gap in **per-group predictive accuracy** over paired
+  agent–person data (11 grouping variables; GSS accuracy in pp, Big Five/games in r
+  units). Ours is the gap in group-mean baseline error — the adaptation is now stated in
+  the prereg and in `statistics.R`.
+- Normalization: agent accuracy ÷ the participant's own two-week test–retest consistency
+  (not computed for MAE — zero denominators). Per-person ratio is unstable when retest r
+  is small (SDs > 1 in their tables; undiscussed).
+- **No distributional metrics anywhere** (no KS/OVL/variance ratio) — population-level
+  evaluation is only effect direction, significance, and Cohen's-d correlation across 5
+  experiments, scored against their **own direct replication**, not published effects.
+  Agent effect sizes systematically larger than human (e.g., d = 9.64 vs 0.36).
+- Held-out-input firewall: the predicted item is removed from the agent's input.
+
+### Cummins
+- Usable output is itself a researcher degree of freedom: complete-case N ranged 0–500
+  across configurations, 13/66 unanalysable — this motivated our per-submission drop-rate
+  reporting commitment.
+- Cross-feature inconsistency numbers: distribution-fit performance across scales r = .12
+  (n.s.); better participant ranking *positively* correlated with between-scale error
+  (r = .27). Config performance does not transfer across domains (Study 1's 27th
+  percentile config was Study 2's top performer).
+- His calibration→confirmation split can fail at small N: Study 1's calibration winner had
+  error .003 in calibration, .381 in confirmation.
+- The single best Study-1 config used **no demographics** — contra the silicon-sample
+  premise.
+
+### Arruda et al.
+- Three explicit fidelity levels: macro (trajectories), micro (W1 distance between
+  per-agent cooperation-propensity distributions, benchmarked against an i.i.d. Bernoulli
+  null), decision-rule (conditional cooperation curves). In one condition the simulated
+  population was *less* human-like than the homogeneous Bernoulli null (W1 .091 vs .074).
+- Conditional-response curves mismatched qualitatively (inverted slope after defection);
+  adding 20% random agents improved trajectories but not decision rules — "noise alone is
+  not sufficient."
+- Models are not interchangeable surrogates: nine LLMs produced markedly different
+  cooperation regimes under identical incentives.
+
+### Fixes applied to the benchmark prereg same day (all implemented, uncommitted)
+1. Salganik et al. 2020 bib entry + proper citation (was plain text, no entry).
+2. Winkler interval score now pools across all outcomes in pp (stale "0–100 only"
+   rationale removed).
+3. Tier-2 cell-interval independence assumption stated; teams told to keep shared level
+   uncertainty out of cell intervals.
+4. Section 2 caveat + preregistered context statistic: share of BH-significant human
+   interaction estimates, reported beside the subgroup leaderboard.
+5. Per-submission dropped-cell share reported on the leaderboard (Cummins).
+6. DPD adaptation vs. Park stated explicitly.
+Plus: third bootstrap caveat (BH labels fixed under resampling) and resplit count
+parameterized (`n_resplit_real = 200`). Details in project memory
+(`benchmark-prereg-state.md`, item 6).
