@@ -1,12 +1,9 @@
 # Custom statistics functions
 
-# compare treatment effects
-# tost_delta (absolute, in outcome units) overrides the relative bound when
-# supplied: the |ATE_h|-relative bound is a function of the noisy estimate
-# under test (invalid as an alpha-level equivalence procedure, and degenerate
-# when reference SEs exceed typical effect sizes), so the benchmark
-# preregistration fixes delta in advance; the original preregistration keeps
-# the relative default unchanged.
+# compare treatment effects (v1 only — the benchmark preregistration does not
+# use this function; its metrics live in pooled_metrics() below)
+# tost_delta (absolute, in outcome units) overrides the v1 relative bound
+# when supplied; the original preregistration keeps the relative default.
 compare_estimates <- function(h_result, l_result,
                               join_by = "condition",
                               tost_delta_pct = 0.5,
@@ -91,8 +88,8 @@ compute_w1 <- function(x, y, n_grid = 512) {
 # robust = TRUE swaps classical for HC2 heteroskedasticity-robust inference:
 # the outcome side (ATE_h) carries known, condition-varying sampling error
 # that classical F-tests ignore. weight_by_precision = TRUE additionally
-# weights by 1/se_h^2 (needs a std.error column in h_result) — the benchmark's
-# sensitivity variant. Defaults reproduce the original preregistration exactly.
+# weights by 1/se_h^2 (needs a std.error column in h_result); unused by both
+# preregistrations. Defaults reproduce the original preregistration exactly.
 run_calibration <- function(h_result, l_result,
                             robust = FALSE, weight_by_precision = FALSE) {
   joined <- inner_join(
@@ -993,8 +990,8 @@ run_stacked_model <- function(human_data, llm_data,
 # Compare cell-mean outcomes in the control condition across demographic groups.
 # r and RMSE measure how well clone baseline levels match human baseline levels.
 # min_cells_r: a Pearson r over 2 cell means is ±1 by construction and over 3
-# nearly so; the benchmark suppresses r below 4 cells (RMSE leads there). The
-# default 0 keeps the original preregistration's output unchanged.
+# nearly so; setting it suppresses r below that many cells (RMSE leads there).
+# The default 0 keeps the original preregistration's output unchanged.
 compare_demographic_baselines <- function(human_data, llm_data,
                                            outcome,
                                            moderators,
@@ -1072,11 +1069,6 @@ compare_demographic_predictability <- function(human_data, llm_data,
 # every approach can be shown on a forest plot with an uncertainty band.
 # ---------------------------------------------------------------------------
 
-# Pooled metric ladder for a set of intervention × outcome ATE pairs.
-# Expects pre-joined pairs with columns estimate_h, se_h, p_adj_h (reference =
-# Human 1) and estimate_l, se_l, infer_l (the submission). Mirrors
-# compare_estimates(), but operates on pairs pooled across outcomes. Pooled
-# RMSE is intentionally omitted (not comparable across outcome scales).
 # Measurement-error-adjusted comparison metrics. The reference (human) effects
 # are noisy estimates of fixed true effects: estimate_h = true effect + sampling
 # error with known variance se_h^2. That noise cannot contribute to the
@@ -1085,11 +1077,11 @@ compare_demographic_predictability <- function(human_data, llm_data,
 # biased toward zero. Subtracting the known noise variance from the reference
 # variance recovers the correlation with the *true* effects (Spearman
 # disattenuation with known error variances; the fixed-effects, method-of-
-# moments analogue of the two-stage meta-analytic r_adj in Hewitt et al.).
+# moments analogue of the two-stage meta-analytic r_adj in Ashokkumar et al.).
 # The same identity corrects the RMSE: E[(h - l)^2] = true squared error +
 # noise variance. Only the reference side is corrected — submission-side
-# sampling noise is handled at the source by the Tier-1 precision requirement,
-# and Tier-2/3 intervals express epistemic uncertainty, not sampling noise.
+# sampling noise is handled at the source by the Tier-1 precision requirement
+# (Tiers 2-3 submit point predictions with no sampling-noise analogue).
 # Guards: if the estimated true variance (or true squared error) is <= 0 the
 # noise swamps the signal and the adjusted value is undefined -> NA. The
 # adjusted correlation is truncated to [-1, 1]. Uncertainty intervals come from
@@ -1111,57 +1103,24 @@ adjusted_metrics <- function(pairs) {
   )
 }
 
-# tost_delta is a FIXED, prespecified equivalence bound in outcome units —
-# either one number, or a named vector keyed by outcome (for pairs pooling
-# outcomes on different scales). The v1-style |ATE_h|-relative bound is not
-# used here: a bound computed from the noisy estimate under test is not a
-# valid alpha-level procedure, and at this design's reference SEs it leaves
-# the TOST rung with no dynamic range (see the design analysis in the
-# benchmark preregistration, which motivates the default of 3 scale points).
+# Estimate-based metrics on pre-joined pairs pooled across outcomes:
+# directional agreement, Spearman rho, Pearson r, and the noise-corrected
+# pearson_adj (via adjusted_metrics(), reference side only). Expects columns
+# estimate_h, se_h (reference = Human 1) and estimate_l (the submission).
 # include_rmse = TRUE adds rmse and its noise-corrected companion rmse_adj —
-# only meaningful when all pairs share one outcome scale (the per-outcome and
-# per-intervention breakdowns), which is why the pooled default omits them.
-pooled_metrics <- function(pairs, tost_delta = 3, include_rmse = FALSE) {
-  delta_of <- function(outcome) {
-    if (length(tost_delta) == 1 && is.null(names(tost_delta))) tost_delta
-    else unname(tost_delta[outcome])
-  }
-  scored <- pairs |>
-    mutate(
-      delta      = delta_of(outcome),
-      diff       = estimate_h - estimate_l,
-      se_diff    = sqrt(se_h^2 + se_l^2),
-      p_tost     = pmax(pnorm((diff + delta) / se_diff, lower.tail = FALSE),
-                        pnorm((diff - delta) / se_diff)),
-      equivalent = p_tost < 0.05,
-      same_sign  = sign(estimate_h) == sign(estimate_l),
-      infer_h    = case_when(
-        !is.na(p_adj_h) & p_adj_h < .05 & estimate_h > 0 ~ "pos",
-        !is.na(p_adj_h) & p_adj_h < .05 & estimate_h < 0 ~ "neg",
-        TRUE                                             ~ "ns"
-      )
-    )
+# only meaningful when all pairs share one unit; the benchmark converts every
+# estimate to pp of scale range at pair-building, so there RMSE pools across
+# all outcomes.
+pooled_metrics <- function(pairs, include_rmse = FALSE) {
   adj <- adjusted_metrics(pairs)
-  out <- scored |>
+  out <- pairs |>
     summarise(
-      directional_pct = mean(same_sign, na.rm = TRUE) * 100,
+      directional_pct = mean(sign(estimate_h) == sign(estimate_l), na.rm = TRUE) * 100,
       spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
                             use = "pairwise.complete.obs"),
-      pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs"),
-      inferential_pct = mean(infer_h == infer_l, na.rm = TRUE) * 100,
-      tost_pct        = mean(equivalent, na.rm = TRUE) * 100
+      pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs")
     ) |>
-    mutate(
-      pearson_adj = adj$pearson_adj,
-      # Fisher-z average of the per-outcome correlations: guards the pooled
-      # correlation against between-outcome inflation (a submission that only
-      # predicts which OUTCOMES move, while misranking interventions within
-      # every outcome, scores high pooled but low here — divergence between
-      # the two is the diagnostic).
-      pearson_fz  = fisher_z_avg(pairs, method = "pearson"),
-      spearman_fz = fisher_z_avg(pairs, method = "spearman")
-    ) |>
-    relocate(pearson_adj, .after = pearson_r)
+    mutate(pearson_adj = adj$pearson_adj)
   if (include_rmse)
     out <- out |>
       mutate(rmse = sqrt(mean((pairs$estimate_h - pairs$estimate_l)^2, na.rm = TRUE)),
@@ -1169,61 +1128,20 @@ pooled_metrics <- function(pairs, tost_delta = 3, include_rmse = FALSE) {
   out
 }
 
-# Fisher-z-averaged per-outcome correlation: correlation within each outcome
-# (across interventions), z-transformed, averaged, back-transformed. Outcomes
-# with fewer than 3 pairs or zero variance drop out. NA when pairs carry no
-# outcome column (or a single outcome — then it equals the pooled value and
-# carries no extra information).
-fisher_z_avg <- function(pairs, method = "pearson") {
-  if (!"outcome" %in% names(pairs) || n_distinct(pairs$outcome) < 2) return(NA_real_)
-  z <- pairs |>
-    group_by(outcome) |>
-    summarise(
-      r = if (sum(!is.na(estimate_h) & !is.na(estimate_l)) >= 3)
-        suppressWarnings(cor(estimate_h, estimate_l, method = method,
-                             use = "pairwise.complete.obs")) else NA_real_,
-      .groups = "drop"
-    ) |>
-    filter(!is.na(r), abs(r) < 1) |>
-    pull(r) |> atanh()
-  if (length(z) == 0) return(NA_real_)
-  tanh(mean(z))
-}
-
-# Proper scoring of submitted 95% uncertainty intervals (Tiers 2-3). The
-# interval on each ATE is reconstructed from the pair's implied SE
-# (estimate_l ± z·se_l): for Tier 3 that is exactly the submitted interval
-# (se_l = width / 2z, symmetry assumed at submission); for Tier 2 it is the
-# ATE interval implied by the two submitted cell intervals. Two scores:
-# pi_coverage_pct — the share of reference ATEs falling inside (honest
-# intervals land near the nominal level); interval_score — the mean Winkler
-# score, width plus 2/alpha times the miss distance, a proper score minimized
-# by reporting one's true predictive interval, so neither padding intervals
-# wide nor squeezing them tight pays. The Winkler score is in outcome units:
-# pool it only across outcomes on a common scale (the benchmark converts all
-# estimates to pp of scale range at pair-building, so there it pools across
-# all outcomes, like RMSE). Not defined for Tier-1 submissions (their se_l is
-# sampling, not epistemic, uncertainty) or the reference rows.
-pi_metrics <- function(pairs, level = 0.95) {
-  z     <- qnorm(1 - (1 - level) / 2)
-  alpha <- 1 - level
-  ok <- pairs |>
-    filter(!is.na(estimate_h), !is.na(estimate_l), !is.na(se_l), se_l > 0)
-  if (nrow(ok) == 0)
-    return(tibble(pi_coverage_pct = NA_real_, interval_score = NA_real_))
-  ok |>
-    mutate(
-      lo      = estimate_l - z * se_l,
-      hi      = estimate_l + z * se_l,
-      covered = estimate_h >= lo & estimate_h <= hi,
-      winkler = (hi - lo) +
-        (2 / alpha) * pmax(0, lo - estimate_h) +
-        (2 / alpha) * pmax(0, estimate_h - hi)
-    ) |>
-    summarise(
-      pi_coverage_pct = mean(covered) * 100,
-      interval_score  = mean(winkler)
-    )
+# Pooled calibration regression on pre-joined pairs (benchmark only). The same
+# regression as run_calibration() — ATE_h = alpha + beta * ATE_l — but fit on
+# the intervention × outcome pairs pooled across all outcomes (in pp of scale
+# range, converted at pair-building), as Ashokkumar et al. fit their
+# calibration slope across all effects of an archive. HC2-robust inference by
+# default: the outcome side carries known, condition-varying sampling error.
+run_calibration_pooled <- function(pairs, robust = TRUE) {
+  run_calibration(
+    pairs |> transmute(condition = paste(condition, outcome),
+                       estimate = estimate_h, std.error = se_h),
+    pairs |> transmute(condition = paste(condition, outcome),
+                       estimate = estimate_l),
+    robust = robust
+  )
 }
 
 # Signed-effect metrics for estimate-only pairs (no SE / inferential category).
@@ -1244,40 +1162,6 @@ signed_metrics <- function(pairs) {
   if ("se_h" %in% names(pairs))
     out <- out |> mutate(pearson_adj = adjusted_metrics(pairs)$pearson_adj)
   out
-}
-
-# Decision-relevant top-k selection. The practical purpose of a many-arm
-# megastudy is identifying which interventions work; the correlation rungs are
-# only a proxy for that decision. Per outcome: rank interventions by the
-# submission's predicted ATE, take the top k, and score the pick against the
-# truly best k (by the human reference ATEs) two ways — hit_rate (share of the
-# picked set that is in the true best set) and regret_ratio (mean true ATE of
-# the picked set / mean true ATE of the best set; 1 = perfect pick, scale-free
-# within outcome). regret_ratio is NA when the best achievable mean ATE is not
-# positive (no "winners" to find). with_ties = FALSE keeps the pick at exactly
-# k under ties, broken deterministically by row order (the order the pairs
-# were built in — condition order within outcome). Note the target itself is
-# noisy: the "truly best k" are the top k of the reference half-sample POINT
-# ESTIMATES, so with reference SEs comparable to the true ATE spread the
-# best-set identity is partly winner's-curse-driven and best_ate is
-# selection-inflated. The human-replication reference row carries the same
-# affliction symmetrically — read hit rates against its hit rate, not
-# against 1.
-topk_selection <- function(pairs, k = 3) {
-  pairs |>
-    group_by(outcome) |>
-    group_modify(function(d, key) {
-      picked <- d |> slice_max(estimate_l, n = k, with_ties = FALSE)
-      best   <- d |> slice_max(estimate_h, n = k, with_ties = FALSE)
-      tibble(
-        hit_rate     = length(intersect(picked$condition, best$condition)) / k,
-        picked_ate   = mean(picked$estimate_h),
-        best_ate     = mean(best$estimate_h),
-        regret_ratio = if (mean(best$estimate_h) > 0)
-          mean(picked$estimate_h) / mean(best$estimate_h) else NA_real_
-      )
-    }) |>
-    ungroup()
 }
 
 # Demographic parity gap (DPD, after Park et al. 2026 — adapted: they take
@@ -1357,60 +1241,18 @@ cluster_boot <- function(df, f, cluster = "condition", n_boot = 1000,
     )
 }
 
-# Paired cluster-bootstrap difference between two submissions. Ranking claims
-# ("A outperforms B") must not be read off overlapping marginal CIs — the
-# standard misreading; because every submission is scored against the SAME
-# reference on the SAME intervention clusters, the right comparison draws one
-# set of clusters per replicate and scores BOTH submissions on it, so the
-# common reference noise cancels within each replicate. Two submissions are
-# reported as distinguishable on a metric only when this paired difference CI
-# excludes zero. Returns one row per metric: the point difference f(a) - f(b)
-# and its percentile CI.
-cluster_boot_diff <- function(df_a, df_b, f, cluster = "condition",
-                              n_boot = 2000, conf = 0.95, seed = 2026) {
-  if (!is.null(seed)) set.seed(seed)
-
-  diff_row <- function(a, b) {
-    fa <- f(a); fb <- f(b)
-    as_tibble(map2(fa, fb, `-`)) |>
-      pivot_longer(everything(), names_to = "metric", values_to = "value")
-  }
-
-  parts_a <- split(df_a, as.character(df_a[[cluster]]))
-  parts_b <- split(df_b, as.character(df_b[[cluster]]))
-  cl <- intersect(names(parts_a), names(parts_b))
-
-  point <- diff_row(df_a, df_b)
-  boot <- map_dfr(seq_len(n_boot), function(b) {
-    drawn <- sample(cl, length(cl), replace = TRUE)
-    diff_row(bind_rows(parts_a[drawn]), bind_rows(parts_b[drawn]))
-  })
-
-  alpha <- (1 - conf) / 2
-  point |>
-    left_join(
-      boot |>
-        group_by(metric) |>
-        summarise(lo = quantile(value, alpha,     na.rm = TRUE),
-                  hi = quantile(value, 1 - alpha, na.rm = TRUE),
-                  .groups = "drop"),
-      by = "metric"
-    )
-}
-
-# Per-group metric ladder: applies a pooled-metric function (`pooled_metrics`
-# or `signed_metrics`) within each level of `group`, giving one score per group
+# Per-group metrics: applies a pooled-metric function (`pooled_metrics` or
+# `signed_metrics`) within each level of `group`, giving one score per group
 # instead of a single pooled score. With group = "outcome" it scores each
 # outcome across the interventions; with group = "condition" it scores each
 # intervention across the outcomes. Drives the field-distribution figures,
 # which show the spread of approaches per outcome / per intervention. Per
 # intervention the score is taken across `outcomes_continuous` (all on the same
-# 0-100 scale), so the correlation rungs are not scale-confounded.
+# 0-100 scale), so the correlations are not scale-confounded.
 metrics_by_group <- function(pairs, group, f = pooled_metrics) {
   pairs |>
     group_by(.data[[group]]) |>
-    # .keep = TRUE: f may need the grouping column itself (e.g. the per-outcome
-    # TOST bound lookup in pooled_metrics)
+    # .keep = TRUE: f may need the grouping column itself
     group_modify(~ f(.x), .keep = TRUE) |>
     ungroup()
 }

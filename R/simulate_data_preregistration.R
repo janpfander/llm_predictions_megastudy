@@ -390,57 +390,33 @@ outcomes_continuous <- c(
   "policy_specific_mean", "behavior_mean"
 )
 
-z95 <- qnorm(0.975)
-
-# Collapse one team's individual-level data to raw cell statistics
-# (condition x outcome). Internal helper: `sd` and `n` are used here to
-# derive the submitted schemas (a cell-mean PI for Tier 2, an effect PI
-# for Tier 3); they are not themselves part of any submission file.
+# Collapse one team's individual-level data to cell means (condition x outcome).
 cell_stats <- function(team_data) {
   team_data |>
     select(condition, all_of(outcomes_continuous)) |>
     pivot_longer(-condition, names_to = "outcome", values_to = "value") |>
     group_by(condition, outcome) |>
-    summarise(
-      mean = mean(value, na.rm = TRUE),
-      sd   = sd(value, na.rm = TRUE),
-      n    = sum(!is.na(value)),
-      .groups = "drop"
-    )
+    summarise(mean = mean(value, na.rm = TRUE), .groups = "drop")
 }
 
-# Mock Tier-2 submission: team_29 cell means with a widened 95% prediction
-# interval on each mean standing in for the team's epistemic uncertainty.
-# Submitted schema: condition, outcome, mean, pi_lower, pi_upper. team_29 and
-# team_30 stand in as the cell-level / effect-level submissions, so the
-# remaining 28 teams are scored as individual-level (Tier 1) entries.
-cells_t2 <- cell_stats(llm_data_teams |> filter(team == "team_29")) |>
-  mutate(
-    se_mean  = sd / sqrt(n),
-    pi_lower = mean - z95 * 2 * se_mean,
-    pi_upper = mean + z95 * 2 * se_mean
-  ) |>
-  select(condition, outcome, mean, pi_lower, pi_upper)
+# Mock Tier-2 submission: team_29 cell means. Submitted schema: condition,
+# outcome, mean. team_29 and team_30 stand in as the cell-level /
+# effect-level submissions, so the remaining 28 teams are scored as
+# individual-level (Tier 1) entries.
+cells_t2 <- cell_stats(llm_data_teams |> filter(team == "team_29"))
 saveRDS(cells_t2, file.path(out_dir, "mock_submission_tier2_cells.rds"))
 
-# Mock Tier-3 submission: team_30 ATEs vs. control with a widened 95%
-# prediction interval standing in for a team's epistemic uncertainty.
-# Derived from the same raw cell statistics, as in make_examples.R.
+# Mock Tier-3 submission: team_30 ATEs vs. control, derived from the same
+# cell means. Submitted schema: condition, outcome, ate.
 cells_team30  <- cell_stats(llm_data_teams |> filter(team == "team_30"))
 control_cells <- cells_team30 |>
   filter(condition == "control") |>
-  transmute(outcome, mean_ctrl = mean, sd_ctrl = sd, n_ctrl = n)
+  transmute(outcome, mean_ctrl = mean)
 
 effects_t3 <- cells_team30 |>
   filter(condition != "control") |>
   left_join(control_cells, by = "outcome") |>
-  mutate(
-    ate      = mean - mean_ctrl,
-    se       = sqrt(sd^2 / n + sd_ctrl^2 / n_ctrl),
-    pi_lower = ate - z95 * 2 * se,
-    pi_upper = ate + z95 * 2 * se
-  ) |>
-  select(condition, outcome, ate, pi_lower, pi_upper)
+  transmute(condition, outcome, ate = mean - mean_ctrl)
 saveRDS(effects_t3, file.path(out_dir, "mock_submission_tier3_effects.rds"))
 
 cat("Mock Tier-2 cells saved.   rows =", nrow(cells_t2), "\n")

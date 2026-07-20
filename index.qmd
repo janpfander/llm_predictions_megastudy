@@ -21,7 +21,7 @@ format:
   <div class="hero-links" aria-label="Take part">
     <a class="hero-link" href="https://forms.gle/Z8j1goLtPKQmESSr8" target="_blank" rel="noopener">
       <span class="hl-no">1</span>
-      <span class="hl-txt"><strong>Tell us you'd like to participate</strong><span class="hl-sub">Leave your contact details <span class="hl-due">· by Jul 24</span></span></span>
+      <span class="hl-txt"><strong>Tell us you'd like to participate</strong><span class="hl-sub">Leave your contact details <span class="hl-due">· by Aug 1</span></span></span>
       <span class="hl-arrow" aria-hidden="true">→</span>
     </a>
     <a class="hero-link" href="preregistration_benchmark.html">
@@ -69,8 +69,8 @@ format:
   <ul class="plain">
     <li><strong>A credible test of your approach.</strong> Your method is evaluated on truly out-of-sample human behavior, against the preregistered human replication reference.</li>
     <li><strong>Co-authorship on the benchmark paper.</strong> All participating teams join the resulting publication, which reports the full results table and a structured catalogue of approaches.</li>
-    <li><strong>A catalogue of the field.</strong> Each registered method becomes a structured, comparable entry describing how teams currently approach AI prediction of behavioral experiments — open- vs. closed-weight models, persona sources, administration protocols, fine-tuning, in-context learning — and which of these choices appear to matter.</li>
-    <li><strong>No single winner.</strong> Approaches are scored on a ladder of metrics of increasing strictness — from directional agreement to formal equivalence — plus distributional fidelity and stereotyping diagnostics. We expect different approaches to do well on different rungs; the point is to map the design space and compare approaches across metrics, not to crown one champion.</li>
+    <li><strong>A catalogue of the field.</strong> Each registered method becomes a structured, comparable entry describing how teams currently approach AI prediction of behavioral experiments — open- vs. closed-weight models, persona sources, administration protocols, fine-tuning, in-context learning.</li>
+    <li><strong>No single winner.</strong> Approaches are scored on a set of metrics of increasing strictness — from directional agreement to calibration — plus distributional fidelity and stereotyping diagnostics. We expect different approaches to do well on different metrics; the point is to map the design space and compare approaches across metrics, not to crown one champion.</li>
   </ul>
   <div class="sst-callout">
     <span class="tag">The target study</span>
@@ -91,7 +91,7 @@ format:
     <li><strong>Everything is registered — not everything must be public.</strong> The method form, the prediction files, and — strongly encouraged — code and raw model output logs are deposited on <a href="https://zenodo.org/">Zenodo</a> (a free research archive run by CERN that gives each deposit a permanent DOI and a time-stamp — done through a release on a linked GitHub repository) before the lock date. Teams with proprietary methods may seal parts of their registration under the <a href="#disclosure">disclosure policy</a>: locked and verifiable is mandatory, public is not.</li>
   </ul>
 
-  <p>We deliberately welcome very different approaches. Submissions enter at one of <strong>three tiers</strong>, defined by the granularity of the prediction. The common currency across tiers is the set of <strong>preregistered estimands</strong> — the same quantities the human analysis produces — so every approach is scored on the rungs it can reach. <strong>Tier 1 is the preferred option:</strong> individual-level data flows through every analysis unchanged, so one Tier-1 entry is automatically scored on all of them — there is no need to also submit the same method at a lower tier. Otherwise, choose the highest tier your approach supports; lower tiers are simply eligible for fewer analyses.</p>
+  <p>We deliberately welcome very different approaches. Submissions enter at one of <strong>three tiers</strong>, defined by the granularity of the prediction. The common currency across tiers is the set of <strong>preregistered estimands</strong> — the same quantities the human analysis produces — so every approach is scored on the analyses it can reach. <strong>Tier 1 is the preferred option:</strong> individual-level data flows through every analysis unchanged, so one Tier-1 entry is automatically scored on all of them — there is no need to also submit the same method at a lower tier. Otherwise, choose the highest tier your approach supports; lower tiers are simply eligible for fewer analyses.</p>
 
   <div class="tiers">
     <div class="tier">
@@ -104,20 +104,20 @@ format:
     <div class="tier">
       <span class="t-code">Tier 2 · Cell-level</span>
       <h4>Group-level predictions</h4>
-      <p>A predicted mean per cell — per condition × outcome, and per condition × moderator-level × outcome — with a 95% <em>uncertainty interval on the cell mean itself</em> (the interval you believe has a 95% chance of containing the human cell mean; <strong>not</strong> the spread of individual responses). For approaches that simulate or reason about groups rather than individuals.</p>
-      <p><strong>Eligible for:</strong> ATEs, calibration, subgroup heterogeneity, and demographic baselines. Not eligible for distribution-shape metrics (OVL, KS) or predictability regressions.</p>
+      <p>A predicted mean per cell — per condition × outcome, and per condition × moderator-level × outcome. For approaches that simulate or reason about groups rather than individuals.</p>
+      <p><strong>Eligible for:</strong> ATEs, calibration, subgroup heterogeneity, and demographic baselines. Not eligible for distribution-shape metrics (variance ratio, OVL, KS, W1) or predictability regressions.</p>
       <div class="grain">Grain: 1 row = 1 cell (condition × [moderator level ×] outcome)</div>
     </div>
     <div class="tier">
       <span class="t-code">Tier 3 · Effect-level</span>
       <h4>Direct effect predictions</h4>
-      <p>One predicted ATE per intervention × outcome, in original outcome units, with a 95% uncertainty interval on the ATE expressing the team's epistemic uncertainty. For zero-shot forecasting, in-context learning over the literature, meta-analytic priors, or hybrid pipelines.</p>
-      <p><strong>Eligible for:</strong> directional agreement, Spearman ρ, Pearson r, RMSE, and calibration regression. Inferential agreement and TOST are computed from the submitted intervals.</p>
+      <p>One predicted ATE per intervention × outcome, in original outcome units. For zero-shot forecasting, in-context learning over the literature, meta-analytic priors, or hybrid pipelines.</p>
+      <p><strong>Eligible for:</strong> ATE recovery (directional agreement, Spearman ρ, Pearson r, RMSE) and the calibration regression.</p>
       <div class="grain">Grain: 1 row = 1 intervention × outcome estimate</div>
     </div>
   </div>
 
-  <p class="small"><strong>Tier 1 has a minimum pool size: 500 synthetic respondents per intervention and 1,000 in the control condition</strong> — the size of the human half every submission is scored against (the benchmark preregistration's <a href="preregistration_benchmark.html#tier-1-individual-level-dataset">precision requirement</a>). Below that floor, effect estimates are noisy for reasons unrelated to the method. Going well beyond it is encouraged — synthetic respondents are cheap, and a larger pool makes your estimates reflect the method rather than a lucky draw. Beyond precision there is no advantage: statistical significance is evaluated at the human design's sample sizes for every submission, so a huge pool cannot buy a better score.</p>
+  <p class="small"><strong>Tier 1 has a minimum pool size: 500 synthetic respondents per intervention and 1,000 in the control condition</strong> — the size of the human half every submission is scored against (the benchmark preregistration's <a href="preregistration_benchmark.html#tier-1-individual-level-dataset">precision requirement</a>). Below that floor, effect estimates are noisy for reasons unrelated to the method. Going well beyond it is encouraged — synthetic respondents are cheap, and a larger pool makes your estimates reflect the method rather than a lucky draw. Beyond precision there is no advantage: only point estimates are scored, so a huge pool stabilizes your estimates but cannot buy a better score.</p>
 
   <div class="sst-callout">
     <span class="tag">Multiple entries welcome</span>
@@ -129,9 +129,9 @@ format:
   <table>
     <thead><tr><th>Preregistered analysis</th><th>Tier 1</th><th>Tier 2</th><th>Tier 3</th></tr></thead>
     <tbody>
-      <tr><td>ATE recovery — six-metric ladder (Section 1)<br><span class="small">Does the approach recover each intervention's average effect?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓ *</td></tr>
+      <tr><td>ATE recovery (Section 1)<br><span class="small">Does the approach recover each intervention's average effect?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
       <tr><td>Calibration regression α / β (Section 1)<br><span class="small">Are predicted effects systematically biased or exaggerated?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-      <tr><td>Response distributions — variance ratio, OVL, KS (Section 1)<br><span class="small">Are the shapes of responses reproduced, not just means?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
+      <tr><td>Response distributions — variance ratio, OVL, KS, W1 (Section 1)<br><span class="small">Are the shapes of responses reproduced, not just means?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
       <tr><td>Subgroup heterogeneity — condition × moderator (Section 2)<br><span class="small">Do treatment effects vary across demographic groups as in humans?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="no-x">—</td></tr>
       <tr><td>Within-subgroup distributions (Section 2)<br><span class="small">Are response shapes reproduced inside each demographic group?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
       <tr><td>Demographic baseline calibration (Section 3)<br><span class="small">Do subgroup means in the control condition match humans?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="no-x">—</td></tr>
@@ -139,7 +139,7 @@ format:
     </tbody>
   </table>
   </div>
-  <p class="small">* For Tiers 2 and 3, the submitted 95% uncertainty intervals are scored directly — coverage (how often the human value falls inside) and an interval score that rewards honest, narrow intervals — and additionally supply the standard errors for inferential agreement and equivalence (TOST). For Tier 1, standard errors fall out of the fitted models, so no separate uncertainty input is required. Full metric definitions are in the <a href="#scoring">Evaluation section</a> and the <a href="preregistration_benchmark.html#preregistered-analysis-plan">benchmark preregistration</a>.</p>
+  <p class="small">Full metric definitions are in the <a href="#scoring">Evaluation section</a> and the <a href="preregistration_benchmark.html#analysis-plan">benchmark preregistration</a>.</p>
 </section>
 
 <!-- ============================== REGISTRATION ============================== -->
@@ -151,8 +151,8 @@ format:
     <li><strong>Register your method — later, on Zenodo.</strong> The registration proper is the time-stamped <a href="https://zenodo.org/">Zenodo</a> deposit described below, produced from the <a href="https://github.com/janpfander/silicon-sample-submission" target="_blank" rel="noopener">submission template repository</a>. This is where the tier, the method description, and the predictions are locked.</li>
   </ul>
   <p>Before the lock, every team deposits one Zenodo record with two parts: a <strong>registration form</strong> describing the approach, and the <strong>prediction files</strong> it produced.</p>
-  <p><strong>The form.</strong> A structured form documents the pipeline in enough detail that, in principle, an independent team could re-run it and obtain a statistically equivalent submission; where exact replication is impossible (deprecated APIs, hardware nondeterminism), the deposited raw output logs become the verifiable record. It builds on the <strong>GUIDE-LLM</strong> reporting checklist<sup class="fn"><span class="fn-ref">1</span><span class="fn-pop">Feuerriegel, S., Barrie, C., Crockett, M.&nbsp;J., et&nbsp;al. (2026). A reporting checklist for large language models in behavioural science. <em>Nature Human Behaviour</em>, 1–5. <a href="https://doi.org/10.1038/s41562-026-02492-7">https://doi.org/10.1038/s41562-026-02492-7</a></span></sup> — the consensus reporting standard for LLM use in behavioral science — extended where a checklist alone is not enough for full pipeline replicability: exact models and call dates, prompts and survey-administration protocol, persona/profile construction, stochasticity and aggregation, post-processing, any learning or retrieval corpora, internal model and prompt selection, and frozen code plus raw output logs. The full item-by-item form is below; a fillable template (Markdown + machine-readable YAML) ships in the <a href="materials.html">submission template</a> repository.</p>
-  <p><strong>The predictions.</strong> Alongside the form you deposit the prediction file(s) for your <a href="#rules">tier</a>, a machine-readable <code>metadata.json</code>, and — strongly encouraged — code and raw model output logs. Everything is hashed and time-stamped before the lock; the DOIs and SHA-256 hashes are emailed to the core team by the same deadline. Column schemas, file naming, the <code>metadata.json</code> format, and a self-check validator are on the <a href="materials.html">materials page</a>.</p>
+  <p><strong>The form.</strong> A structured form documents the pipeline in enough detail that, in principle, an independent team could re-run it and obtain a statistically equivalent submission; where exact replication is impossible (deprecated APIs, hardware nondeterminism), the deposited raw output logs become the verifiable record. It builds on the <strong>GUIDE-LLM</strong> reporting checklist<sup class="fn"><span class="fn-ref">1</span><span class="fn-pop">Feuerriegel, S., Barrie, C., Crockett, M.&nbsp;J., et&nbsp;al. (2026). A reporting checklist for large language models in behavioural science. <em>Nature Human Behaviour</em>, 1–5. <a href="https://doi.org/10.1038/s41562-026-02492-7">https://doi.org/10.1038/s41562-026-02492-7</a></span></sup> — the consensus reporting standard for LLM use in behavioral science — extended where a checklist alone is not enough for full pipeline replicability: exact models and call dates, prompts and survey-administration protocol, persona/profile construction, stochasticity and aggregation, post-processing, any learning or retrieval corpora, internal model and prompt selection, and frozen code plus raw output logs. The full item-by-item form is below; a fillable template (Markdown + machine-readable JSON) ships in the <a href="materials.html">submission template</a> repository.</p>
+  <p><strong>The predictions.</strong> Alongside the form you deposit the prediction file(s) for your <a href="#rules">tier</a>, a machine-readable <code>metadata.json</code>, and — strongly encouraged — code and raw model output logs. Everything is hashed and time-stamped before the lock; the DOIs and SHA-256 hashes are emailed to the core team by the same deadline. Column schemas, file naming, the <code>metadata.json</code> format, and a self-check validator are in the <a href="https://github.com/janpfander/silicon-sample-submission" target="_blank" rel="noopener">submission template repository</a> (linked from the <a href="materials.html">materials page</a>).</p>
   <p><strong>The deposited, hashed record is final.</strong> Once you have emailed the DOI and fingerprints, that snapshot is your locked submission — it cannot be revised, and only the exact file matching the emailed SHA-256 hash is scored. You may keep working in your repository and even publish a newer Zenodo version afterwards, but the core team scores the version whose fingerprint you sent by the deadline. Deposit only when you are ready to lock.</p>
 
   <h3 id="registration-form">The registration form</h3>
@@ -170,7 +170,7 @@ format:
       <tr><td class="item-code">0.2 <span class="star">★</span></td><td>Plain-language summary</td><td>One paragraph describing the approach so that a non-specialist reader of the catalogue understands what was done.</td></tr>
       <tr><td class="item-code">0.3 <span class="star">★</span></td><td>Submission tier &amp; approach family</td><td>Tier (1 / 2 / 3) and approach family — e.g., one call per respondent vs. agent walking the full survey; single model vs. ensemble vs. multi-agent; simulation vs. direct forecasting; zero-shot vs. literature-conditioned.</td></tr>
       <tr><td class="item-code">0.4</td><td>Pipeline diagram</td><td>The full pipeline as an ordered sequence of steps (input → transformation → output), covering every stage from raw inputs to the submitted file. Prose descriptions of multi-stage pipelines are where replicability dies; a numbered step list or diagram is required.</td></tr>
-      <tr><td class="item-code">0.5 <span class="star">★</span></td><td>Coverage</td><td>Number of synthetic respondents / cells / estimates; mapping to conditions; coverage of the 16 interventions and 13 outcomes (all, or a declared subset with justification).</td></tr>
+      <tr><td class="item-code">0.5 <span class="star">★</span></td><td>Coverage</td><td>Number of synthetic respondents / cells / estimates and their mapping to conditions. Full coverage of the 16 interventions and 13 outcomes is required.</td></tr>
 
       <tr class="grp"><td colspan="3">A · Scope of LLM use <span class="small">(GUIDE-LLM)</span></td></tr>
       <tr><td class="item-code">A.1</td><td>Purpose</td><td>Every workflow stage where LLMs are used — at minimum generating predictions; also persona construction, prompt optimization, post-processing, literature digestion, etc.</td></tr>
@@ -274,26 +274,24 @@ format:
   <div class="sec-head"><span class="no">04</span><h2>Evaluation</h2></div>
   <div class="sst-callout">
     <span class="tag">The human replication reference</span>
-    <p>Scoring follows the <a href="preregistration_benchmark.html#preregistered-analysis-plan">preregistered analysis plan</a> without modification. A preregistered random seed splits the human sample in half. Every submission is scored against <strong>Human 1</strong>. The agreement between <strong>Human 1 and Human 2</strong> is the human replication reference: how well a fresh human sample of this size reproduces the reference half. This is a natural reference point for interpreting every method's scores — a reference, not a ceiling — and it is reported in the same row format as every team.</p>
+    <p>Scoring follows the <a href="preregistration_benchmark.html#analysis-plan">preregistered analysis plan</a> without modification. A preregistered random seed splits the human sample in half. Every submission is scored against <strong>Human 1</strong>. The agreement between <strong>Human 1 and Human 2</strong> is the human replication reference: how well a fresh human sample of this size reproduces the reference half. This is a natural reference point for interpreting every method's scores — a reference, not a ceiling — and it is reported in the same row format as every team.</p>
   </div>
 
-  <p>Every submission is scored against <strong>Human 1</strong> on every metric and comparison its <a href="#rules">tier</a> supports, across all 13 outcomes. The ATE-recovery ladder runs from least to most strict — knowing on which rung an approach breaks is more informative than any single pass/fail verdict. The scored effect for each outcome is a <strong>between-subjects post-treatment contrast</strong> — the intervention-group mean minus the control-group mean. There is no baseline adjustment; the survey's pre-treatment measures are not used in scoring.</p>
+  <p>Every submission is scored against <strong>Human 1</strong> on every metric and comparison its <a href="#rules">tier</a> supports, across all 13 outcomes. The ATE-recovery metrics run from least to most strict — knowing where an approach breaks is more informative than any single pass/fail verdict. The scored effect for each outcome is a <strong>between-subjects post-treatment contrast</strong> — the intervention-group mean minus the control-group mean. There is no baseline adjustment; the survey's pre-treatment measures are not used in scoring.</p>
   <div class="tbl-wrap">
   <table>
-    <caption>Scoring metrics and comparisons. The ATE-recovery ladder is ordered from least to most strict; the further comparisons are computed wherever the submission's tier supports them.</caption>
+    <caption>Scoring metrics and comparisons. The ATE-recovery metrics are ordered from least to most strict; the further comparisons are computed wherever the submission's tier supports them.</caption>
     <thead><tr><th style="width:260px">Metric / comparison</th><th>What it asks</th></tr></thead>
     <tbody>
-      <tr class="grp"><td colspan="2">ATE-recovery ladder — increasing strictness, top to bottom</td></tr>
+      <tr class="grp"><td colspan="2">ATE recovery — increasing strictness, top to bottom</td></tr>
       <tr><td>Directional agreement</td><td>Do you get the sign of each effect right? Chance = 50%.</td></tr>
       <tr><td>Spearman ρ</td><td>Do you rank the interventions in the human order?</td></tr>
       <tr><td>Pearson r</td><td>Are your effects proportional to human effects?</td></tr>
-      <tr><td>Inferential agreement</td><td>Would a researcher using your data reach the same significance conclusions?</td></tr>
-      <tr><td>RMSE</td><td>How large is the absolute magnitude error, in outcome units?</td></tr>
-      <tr><td>TOST equivalence</td><td>Is each predicted effect statistically equivalent to the human effect within a fixed bound of 3% of the outcome's scale range?</td></tr>
+      <tr><td>RMSE</td><td>How large is the absolute magnitude error, in percentage points of the outcome's scale range?</td></tr>
       <tr class="grp"><td colspan="2">Further comparisons — wherever the tier supports it</td></tr>
       <tr><td>Calibration regression</td><td>Human ATEs regressed on predicted ATEs, separating additive bias (intercept α) from proportionality (slope β), with F-tests of β = 1 and of the joint α = 0, β = 1.</td></tr>
-      <tr><td>Subgroup effects</td><td>Recovery of condition × moderator interaction effects — whether treatment effects vary across the six demographic moderators as they do in humans, scored on the same six-rung ladder.</td></tr>
-      <tr><td>Distributional metrics <span class="small">(Tier 1)</span></td><td>Variance ratio, distribution overlap coefficient (OVL), and Kolmogorov–Smirnov distance — whether response <em>shapes</em> are reproduced, not just means; also within subgroups for the primary outcome.</td></tr>
+      <tr><td>Subgroup effects</td><td>Recovery of condition × moderator interaction effects — whether treatment effects vary across the six demographic moderators as they do in humans, scored with the same signed-effect metrics.</td></tr>
+      <tr><td>Distributional metrics <span class="small">(Tier 1)</span></td><td>Variance ratio, distribution overlap coefficient (OVL), Kolmogorov–Smirnov distance, and Wasserstein-1 distance — whether response <em>shapes</em> are reproduced, not just means; also within subgroups.</td></tr>
       <tr><td>Demographic baseline calibration</td><td>Pearson r and RMSE of subgroup means against humans in the control condition, computed per moderator.</td></tr>
       <tr><td>Demographic predictability / stereotyping</td><td>R² from separate per-moderator regressions — whether demographics predict synthetic responses with the same strength as in humans, or whether clones over-rely on demographic cues.</td></tr>
     </tbody>
@@ -318,7 +316,7 @@ format:
     </div>
     <div class="tl-item has-action">
       <div class="tl-body">
-        <span class="date">July 24, 2026 <span class="who you">Your task</span></span>
+        <span class="date">August 1, 2026 <span class="who you">Your task</span></span>
         <h4>Confirm intent</h4>
         <p>Confirm participation by leaving your contact details in the interest form, then build your pipeline. Your tier is declared later, at registration.</p>
       </div>
@@ -330,7 +328,7 @@ format:
     <div class="tl-item">
       <span class="date">July 2026 · Done <span class="who core">Core team</span></span>
       <h4>Human data collection complete</h4>
-      <p>All ≈18,000 human responses are collected and cleaned, then held sealed — not shared, released, or analyzed until after the prediction lock.</p>
+      <p>All ≈18,000 human responses are collected and cleaned, then held sealed — not shared or released to anyone outside the research lead until after the prediction lock (the preregistration discloses the interim looks that have occurred).</p>
     </div>
     <div class="tl-item hard has-action">
       <div class="tl-body">

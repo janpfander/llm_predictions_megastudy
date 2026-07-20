@@ -10,11 +10,11 @@ Answers to the questions teams ask when they first read the [call for participat
 
 ### Who can participate?
 
-Participation is by invitation, open to teams with a published track record in silicon-sample research. Eligibility is checked through a short separate survey after you fill in the [interest form](https://forms.gle/Z8j1goLtPKQmESSr8) (by **July 24, 2026**). A team is at most two people, and an individual may join any number of teams. If you were invited and know other researchers who should be on the list, forward them the call. They register interest through the same form.
+Participation is by invitation, open to teams with a published track record in silicon-sample research. Eligibility is checked through a short separate survey after you fill in the [interest form](https://forms.gle/Z8j1goLtPKQmESSr8) (by **August 1, 2026**). A team is at most two people, and an individual may join any number of teams. If you were invited and know other researchers who should be on the list, forward them the call. They register interest through the same form.
 
 ### How many times can we enter?
 
-At most two entries per tier per team, so up to six in total. One entry is one method's complete set of predictions at a single tier, in its own repository and its own Zenodo deposit. Enter more than once only for genuinely different approaches (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. You mark one entry per tier as `primary`. The cross-team field statistics use primary entries, and every valid entry appears on the leaderboard.
+At most two entries per tier per team, so up to six in total. One entry is one method's complete set of predictions at a single tier, in its own repository and its own Zenodo deposit. Enter more than once only for genuinely different approaches (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. You mark exactly one entry — across all tiers — as `primary`. The cross-team field statistics use each team's single primary entry, and every valid entry appears on the leaderboard.
 
 ### Can we participate without making our method public?
 
@@ -36,15 +36,11 @@ No. The benchmark ships the survey, the codebook, the intervention texts, and a 
 
 ### How many synthetic respondents do we need?
 
-For Tier 1, the preregistration sets a floor at the size of the human half you are scored against, meaning **500 per intervention and 1,000 in the control condition**. Below that, your effect estimates would be noisy for a reason that has nothing to do with your method. Going well beyond the floor is encouraged, since synthetic respondents are cheap and a larger pool makes your estimates reflect the method rather than a lucky draw. There is no benefit beyond precision. Statistical significance is evaluated at the human design's sample sizes for every submission, so a very large pool cannot buy a better inferential-agreement score. The template's `make check` warns when a prediction file is below the floor.
+For Tier 1, the preregistration sets a floor at the size of the human half you are scored against, meaning **500 per intervention and 1,000 in the control condition**. Below that, your effect estimates would be noisy for a reason that has nothing to do with your method. Going well beyond the floor is encouraged, since synthetic respondents are cheap and a larger pool makes your estimates reflect the method rather than a lucky draw. There is no benefit beyond precision: only point estimates are scored, so a very large pool stabilizes your estimates but cannot buy a better score. The template's `make check` warns when a prediction file is below the floor.
 
 ### Can we predict only part of the study?
 
-Yes. Full coverage is all 16 interventions plus control across all 13 outcomes, but declared subsets are permitted. You state your coverage in `metadata.json` and are scored pairwise on what you cover. Be aware of the consequence, though. The primary leaderboard is restricted to full-coverage entries, so partial entries are reported in a separate annex with their coverage stated.
-
-### What exactly are `pi_lower` and `pi_upper` (Tiers 2 and 3)?
-
-A 95% uncertainty interval on the reported quantity itself, the cell mean (Tier 2) or the ATE (Tier 3). It is the interval you believe has a 95% chance of containing the value the human study will find. It is *not* the spread of individual responses, a reading that gives intervals roughly an order of magnitude too wide. The intervals are scored directly, for coverage and with an interval score that rewards honest, narrow intervals, so neither padding them wide nor squeezing them tight pays.
+No. Every submission must cover all 16 interventions plus control across all 13 outcomes. A self-chosen, potentially easier-to-predict subset would not be comparable to the other entries, so the validator rejects partial files.
 
 ### Do we have to use R or the template's `make` commands?
 
@@ -76,11 +72,11 @@ The human sample is split in half by a preregistered random seed. Every submissi
 
 ### Is there a single winner?
 
-No. Every approach is scored on a ladder of metrics of increasing strictness, and each metric is its own ranking. The headline result is the distribution of predictive quality across the whole field, not any team's rank. We expect different approaches to lead on different rungs, and the paper reports where each approach breaks down rather than crowning a champion. Any claim that one approach outperforms another must pass a preregistered paired bootstrap test. Otherwise the two are reported as statistically indistinguishable, the most common outcome among top performers in comparable benchmarks.
+No. Every approach is scored on a set of metrics of increasing strictness, and each metric is its own ranking. The headline result is the distribution of predictive quality across the whole field, not any team's rank. We expect different approaches to lead on different metrics, and the paper reports where each approach breaks down rather than crowning a champion. The ranking itself is presented descriptively, with a bootstrap interval on every score; among top performers, statistical near-ties are the most common outcome in comparable benchmarks.
 
 ### When do we learn our scores?
 
-Your deposit is acknowledged when you email the DOI and fingerprints. After the prediction lock (**August 30, 2026**) the human study completes and every submission is scored. Each team receives its own scores when the first manuscript draft is shared with all teams for comment (target **September 30, 2026**). No scores or human results are available to anyone before the lock.
+Your deposit is acknowledged when you email the DOI and fingerprints. After the prediction lock (**August 30, 2026**) the sealed human data are opened and every submission is scored. Each team receives its own scores when the first manuscript draft is shared with all teams for comment (target **September 30, 2026**). No scores or human results are available to anyone before the lock.
 
 ### Still have questions?
 
