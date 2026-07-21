@@ -1128,20 +1128,27 @@ pooled_metrics <- function(pairs, include_rmse = FALSE) {
   out
 }
 
-# Pooled calibration regression on pre-joined pairs (benchmark only). The same
-# regression as run_calibration() — ATE_h = alpha + beta * ATE_l — but fit on
-# the intervention × outcome pairs pooled across all outcomes (in pp of scale
-# range, converted at pair-building), as Ashokkumar et al. fit their
-# calibration slope across all effects of an archive. HC2-robust inference by
-# default: the outcome side carries known, condition-varying sampling error.
+# Pooled calibration regression on pre-joined pairs (benchmark only).
+# ATE_h = alpha + beta * ATE_l, fit on the intervention × outcome pairs pooled
+# across all outcomes (in pp of scale range, converted at pair-building), as
+# Ashokkumar et al. fit their calibration slope across all effects of an
+# archive. Descriptive: alpha (constant offset) and beta (proportional
+# scaling) with 95% CIs, no significance tests — HC2-robust CIs by default,
+# because the outcome side carries known, condition-varying sampling error.
+# R^2 is not returned: for an OLS with intercept it equals the squared pooled
+# Pearson r, which the leaderboard already carries.
 run_calibration_pooled <- function(pairs, robust = TRUE) {
-  run_calibration(
-    pairs |> transmute(condition = paste(condition, outcome),
-                       estimate = estimate_h, std.error = se_h),
-    pairs |> transmute(condition = paste(condition, outcome),
-                       estimate = estimate_l),
-    robust = robust
-  )
+  fit <- lm(estimate_h ~ estimate_l, data = pairs)
+  V   <- if (robust) sandwich::vcovHC(fit, type = "HC2") else NULL
+
+  (if (is.null(V)) broom::tidy(fit, conf.int = TRUE)
+   else broom::tidy(lmtest::coeftest(fit, vcov. = V), conf.int = TRUE)) |>
+    mutate(term = if_else(term == "(Intercept)", "alpha", "beta")) |>
+    select(term, estimate, lo = conf.low, hi = conf.high) |>
+    pivot_wider(names_from = term, values_from = c(estimate, lo, hi),
+                names_glue = "{term}_{.value}") |>
+    transmute(alpha = alpha_estimate, alpha_lo, alpha_hi,
+              beta  = beta_estimate,  beta_lo,  beta_hi)
 }
 
 # Signed-effect metrics for estimate-only pairs (no SE / inferential category).

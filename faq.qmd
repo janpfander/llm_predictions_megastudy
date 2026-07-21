@@ -72,11 +72,11 @@ The human sample is split in half by a preregistered random seed. Every submissi
 
 ### Is there a single winner?
 
-No. Every approach is scored on a set of metrics of increasing strictness, and each metric is its own ranking. The headline result is the distribution of predictive quality across the whole field, not any team's rank. We expect different approaches to lead on different metrics, and the paper reports where each approach breaks down rather than crowning a champion. The ranking itself is presented descriptively, with a bootstrap interval on every score; among top performers, statistical near-ties are the most common outcome in comparable benchmarks.
+No. Every approach is scored on a set of metrics of increasing strictness, and each metric is its own ranking. The headline result is the distribution of predictive quality across the whole field, not any team's rank. We expect different approaches to lead on different metrics, and the paper reports where each approach breaks down rather than crowning a champion. The ranking is presented descriptively, with a bootstrap interval on every score; among top performers, statistical near-ties are the most common outcome in comparable benchmarks.
 
 ### When do we learn our scores?
 
-Your deposit is acknowledged when you email the DOI and fingerprints. After the prediction lock (**August 30, 2026**) the sealed human data are opened and every submission is scored. Each team receives its own scores when the first manuscript draft is shared with all teams for comment (target **September 30, 2026**). No scores or human results are available to anyone before the lock.
+Your deposit is acknowledged when you email the DOI and fingerprints. After the prediction lock (**August 31, 2026**) the sealed human data are opened and every submission is scored. Each team receives its own scores when the first manuscript draft is shared with all teams for comment (target **September 30, 2026**). No scores or human results are available to anyone before the lock.
 
 ### Still have questions?
 

@@ -36,3 +36,7 @@ _freeze/slides/05_26_mpg_berlin/
 
 # Invitation emails: contact lists and send scripts stay local only.
 emails/
+
+# Published papers (publisher PDFs, copyright) and internal review memos:
+# local reference material, never on GitHub.
+papers/

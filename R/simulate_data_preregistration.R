@@ -303,8 +303,8 @@ simulate_dataset <- function(seed) {
         "Mormon", "Muslim", "Jewish", "Hindu", "Buddhist", "Other religion"
       )),
       age_band = cut(age,
-                     breaks = c(17, 29, 39, 49, 59, 69, Inf),
-                     labels = c("18-29", "30-39", "40-49", "50-59", "60-69", "70+"),
+                     breaks = c(17, 29, 44, 59, Inf),
+                     labels = c("18-29", "30-44", "45-59", "60+"),
                      right  = TRUE)
     )
 }

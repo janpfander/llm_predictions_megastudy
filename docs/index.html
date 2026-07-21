@@ -163,7 +163,7 @@ ul.task-list li input[type="checkbox"] {
   <div class="inner">
     <p class="eyebrow">Call for participation · Multi-team prediction benchmark</p>
     <h1>Can your silicon sample predict how <em>18,000 humans</em> will behave?</h1>
-    <p class="dek">We are fielding one of the largest behavioral megastudies to date — 16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample. The outcome data are locked and unpublished. Before they are released, we invite selected research teams to predict the results with any AI-based approach they choose: behavioral clones, group-level simulation, or direct effect forecasting. Every approach is registered, every prediction is locked, and every team is compared against the same human replication reference — how well one half of the human sample predicts the other. No single winner is crowned: the goal is a systematic, side-by-side overview of how different approaches perform across many metrics.</p>
+    <p class="dek">We are fielding one of the largest behavioral megastudies to date — 16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample. The outcome data are locked and unpublished. Before they are released, we invite selected research teams to predict the results with any AI-based approach they choose: behavioral clones, group-level simulation, or direct effect forecasting. All submissions will be registered prior to releasing the human data. They will then be evaluated using a preregistered analysis pipeline. Their success in predicting human behavior will be compared against a human reference, namely how well one half of the human sample predicts the other. This project is a benchmark, not a tournament: Our goal is not to crown a single winning team, but to provide a structured overview and credible evaluation of current silicon sampling approaches across different metrics.</p>
   </div>
   <div class="hero-links" aria-label="Take part">
     <a class="hero-link" href="https://forms.gle/Z8j1goLtPKQmESSr8" target="_blank" rel="noopener">
@@ -178,7 +178,7 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <a class="hero-link" href="https://github.com/janpfander/silicon-sample-submission" target="_blank" rel="noopener">
       <span class="hl-no">3</span>
-      <span class="hl-txt"><strong>Make your registration</strong><span class="hl-sub">Submission template repository <span class="hl-due">· lock by Aug 30</span></span></span>
+      <span class="hl-txt"><strong>Make your registration</strong><span class="hl-sub">Submission template repository <span class="hl-due">· lock by Aug 31</span></span></span>
       <span class="hl-arrow" aria-hidden="true">→</span>
     </a>
   </div>
@@ -210,14 +210,14 @@ ul.task-list li input[type="checkbox"] {
 <!-- ============================== WHY ============================== -->
 <section id="why">
   <div class="sec-head"><span class="no">01</span><h2 class="anchored">Why participate</h2></div>
-  <p>Whether large language models can stand in for human participants in experiments is one of the most consequential open questions in behavioral science. The evidence so far is mixed and hard to interpret: most existing evaluations target human studies that were already published — and plausibly in the models' training data — and very few studies are credibly preregistered, so reported successes are entangled with researcher degrees of freedom in model and prompt choice.</p>
-  <p>This benchmark study addresses these problems. The target is a genuinely novel megastudy: none of the 16 interventions has ever been tested in this specific form on the specific outcomes. The human data are held exclusively by the core team, and every prediction must be deposited and time-stamped <strong>before</strong> any human data are released.</p>
+  <p>Whether large language models (LLMs) can predict how human participants behave in surveys and experiments is a consequential open question in social sciences. The evidence so far is mixed, and has methodological issues: Most existing evaluations target experiments that were already published, and plausibly in the models’ training data. Even in cases where the data from these published experiments is outside of the LLMs' training data, reported success rates may still be biased by researcher degrees of freedom. The analytical procedure, evaluation metrics, models, and prompts researchers use impact their findings considerably. A credible evaluation of LLMs' potential for predicting human behavior in social science research requires new data and preregistered methods. </p>
+  <p>This benchmark study addresses these problems. The target is a megastudy on strengthening trust in climate scientists in the United States, testing 16 novel interventions on 13 outcomes. The human data are held exclusively by the core team, and every prediction must be deposited and time-stamped <strong>before</strong> any human data are released.</p>
   <p>What you get out of it:</p>
   <ul class="plain">
-    <li><strong>A credible test of your approach.</strong> Your method is evaluated on truly out-of-sample human behavior, against the preregistered human replication reference.</li>
-    <li><strong>Co-authorship on the benchmark paper.</strong> All participating teams join the resulting publication, which reports the full results table and a structured catalogue of approaches.</li>
-    <li><strong>A catalogue of the field.</strong> Each registered method becomes a structured, comparable entry describing how teams currently approach AI prediction of behavioral experiments — open- vs. closed-weight models, persona sources, administration protocols, fine-tuning, in-context learning.</li>
-    <li><strong>No single winner.</strong> Approaches are scored on a set of metrics of increasing strictness — from directional agreement to calibration — plus distributional fidelity and stereotyping diagnostics. We expect different approaches to do well on different metrics; the point is to map the design space and compare approaches across metrics, not to crown one champion.</li>
+    <li><strong>A credible test of your approach.</strong> Your method is evaluated on out-of-sample human behavior, against the preregistered human replication reference.</li>
+    <li><strong>Co-authorship on the benchmark paper.</strong> All participating teams join the author team on the resulting publication.</li>
+    <li><strong>A catalogue of the field.</strong> Each registered method becomes a structured, comparable entry describing how teams currently approach AI prediction of behavioral experiments (e.g., open- vs. closed-weight models, persona sources, fine-tuning, in-context learning.)</li>
+    <li><strong>No single winner.</strong> Approaches are scored on a set of metrics from directional agreement to calibration, plus distributional fidelity and stereotyping diagnostics. We expect different approaches to do well on different metrics.</li>
   </ul>
   <div class="sst-callout">
     <span class="tag">The target study</span>
@@ -230,15 +230,14 @@ ul.task-list li input[type="checkbox"] {
   <div class="sec-head"><span class="no">02</span><h2 class="anchored">Rules</h2></div>
   <p>Any AI-based approach is welcome — any models, personas, prompts, fine-tuning, or prior literature — under a few firm ground rules.</p>
   <ul class="plain">
-    <li><strong>Blinding is absolute.</strong> No team may access, solicit, or be shown any human outcome data from this study before the prediction lock. A signed attestation is part of registration (item I.3 of the form).</li>
-    <li><strong>AI-based and automated.</strong> Pipelines must be AI-based and run without humans in the loop at prediction time. Human effort goes into <em>designing</em> the pipeline, not into adjusting its outputs.</li>
-    <li><strong>Otherwise unrestricted.</strong> Any models (open or closed weight), any prompting or persona strategy, any external training data, prior studies, or meta-analytic knowledge may be used — as long as it is declared in the registration form.</li>
-    <li><strong>Invited expert teams of up to two.</strong> Participation is by invitation, open to teams with a published track record in silicon-sample research (assessed through a short separate survey when you register your interest — not part of the registration itself). A team is at most two people; an individual may join any number of teams. We encourage invited teams to forward the call to other researchers they consider relevant.</li>
-    <li><strong>Multiple submissions are encouraged — up to two per tier.</strong> Enter more than once with genuinely different approaches (say, a per-respondent simulation and a direct forecast); each is a separate registered entry, capped at two per tier.</li>
-    <li><strong>Everything is registered — not everything must be public.</strong> The method form, the prediction files, and — strongly encouraged — code and raw model output logs are deposited on <a href="https://zenodo.org/">Zenodo</a> (a free research archive run by CERN that gives each deposit a permanent DOI and a time-stamp — done through a release on a linked GitHub repository) before the lock date. Teams with proprietary methods may seal parts of their registration under the <a href="#disclosure">disclosure policy</a>: locked and verifiable is mandatory, public is not.</li>
+    <li><strong>Blinding is absolute.</strong> No participating team will have access to any human data from this study before the prediction lock. A signed attestation is part of registration (item I.3 of the form).</li>
+    <li><strong>AI-based and automated.</strong> Pipelines must be AI-based. Predictions may not be manually made by humans, and teams are not allowed to collect any new human data for this project. Otherwise, any models (open or closed weight), any prompting or persona strategy, any external training data, prior studies, or meta-analytic knowledge may be used — as long as it is declared in the registration form.</li>
+    <li><strong>Invited expert teams of up to two.</strong> Participation is by invitation, open to teams with a published track record in silicon-sample research. A team is at most two people; an individual may join any number of teams. We encourage invited teams to forward the call to other researchers they consider relevant.</li>
+    <li><strong>Multiple submissions are encouraged, up to two per tier.</strong> Enter more than once with genuinely different approaches (say, a per-respondent simulation and a direct forecast); each is a separate registered entry, capped at two per tier. However, you will have to designate one submission your primary submission.</li>
+    <li><strong>Everything is registered, not everything must be public.</strong> The method form, the prediction files, and — strongly encouraged — code and raw model output logs are deposited on <a href="https://zenodo.org/">Zenodo</a> (a free research archive run by CERN that gives each deposit a permanent DOI and a time-stamp — done through a release on a linked GitHub repository) before the lock date. Teams with proprietary methods may seal parts of their registration under the <a href="#disclosure">disclosure policy</a>: locked and verifiable is mandatory, public is not.</li>
   </ul>
 
-  <p>We deliberately welcome very different approaches. Submissions enter at one of <strong>three tiers</strong>, defined by the granularity of the prediction. The common currency across tiers is the set of <strong>preregistered estimands</strong> — the same quantities the human analysis produces — so every approach is scored on the analyses it can reach. <strong>Tier 1 is the preferred option:</strong> individual-level data flows through every analysis unchanged, so one Tier-1 entry is automatically scored on all of them — there is no need to also submit the same method at a lower tier. Otherwise, choose the highest tier your approach supports; lower tiers are simply eligible for fewer analyses.</p>
+  <p>We deliberately welcome very different approaches. Submissions fall into one of <strong>three tiers</strong>, defined by their level of prediction. <strong>Tier 1 is the preferred option.</strong> Choose the highest tier your approach supports. Tier 2 and Tier 3 are eligible for fewer analyses.</p>
 
   <div class="tiers">
     <div class="tier">
@@ -258,7 +257,7 @@ ul.task-list li input[type="checkbox"] {
     <div class="tier">
       <span class="t-code">Tier 3 · Effect-level</span>
       <h4 class="anchored">Direct effect predictions</h4>
-      <p>One predicted ATE per intervention × outcome, in original outcome units. For zero-shot forecasting, in-context learning over the literature, meta-analytic priors, or hybrid pipelines.</p>
+      <p>One predicted ATE per intervention × outcome, in original outcome units.</p>
       <p><strong>Eligible for:</strong> ATE recovery (directional agreement, Spearman ρ, Pearson r, RMSE) and the calibration regression.</p>
       <div class="grain">Grain: 1 row = 1 intervention × outcome estimate</div>
     </div>
@@ -268,7 +267,7 @@ ul.task-list li input[type="checkbox"] {
 
   <div class="sst-callout">
     <span class="tag">Multiple entries welcome</span>
-    <p>We actively encourage teams to enter more than once — but only for <strong>genuinely different approaches</strong> (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. Each approach is a separate entry with its own repository and registration; the team designates one as its <strong>primary entry</strong> and the rest as <strong>secondary entries</strong>. This label is purely the team's own ranking of which result to treat as headline: <strong>every entry — primary or secondary — is scored identically, on the same pipeline, and reported in the results table.</strong> Comparing a team's simulated-then-derived effects against its own direct forecasts isolates the value of the simulation step itself — one of the most interesting questions this benchmark can answer.</p>
+    <p>We actively encourage teams to enter more than once — but only for <strong>genuinely different approaches</strong> (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. Each approach is a separate entry with its own repository and registration; the team designates one as its <strong>primary entry</strong> and the rest as <strong>secondary entries</strong>. This label is purely the team's own ranking of which result to treat as headline: <strong>every entry — primary or secondary — is scored identically, on the same pipeline, and reported in the results table.</strong></p>
   </div>
 
   <h3 class="anchored">Analysis eligibility by tier</h3>
@@ -351,16 +350,16 @@ ul.task-list li input[type="checkbox"] {
   <div class="sec-head"><span class="no">03</span><h2 class="anchored">Registration</h2></div>
   <p>There are <strong>two separate steps</strong>, easy to confuse:</p>
   <ul class="plain">
-    <li><strong>Express interest — everyone, first.</strong> Every team fills the short <a href="https://forms.gle/Z8j1goLtPKQmESSr8" target="_blank" rel="noopener">Google interest form</a> to leave contact details and confirm participation. This is <em>not</em> where you pick a tier or submit anything — it just puts you on the list and opens the eligibility check. Even invited teams and colleagues you forward the call to must complete it.</li>
-    <li><strong>Register your method — later, on Zenodo.</strong> The registration proper is the time-stamped <a href="https://zenodo.org/">Zenodo</a> deposit described below, produced from the <a href="https://github.com/janpfander/silicon-sample-submission" target="_blank" rel="noopener">submission template repository</a>. This is where the tier, the method description, and the predictions are locked.</li>
+    <li><strong>Express interest.</strong> Every team fills the short <a href="https://forms.gle/Z8j1goLtPKQmESSr8" target="_blank" rel="noopener">Google interest form</a> to leave contact details and confirm participation. <em>No</em> methodoligical choices need to be made at this point, it's just to put you on our list of participating teams. Both invited teams and colleagues you forward the call to must complete it.</li>
+    <li><strong>Register your predictions.</strong> The registration is the time-stamped <a href="https://zenodo.org/">Zenodo</a> deposit described below, produced from the <a href="https://github.com/janpfander/silicon-sample-submission" target="_blank" rel="noopener">submission template repository</a>. This registration is your submission to the project, and contains both your predictions and a registration form where you describe your methods.</li>
   </ul>
   <p>Before the lock, every team deposits one Zenodo record with two parts: a <strong>registration form</strong> describing the approach, and the <strong>prediction files</strong> it produced.</p>
-  <p><strong>The form.</strong> A structured form documents the pipeline in enough detail that, in principle, an independent team could re-run it and obtain a statistically equivalent submission; where exact replication is impossible (deprecated APIs, hardware nondeterminism), the deposited raw output logs become the verifiable record. It builds on the <strong>GUIDE-LLM</strong> reporting checklist<sup class="fn"><span class="fn-ref">1</span><span class="fn-pop">Feuerriegel, S., Barrie, C., Crockett, M.&nbsp;J., et&nbsp;al. (2026). A reporting checklist for large language models in behavioural science. <em>Nature Human Behaviour</em>, 1–5. <a href="https://doi.org/10.1038/s41562-026-02492-7">https://doi.org/10.1038/s41562-026-02492-7</a></span></sup> — the consensus reporting standard for LLM use in behavioral science — extended where a checklist alone is not enough for full pipeline replicability: exact models and call dates, prompts and survey-administration protocol, persona/profile construction, stochasticity and aggregation, post-processing, any learning or retrieval corpora, internal model and prompt selection, and frozen code plus raw output logs. The full item-by-item form is below; a fillable template (Markdown + machine-readable JSON) ships in the <a href="materials.html">submission template</a> repository.</p>
+  <p><strong>The form.</strong> You documente your simulation pipeline in a structured form which builds on the <strong>GUIDE-LLM</strong> reporting checklist<sup class="fn"><span class="fn-ref">1</span><span class="fn-pop">Feuerriegel, S., Barrie, C., Crockett, M.&nbsp;J., et&nbsp;al. (2026). A reporting checklist for large language models in behavioural science. <em>Nature Human Behaviour</em>, 1–5. <a href="https://doi.org/10.1038/s41562-026-02492-7">https://doi.org/10.1038/s41562-026-02492-7</a></span></sup>, the consensus reporting standard for LLM use in behavioral science. Among other things, you will describe your models, prompts and survey-administration protocol, persona/profile construction, stochasticity and aggregation, post-processing, any learning or retrieval corpora, internal model and prompt selection, and frozen code plus raw output logs. The full  form is below, a fillable template (Markdown + machine-readable JSON) ships in the <a href="materials.html">submission template</a> repository.</p>
   <p><strong>The predictions.</strong> Alongside the form you deposit the prediction file(s) for your <a href="#rules">tier</a>, a machine-readable <code>metadata.json</code>, and — strongly encouraged — code and raw model output logs. Everything is hashed and time-stamped before the lock; the DOIs and SHA-256 hashes are emailed to the core team by the same deadline. Column schemas, file naming, the <code>metadata.json</code> format, and a self-check validator are in the <a href="https://github.com/janpfander/silicon-sample-submission" target="_blank" rel="noopener">submission template repository</a> (linked from the <a href="materials.html">materials page</a>).</p>
   <p><strong>The deposited, hashed record is final.</strong> Once you have emailed the DOI and fingerprints, that snapshot is your locked submission — it cannot be revised, and only the exact file matching the emailed SHA-256 hash is scored. You may keep working in your repository and even publish a newer Zenodo version afterwards, but the core team scores the version whose fingerprint you sent by the deadline. Deposit only when you are ready to lock.</p>
 
   <h3 id="registration-form" class="anchored">The registration form</h3>
-  <p>The form builds on the <strong>GUIDE-LLM</strong> reporting checklist and extends it where a reporting checklist alone is not sufficient for, in principle, full replicability of a prediction pipeline. Items concerning human participants or sensitive-data privacy (GUIDE-LLM D.1) are generally not applicable here, since every submission is fully synthetic; mark these <code>N/A</code>. When multiple models serve different pipeline stages, complete the model sections separately per model.</p>
+  <p>The form builds on the <strong>GUIDE-LLM</strong> reporting checklist and extends it where a reporting checklist alone is not sufficient for, in principle, full replicability of a prediction pipeline. GUIDE-LLM's items on human participants and sensitive-data privacy are omitted, since every submission is fully synthetic. When multiple models serve different pipeline stages, complete the model sections separately per model.</p>
 
   <div class="legend">Item codes follow the GUIDE-LLM checklist, extended where needed for full pipeline replicability. <span class="star">★</span> marks items that must always be public — never escrowed or withheld; <span class="escrow">†</span> marks items that must be at minimum escrowed — they may be sealed from the public, but never withheld from the core team (see the <a href="#disclosure">disclosure policy</a>). Together the ★/† items form the non-waivable core that protects the validity of the benchmark. All other items may be escrowed freely, or withheld at the cost of having your entry classified as a sealed (Class C) entry.</div>
 
@@ -634,7 +633,7 @@ ul.task-list li input[type="checkbox"] {
 <tr class="even">
 <td class="item-code">K.3</td>
 <td>Computational resources</td>
-<td>API-call counts, total tokens, financial cost, and compute time — a GUIDE-LLM optional item made standard here, since cost-per-fidelity is itself a benchmark dimension.</td>
+<td>API-call counts, total tokens, financial cost, and compute time — a GUIDE-LLM optional item made standard here, since cost-per-fidelity is also a benchmark dimension.</td>
 </tr>
 </tbody>
 </table>
@@ -675,7 +674,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
   <div class="sst-callout">
     <span class="tag">How it works in practice</span>
-    <p>Nothing is escrowed automatically. You set <strong>one disclosure choice per item</strong> — public, escrowed, or (only for items marked neither <span class="star">★</span> nor <span class="escrow">†</span>) withheld — as you fill in the registration form, and you deposit public items in the open Zenodo record and escrowed items in the restricted one. Your entry's overall <strong>disclosure class comes from your single most restricted item</strong> — you don't choose it separately. You write it into <code>metadata.json</code> as <code>disclosure_class</code> so it is machine-readable, but it has to match your item choices. So one withheld optional item makes the whole entry Class C; keep everything at least escrowed and it is Class B; make everything public and it is Class A.</p>
+    <p>Nothing is escrowed automatically. You set <strong>one disclosure choice per item</strong> — public, escrowed, or (only for items marked neither <span class="star">★</span> nor <span class="escrow">†</span>) withheld — as you fill in the registration form, and you deposit public items in the open Zenodo record and escrowed items in the restricted one. Your entry's overall <strong>disclosure class is determined by your single most restricted item</strong>. You write it into <code>metadata.json</code> as <code>disclosure_class</code> so it is machine-readable, but it has to match your item choices. So one withheld optional item makes the whole entry Class C; keep everything at least escrowed and it is Class B; make everything public and it is Class A.</p>
   </div>
   <div class="sst-callout warn">
     <span class="tag">Why participate at all, if you can't disclose?</span>
@@ -689,10 +688,10 @@ ul.task-list li input[type="checkbox"] {
   <div class="sec-head"><span class="no">04</span><h2 class="anchored">Evaluation</h2></div>
   <div class="sst-callout">
     <span class="tag">The human replication reference</span>
-    <p>Scoring follows the <a href="preregistration_benchmark.html#analysis-plan">preregistered analysis plan</a> without modification. A preregistered random seed splits the human sample in half. Every submission is scored against <strong>Human 1</strong>. The agreement between <strong>Human 1 and Human 2</strong> is the human replication reference: how well a fresh human sample of this size reproduces the reference half. This is a natural reference point for interpreting every method's scores — a reference, not a ceiling — and it is reported in the same row format as every team.</p>
+    <p>Scoring follows the <a href="preregistration_benchmark.html#analysis-plan">preregistered analysis plan</a> without modification. A preregistered random seed splits the human sample in half. Every submission is scored against <strong>Human 1</strong>. The agreement between <strong>Human 1 and Human 2</strong> is the human replication reference that all synthetic approaches will be compared against.</p>
   </div>
 
-  <p>Every submission is scored against <strong>Human 1</strong> on every metric and comparison its <a href="#rules">tier</a> supports, across all 13 outcomes. The ATE-recovery metrics run from least to most strict — knowing where an approach breaks is more informative than any single pass/fail verdict. The scored effect for each outcome is a <strong>between-subjects post-treatment contrast</strong> — the intervention-group mean minus the control-group mean. There is no baseline adjustment; the survey's pre-treatment measures are not used in scoring.</p>
+  <p>A submission is evaluated on every metric its <a href="#rules">tier</a> supports, on all interventions and outcomes. The scored effects are <strong>between-subjects post-treatment contrast</strong>, i.e. the intervention-group mean minus the control-group mean.</p>
   <div class="tbl-wrap">
   
 <table class="caption-top table">
@@ -728,7 +727,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td>Calibration regression</td>
-<td>Human ATEs regressed on predicted ATEs, separating additive bias (intercept α) from proportionality (slope β), with F-tests of β = 1 and of the joint α = 0, β = 1.</td>
+<td>Human ATEs regressed on predicted ATEs, separating additive bias (intercept α) from proportionality (slope β); both reported with 95% CIs and read descriptively.</td>
 </tr>
 <tr class="even">
 <td>Subgroup effects</td>
@@ -763,7 +762,12 @@ ul.task-list li input[type="checkbox"] {
 
   <div class="timeline">
     <div class="tl-item">
-      <span class="date">July 01, 2026 <span class="who core">Core team</span></span>
+      <span class="date">July 2026 · Done <span class="who core">Core team</span></span>
+      <h4 class="anchored">Human data collection complete</h4>
+      <p>All ≈18,000 human responses are collected and cleaned, then held sealed — not shared or released to anyone outside the research lead until after the prediction lock (the preregistration discloses the interim looks that have occurred).</p>
+    </div>
+    <div class="tl-item">
+      <span class="date">July 21, 2026 <span class="who core">Core team</span></span>
       <h4 class="anchored">Invitations &amp; materials</h4>
       <p>Invited teams receive the intervention texts, the survey instrument, the codebook, the registration template, and the validator — never a participant pool (teams build their own) and never any human outcome data.</p>
     </div>
@@ -778,14 +782,9 @@ ul.task-list li input[type="checkbox"] {
         <span class="tl-action-sub">Leave your contact details →</span>
       </a>
     </div>
-    <div class="tl-item">
-      <span class="date">July 2026 · Done <span class="who core">Core team</span></span>
-      <h4 class="anchored">Human data collection complete</h4>
-      <p>All ≈18,000 human responses are collected and cleaned, then held sealed — not shared or released to anyone outside the research lead until after the prediction lock (the preregistration discloses the interim looks that have occurred).</p>
-    </div>
     <div class="tl-item hard has-action">
       <div class="tl-body">
-        <span class="date">August 30, 2026 · Hard deadline <span class="who you">Your task</span></span>
+        <span class="date">August 31, 2026 · Hard deadline <span class="who you">Your task</span></span>
         <h4 class="anchored">Submission deadline — register &amp; lock</h4>
         <p>Complete the registration form, generate your predictions, and deposit the form, prediction files, and logs on Zenodo — public or partly escrowed under the <a href="#disclosure">disclosure policy</a>, hashed and time-stamped, with the hashes emailed by the same deadline. No revisions after.</p>
       </div>
