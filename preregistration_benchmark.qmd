@@ -86,7 +86,7 @@ human_data_2 <- human_data |> filter(!id %in% split_ids)
 
 
 ::: {.callout-warning}
-**This is an ongoing draft, to share with collaborators. This preregistration is not yet registered and might change still. We will register right after the deadline for the intent to participate (August 1st). This allows us to be exact about the number of participating teams.**
+**This is an ongoing draft, to share with collaborators. This preregistration is not yet registered and might change still. We will register right after the deadline for the intent to participate (August 7th). This allows us to be exact about the number of participating teams.**
 :::
 
 ::: {.callout-important}
@@ -507,7 +507,7 @@ The primary goal of this project is to assess how well the research field of syn
 
 We deliberately do not collapse the metrics into one composite "champion" score. An approach can recover the direction of effects well while mis-scaling them, or do well on the primary outcome while failing on the rest, and indeed this inconsistency across outcome metrics has been observed in other studies [@cumminsThreatAnalyticFlexibility2025b]. A pooled correlation can also be earned partly by predicting *which outcomes* are generally movable rather than which interventions work within an outcome; the per-outcome breakdown (see *Where the field predicts well*) is reported alongside every pooled value and shows this directly. With all estimates in pp, RMSE and its noise-corrected companion RMSE~adj~ are comparable across outcomes and are reported pooled as well as in the by-outcome and by-intervention breakdowns (in v1's raw-unit, per-outcome framing they could not be pooled). The per-intervention breakdown keeps its restriction to `outcomes_continuous`: the pp conversion removes the *unit* mix, but a per-intervention correlation across all 13 outcomes would still mix attitude and behavioral constructs.
 
-Teams may enter up to two submissions per tier. For the main findings on the field (Finding 1) we use only one pre-designated primary entry per team. Every valid entry still appears on the leaderboard (Finding 2), labeled primary or secondary. Every submission must cover the full study, all 16 interventions and all 13 outcomes. Predicting a selected, potentially easier-to-predict subset of effects would make for an unfair comparison to submissions attempting to predict all effects, so partial submissions are not accepted. 
+Teams may enter up to three submissions per tier. For the main findings on the field (Finding 1) we use only one pre-designated primary entry per team. Every valid entry still appears on the leaderboard (Finding 2), labeled primary or secondary. Every submission must cover the full study, all 16 interventions and all 13 outcomes. Predicting a selected, potentially easier-to-predict subset of effects would make for an unfair comparison to submissions attempting to predict all effects, so partial submissions are not accepted. 
 
 Finally, the field distribution describes an invited, selected set of expert teams, a purposive sample of the current generation of serious approaches rather than a random sample of all possible ones. We state this wherever we define the "field" in the manuscript.
 
