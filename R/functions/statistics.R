@@ -63,8 +63,13 @@ compare_estimates <- function(h_result, l_result,
 }
 
 # compare distribution overlap
-compute_ovl <- function(x, y, n_grid = 512) {
-  lo <- min(c(x, y)); hi <- max(c(x, y))
+# from/to fix the evaluation grid (the benchmark passes the outcome's scale
+# range so every submission is scored on the identical grid); the NULL default
+# keeps the original preregistration's behavior, the observed min/max of the
+# two samples.
+compute_ovl <- function(x, y, n_grid = 512, from = NULL, to = NULL) {
+  lo <- if (is.null(from)) min(c(x, y)) else from
+  hi <- if (is.null(to))   max(c(x, y)) else to
   if (lo == hi) return(NA_real_)
   # Evaluate both KDEs on the same grid, then integrate the overlap area
   d_h <- density(x, from = lo, to = hi, n = n_grid)
@@ -73,12 +78,13 @@ compute_ovl <- function(x, y, n_grid = 512) {
 }
 
 # Wasserstein-1 (earth mover's) distance between two samples: the integral of
-# the absolute ECDF difference over the observed range, in outcome scale
+# the absolute ECDF difference over the evaluation range, in outcome scale
 # points. Bandwidth-free companion to the KDE-based OVL (whose value depends
 # on kernel bandwidth, and hence on the two samples' sizes, and leaks density
-# past the 0/100 scale bounds).
-compute_w1 <- function(x, y, n_grid = 512) {
-  lo <- min(c(x, y)); hi <- max(c(x, y))
+# past the 0/100 scale bounds). from/to as in compute_ovl().
+compute_w1 <- function(x, y, n_grid = 512, from = NULL, to = NULL) {
+  lo <- if (is.null(from)) min(c(x, y)) else from
+  hi <- if (is.null(to))   max(c(x, y)) else to
   if (lo == hi) return(0)
   gr <- seq(lo, hi, length.out = n_grid)
   mean(abs(ecdf(x)(gr) - ecdf(y)(gr))) * (hi - lo)
@@ -138,17 +144,22 @@ run_calibration <- function(h_result, l_result,
 
 # include_w1 = TRUE adds the Wasserstein-1 distance (benchmark preregistration);
 # the default keeps the original preregistration's three-metric output unchanged.
+# range = c(lo, hi) fixes the OVL/W1 evaluation grid to the outcome's scale
+# range (benchmark: identical grid for every submission); the NULL default
+# keeps the original preregistration's empirical grid.
 compare_distributions <- function(human_data, llm_data, outcome, condition_val,
-                                  include_w1 = FALSE) {
+                                  include_w1 = FALSE, range = NULL) {
   x <- human_data |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
   y <- llm_data   |> filter(condition == condition_val) |> pull(all_of(outcome)) |> na.omit()
+  fr <- if (is.null(range)) NULL else range[1]
+  to <- if (is.null(range)) NULL else range[2]
   out <- tibble(
     condition      = as.character(condition_val),
-    ovl            = compute_ovl(x, y),
+    ovl            = compute_ovl(x, y, from = fr, to = to),
     ks_d           = suppressWarnings(ks.test(x, y)$statistic),
     variance_ratio = var(y) / var(x)  # > 1: clones more variable; < 1: less variable
   )
-  if (include_w1) out <- out |> mutate(w1 = compute_w1(x, y), .after = ovl)
+  if (include_w1) out <- out |> mutate(w1 = compute_w1(x, y, from = fr, to = to), .after = ovl)
   out
 }
 
@@ -1082,14 +1093,20 @@ compare_demographic_predictability <- function(human_data, llm_data,
 # noise variance. Only the reference side is corrected — submission-side
 # sampling noise is handled at the source by the Tier-1 precision requirement
 # (Tiers 2-3 submit point predictions with no sampling-noise analogue).
-# Guards: if the estimated true variance (or true squared error) is <= 0 the
-# noise swamps the signal and the adjusted value is undefined -> NA. The
-# adjusted correlation is truncated to [-1, 1]. Uncertainty intervals come from
-# the same cluster bootstrap as every other metric.
+# Guards: if the estimated true variance is <= 0 the noise swamps the signal
+# and the adjusted correlation is undefined -> NA; it is truncated to [-1, 1].
+# When the corrected squared error is <= 0 the submission's errors are at or
+# below the sampling noise of the human reference estimates: rmse_adj is
+# reported as 0 (indistinguishable from perfect at this reference precision)
+# and rmse_adj_at_floor flags it, in point estimates and bootstrap replicates
+# alike (an NA here would drop exactly the best replicates from the interval).
+# Uncertainty intervals come from the same cluster bootstrap as every other
+# metric.
 adjusted_metrics <- function(pairs) {
   ok <- pairs |> filter(!is.na(estimate_h), !is.na(estimate_l), !is.na(se_h))
 
-  if (nrow(ok) < 3) return(tibble(pearson_adj = NA_real_, rmse_adj = NA_real_))
+  if (nrow(ok) < 3) return(tibble(pearson_adj = NA_real_, rmse_adj = NA_real_,
+                                  rmse_adj_at_floor = NA))
 
   var_true <- var(ok$estimate_h) - mean(ok$se_h^2)
   mse_true <- mean((ok$estimate_h - ok$estimate_l)^2) - mean(ok$se_h^2)
@@ -1099,32 +1116,67 @@ adjusted_metrics <- function(pairs) {
       max(-1, min(1, cov(ok$estimate_l, ok$estimate_h) /
                        (sd(ok$estimate_l) * sqrt(var_true))))
       else NA_real_,
-    rmse_adj    = if (mse_true > 0) sqrt(mse_true) else NA_real_
+    rmse_adj          = sqrt(max(mse_true, 0)),
+    rmse_adj_at_floor = mse_true <= 0
   )
 }
 
+# Directional agreement with half credit for predicted exact zeros: a zero
+# makes no directional claim, so it scores 0.5, the expected score of a coin
+# flip. This keeps every pair in every submission's denominator (excluding
+# zeros would let a submission shrink its denominator to its confident cases)
+# and makes the all-zero floor row read 50%, a predictor with no directional
+# information. Shared by pooled_metrics() and signed_metrics(); v1's
+# compare_estimates() keeps its original strict sign match.
+directional_score <- function(estimate_h, estimate_l) {
+  mean(if_else(estimate_l == 0, 0.5,
+               as.numeric(sign(estimate_h) == sign(estimate_l))),
+       na.rm = TRUE) * 100
+}
+
+# Within-outcome (outcome-fixed-effects) correlation: both sides centered on
+# their per-outcome means, then correlated. Equivalent to regressing the human
+# on the predicted effects with outcome dummies. The pooled Pearson r credits
+# knowing which outcomes are movable at all AND which messages work; what
+# survives the centering is message-level skill only, and the gap between the
+# two says how much of the pooled score came from outcome-level knowledge.
+pearson_within_outcome <- function(pairs) {
+  if (!"outcome" %in% names(pairs)) return(NA_real_)
+  cen <- pairs |>
+    filter(!is.na(estimate_h), !is.na(estimate_l)) |>
+    group_by(outcome) |>
+    mutate(h_c = estimate_h - mean(estimate_h),
+           l_c = estimate_l - mean(estimate_l)) |>
+    ungroup()
+  if (nrow(cen) < 3 || sd(cen$h_c) == 0 || sd(cen$l_c) == 0) return(NA_real_)
+  cor(cen$h_c, cen$l_c)
+}
+
 # Estimate-based metrics on pre-joined pairs pooled across outcomes:
-# directional agreement, Spearman rho, Pearson r, and the noise-corrected
-# pearson_adj (via adjusted_metrics(), reference side only). Expects columns
-# estimate_h, se_h (reference = Human 1) and estimate_l (the submission).
-# include_rmse = TRUE adds rmse and its noise-corrected companion rmse_adj —
-# only meaningful when all pairs share one unit; the benchmark converts every
-# estimate to pp of scale range at pair-building, so there RMSE pools across
-# all outcomes.
+# directional agreement (half credit for exact zeros, see directional_score()),
+# Spearman rho, Pearson r, the within-outcome companion pearson_within, and
+# the noise-corrected pearson_adj (via adjusted_metrics(), reference side
+# only). Expects columns estimate_h, se_h (reference = Human 1) and estimate_l
+# (the submission). include_rmse = TRUE adds rmse and its noise-corrected
+# companion rmse_adj — only meaningful when all pairs share one unit; the
+# benchmark converts every estimate to pp of scale range at pair-building, so
+# there RMSE pools across all outcomes.
 pooled_metrics <- function(pairs, include_rmse = FALSE) {
   adj <- adjusted_metrics(pairs)
   out <- pairs |>
     summarise(
-      directional_pct = mean(sign(estimate_h) == sign(estimate_l), na.rm = TRUE) * 100,
+      directional_pct = directional_score(estimate_h, estimate_l),
       spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
                             use = "pairwise.complete.obs"),
       pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs")
     ) |>
-    mutate(pearson_adj = adj$pearson_adj)
+    mutate(pearson_within = pearson_within_outcome(pairs),
+           pearson_adj    = adj$pearson_adj)
   if (include_rmse)
     out <- out |>
       mutate(rmse = sqrt(mean((pairs$estimate_h - pairs$estimate_l)^2, na.rm = TRUE)),
-             rmse_adj = adj$rmse_adj)
+             rmse_adj = adj$rmse_adj,
+             rmse_adj_at_floor = adj$rmse_adj_at_floor)
   out
 }
 
@@ -1133,22 +1185,36 @@ pooled_metrics <- function(pairs, include_rmse = FALSE) {
 # across all outcomes (in pp of scale range, converted at pair-building), as
 # Ashokkumar et al. fit their calibration slope across all effects of an
 # archive. Descriptive: alpha (constant offset) and beta (proportional
-# scaling) with 95% CIs, no significance tests — HC2-robust CIs by default,
-# because the outcome side carries known, condition-varying sampling error.
-# R^2 is not returned: for an OLS with intercept it equals the squared pooled
-# Pearson r, which the leaderboard already carries.
-run_calibration_pooled <- function(pairs, robust = TRUE) {
+# scaling), no significance tests. Returns point estimates only — 95%
+# intervals come from the intervention cluster bootstrap (cluster_boot() over
+# this function), which respects that the 13 outcomes within an intervention
+# share that intervention's draw. R^2 is not returned: for an OLS with
+# intercept it equals the squared pooled Pearson r, which the leaderboard
+# already carries.
+#
+# beta_adj corrects the raw slope for sampling noise in the *predicted*
+# effects. Noise in the predictions (never in the human reference, which only
+# widens the residuals) drags the OLS slope toward zero by the reliability
+# lambda = 1 - mean(se_l^2) / var(estimate_l), so a noisy but well-calibrated
+# submission prints beta < 1 without exaggerating anything. Dividing by
+# lambda recovers the slope of the submission's latent (infinite-sample)
+# predictions. Computable only where the refit standard errors se_l exist
+# (Tier 1); NA otherwise, and NA when lambda <= 0 (noise swamps the
+# predictions' spread).
+run_calibration_pooled <- function(pairs) {
   fit <- lm(estimate_h ~ estimate_l, data = pairs)
-  V   <- if (robust) sandwich::vcovHC(fit, type = "HC2") else NULL
+  cf  <- coef(fit)
 
-  (if (is.null(V)) broom::tidy(fit, conf.int = TRUE)
-   else broom::tidy(lmtest::coeftest(fit, vcov. = V), conf.int = TRUE)) |>
-    mutate(term = if_else(term == "(Intercept)", "alpha", "beta")) |>
-    select(term, estimate, lo = conf.low, hi = conf.high) |>
-    pivot_wider(names_from = term, values_from = c(estimate, lo, hi),
-                names_glue = "{term}_{.value}") |>
-    transmute(alpha = alpha_estimate, alpha_lo, alpha_hi,
-              beta  = beta_estimate,  beta_lo,  beta_hi)
+  lambda <- if ("se_l" %in% names(pairs) && any(!is.na(pairs$se_l)))
+    1 - mean(pairs$se_l^2, na.rm = TRUE) / var(pairs$estimate_l, na.rm = TRUE)
+  else NA_real_
+
+  tibble(
+    alpha    = unname(cf[1]),
+    beta     = unname(cf[2]),
+    beta_adj = if (!is.na(lambda) && lambda > 0) unname(cf[2]) / lambda
+               else NA_real_
+  )
 }
 
 # Signed-effect metrics for estimate-only pairs (no SE / inferential category).
@@ -1158,7 +1224,7 @@ run_calibration_pooled <- function(pairs, robust = TRUE) {
 signed_metrics <- function(pairs) {
   out <- pairs |>
     summarise(
-      directional_pct = mean(sign(estimate_h) == sign(estimate_l), na.rm = TRUE) * 100,
+      directional_pct = directional_score(estimate_h, estimate_l),
       spearman_rho    = cor(estimate_h, estimate_l, method = "spearman",
                             use = "pairwise.complete.obs"),
       pearson_r       = cor(estimate_h, estimate_l, use = "pairwise.complete.obs")
@@ -1200,16 +1266,25 @@ demographic_parity_gap <- function(human_data, llm_data, outcome, moderators,
       if (length(x) < min_n || length(y) < min_n) return(NA_real_)
       abs(mean(y) - mean(x))
     })
+    # Skipped groups (below min_n on either side) are reported, not silently
+    # dropped: the smallest groups are the metric's motivating population, so
+    # their exclusion has to be visible in the output.
+    skipped <- groups[is.na(errs)]
     if (all(is.na(errs))) {
       tibble(moderator = mod, dpd = NA_real_, worst_abs_err = NA_real_,
-             worst_group = NA_character_, best_group = NA_character_)
+             worst_group = NA_character_, best_group = NA_character_,
+             n_skipped = length(skipped),
+             groups_skipped = paste(skipped, collapse = ", "))
     } else {
       tibble(
-        moderator     = mod,
-        dpd           = max(errs, na.rm = TRUE) - min(errs, na.rm = TRUE),
-        worst_abs_err = max(errs, na.rm = TRUE),
-        worst_group   = groups[which.max(errs)],
-        best_group    = groups[which.min(errs)]
+        moderator      = mod,
+        dpd            = max(errs, na.rm = TRUE) - min(errs, na.rm = TRUE),
+        worst_abs_err  = max(errs, na.rm = TRUE),
+        worst_group    = groups[which.max(errs)],
+        best_group     = groups[which.min(errs)],
+        n_skipped      = length(skipped),
+        groups_skipped = if (length(skipped)) paste(skipped, collapse = ", ")
+                         else NA_character_
       )
     }
   })

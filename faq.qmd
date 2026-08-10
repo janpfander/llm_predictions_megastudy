@@ -14,7 +14,7 @@ Participation is by invitation, open to teams with a published track record in s
 
 ### How many times can we enter?
 
-At most three entries per tier per team, so up to nine in total. One entry is one method's complete set of predictions at a single tier, in its own repository and its own Zenodo deposit. Enter more than once only for genuinely different approaches (say, a per-respondent simulation and a direct forecast), not to restack one method across tiers. You mark exactly one entry — across all tiers — as `primary`. The cross-team field statistics use each team's single primary entry, and every valid entry appears on the leaderboard.
+Up to three entries per tier per team. One entry is one method's complete set of predictions at a single tier, in its own repository and its own Zenodo deposit. Every entry enters all main analyses, the cross-team field statistics as well as the leaderboard. The per-tier cap limits how much any single team can shape the field distribution. If there are good reasons to systematically vary some aspect of an approach, we may grant more entries on request, but only three per tier enter the main analyses. You mark exactly one entry — across all tiers — as `primary`: a robustness analysis reruns the main results on primary entries only, one per team. In figures and the leaderboard, entries appear under neutral submission labels, and an appendix table maps each label to its team. If you enter several times, we encourage structured variation: change one factor you believe matters (say, the amount of individual-level information given to the model, or simulation versus direct forecast) and hold the rest fixed, so the comparison across your entries is informative. As before, do not restack one method across tiers — a Tier-1 entry already yields the Tier-2 and Tier-3 metrics.
 
 ### Can we participate without making our method public?
 
@@ -22,7 +22,7 @@ Yes. The benchmark separates verifiability from publicity. Every registration it
 
 ### What do we commit to by entering?
 
-Once you deposit on Zenodo and email the DOI and file fingerprints, that snapshot is your locked submission. It cannot be revised, every locked entry runs through the preregistered scoring pipeline unchanged, and every entry is reported in the results table. In return, all participating teams are co-authors on the joint benchmark paper.
+Once you deposit on Zenodo and email the DOI and file fingerprints, that snapshot is your locked submission. It cannot be revised and every locked entry runs through the preregistered scoring pipeline unchanged. All locked entries within the cap are reported in the main results, under neutral submission labels, with an appendix table mapping labels to teams. In return, all participating teams are co-authors on the joint benchmark paper.
 
 ## Building a submission
 

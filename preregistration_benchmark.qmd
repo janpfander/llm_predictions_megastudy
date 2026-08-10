@@ -4,7 +4,7 @@ title: "The Silicon Sample Benchmark: A multi-team preregistration for predictin
 abstract: |
     This is the preregistration for the **Silicon Sample Benchmark**, a multi-team prediction benchmark. We invite independent research teams to predict the results of a novel behavioral megastudy (16 message interventions to increase trust in climate scientists, 13 preregistered outcomes, a representative U.S. sample of ~18,000) with any AI-based approach they choose, from behavioral clones to group-level simulation to direct effect forecasting. At the time of writing, human data collection is complete (~18,000 responses). None of these data have been shared, published, or made accessible to any prospective team, and no team will be granted access before the prediction lock. Before any human data are released, every team registers its predictions using a standardized method-registration form (an extended version of the GUIDE-LLM reporting checklist) and deposits its predictions on Zenodo.
 
-date: "2026-07-21"
+date: "2026-08-05"
 
 format:
   html:
@@ -68,9 +68,29 @@ llm_data_teams <- readRDS(here("data/simulation_preregistration/llm_data_preregi
 # data will additionally contain the three chatbot arms and the value-
 # similarity arm, which no submission predicts; fitting the human models on
 # those arms would put the human side's BH adjustment over a different test
-# family than the submissions'. A no-op on the placeholder data (which has
-# scored conditions only), load-bearing when the real loader is wired in.
-scored_conditions <- levels(droplevels(factor(llm_data_teams$condition)))
+# family than the submissions'.
+#
+# The scored set comes from the canonical intervention list
+# (data/interventions.csv, titles trimmed, the four interactive arms
+# excluded) — never from a submission's own condition labels, so a mislabeled
+# or missing condition in a submission can neither widen nor shrink the
+# scoring universe. The placeholder simulation uses generic intervention_N
+# labels that are not in the canonical list; there the scored set falls back
+# to the conditions the simulation generates (all scorable by construction),
+# which keeps this document renderable. With real submissions the canonical
+# path binds.
+canonical_interventions <- read_csv(here("data/interventions.csv"),
+                                    show_col_types = FALSE) |>
+  filter(str_trim(tag) != "LLM-chatbot", str_trim(title) != "Value similarity") |>
+  pull(title) |> str_trim() |> unique()
+
+scored_conditions <- if (any(canonical_interventions %in%
+                             unique(as.character(llm_data_teams$condition)))) {
+  c("control", canonical_interventions)
+} else {
+  levels(droplevels(factor(llm_data_teams$condition)))
+}
+
 human_data <- human_data |>
   filter(condition %in% scored_conditions) |>
   mutate(condition = droplevels(condition))
@@ -212,7 +232,7 @@ tribble(
 
 **What it keeps from v1.** The human target study and the estimands (average treatment effects per intervention × outcome, subgroup interactions, control-condition response distributions, and demographic baselines), the three-section analysis structure, the least-to-most-strict ordering of the comparison metrics, and the preregistered split-half **human replication reference** are all carried over from v1. All are restated below (see *Analysis plan*) to keep this new preregistration self-contained. The model functions are reused unchanged.
 
-**What it changes and adds.** The changes fall into three groups. Group A redesigns the study, group B changes what it reports, and group C adds scoring tools from the recent silicon-sample literature. Each change is summarized here, with a pointer to the section that specifies it in full.
+**What it changes and adds.** The changes fall into four groups. Group A redesigns the study, group B changes what it reports, group C adds scoring tools from the recent silicon-sample literature, and group D collects the revisions made after an external methods review of this document. Each change is summarized here, with a pointer to the section that specifies it in full.
 
 Because this preregistration is written for teams who are blinded to the human outcome data, revising the analysis plan does not carry the usual risk of data-contingent researcher degrees of freedom.
 
@@ -224,7 +244,7 @@ Because this preregistration is written for teams who are blinded to the human o
 
 **B. Additional benchmark design choices.** Benchmark specific results are mere add-ons to the original v1 pipeline. No estimand or model inherited from v1 is redefined.
 
-4. **The headline result is the field, not a single scorecard.** The primary result is no longer one approach's report card but the distribution of predictive quality across the whole field of approaches. Every approach is scored against a split-half **human replication reference** (how well one half of the human sample predicts the other). Teams may enter more than once, so the field summary counts one primary entry per team. Every entry must cover the full study (all 16 interventions × 13 outcomes), so all scores are measured on the same basis. See *Cross-team comparison*.
+4. **The headline result is the field, not a single scorecard.** The primary result is no longer one approach's report card but the distribution of predictive quality across the whole field of approaches. Every approach is scored against a split-half **human replication reference** (how well one half of the human sample predicts the other). Teams may enter more than once, capped at three entries per tier, and every entry appears in all main analyses (item 16). Every entry must cover the full study (all 16 interventions × 13 outcomes), so all scores are measured on the same basis. See *Cross-team comparison*.
 5. **One score per metric, pooled across outcomes.** A single data point is one predicted effect placed next to the matching human effect, for example how much a particular message shifted trust in climate scientists. We deliberately do *not* collapse the metrics into one overall "champion" score. An approach can get the direction of effects right while mis-scaling their size, or do well on the main outcome and badly on the rest, and a single number would hide exactly the structure the benchmark exists to reveal. Each metric is therefore read on its own. See *Cross-team comparison* (*Scoring principle*). That said, in our main figures, we will report correlations (and adjusted correlations).
 6. **An uncertainty interval on every score.** The benchmark tests 16 interventions, but these are only a sample of all possible kinds of messages one could have tested. A different study could have used 16 other messages. An approach's score is therefore an estimate, and like any estimate it would move somewhat under a different draw of interventions. With bootstrap sampling, we attach an interval to every score showing how much it might move based on message selection. For the same reason, we never call one approach better than another from the ranking alone. See *Uncertainty intervals on the leaderboard*.
 7. **Point predictions only.** v1's comparison metrics included inferential agreement (does the prediction reach the same significance verdict as the human data?) and an equivalence test, both of which need an uncertainty around each predicted effect. In the benchmark, teams submit point predictions without uncertainty intervals, and these two metrics are not part of the cross-team scoring. Submitted intervals would have created their own problems: a team could make every prediction "not significant" simply by submitting wide intervals, which in a world of mostly small effects scores well without skill, and closing that loophole would have required extra interval-scoring metrics and cross-tier standardizations of no substantive interest. The remaining metrics (direction, rank and linear correlation, absolute error, calibration) capture predictive quality without any submitted uncertainty. See *Comparison functions* and *Cross-team comparison*.
@@ -239,7 +259,25 @@ The resulting sampling noise can drag down the correlations between human and sy
 12. **One unit for all outcomes.** The outcome measures use different scales, with 0–100 attitude sliders, a $0–10 donation, and a 0–1 signup probability. To make effects on these scales comparable, we convert them to **percentage points of its outcome's scale range** before any cross-outcome scoring, following the practice of @ashokkumarLargeLanguageModels2026a. The binary newsletter outcome is added to the subgroup analysis on the same footing, via the linear probability model. See *Cross-team comparison* (*Scoring principle*) and *Section 2*.
 13. **A pooled calibration regression.** v1 runs the calibration regression per outcome, on 16 points each. The benchmark instead pools all condition × outcome pairs into one regression (16 × 13 = 208 points, in percentage points of scale range), the same way @ashokkumarLargeLanguageModels2026a estimate their calibration slope across all effects of an archive. See *Comparison functions* (*Calibration regression*).
 14. **A fourth distribution metric.** Beside v1's variance ratio, OVL, and KS, the response-distribution analyses add the Wasserstein-1 distance (W1), a bandwidth-free companion to the KDE-based OVL. See *Comparison functions* (*Distribution comparison metrics*).
-15. **Calibration reported descriptively.** v1 tested calibration with two F-tests (the joint α = 0, β = 1 and the slope-only β = 1) and reported the regression's R². The benchmark drops the tests and the R², and reports α and β with 95% CIs, read descriptively. Four reasons. At this reference precision (roughly 18,000 humans behind 208 points), every realistic approach rejects exact calibration, so the tests do not separate approaches. The tests also treat the 208 pooled points as independent, although the 13 outcomes within an intervention share that intervention's draw and all points share one control arm, so their p-values are overconfident. The precedent we follow, @ashokkumarLargeLanguageModels2026a, reports the slope with a CI and interprets its size, and keeping α alongside it is what their advice to linearly recalibrate predictions needs. And dropping the tests is consistent with removing the other significance-test metrics (item 7). The calibration R² goes because it equals the squared pooled Pearson r already on the leaderboard. See *Comparison functions* (*Calibration regression*).
+15. **Calibration reported descriptively.** v1 tested calibration with two F-tests (the joint α = 0, β = 1 and the slope-only β = 1) and reported the regression's R². The benchmark drops the tests and the R², and reports α and β with 95% CIs, read descriptively. Four reasons. At this reference precision (roughly 18,000 humans behind 208 points), every realistic approach rejects exact calibration, so the tests do not separate approaches. The tests also treat the 208 pooled points as independent, although the 13 outcomes within an intervention share that intervention's draw and all points share one control arm, so their p-values are overconfident. The precedent we follow, @ashokkumarLargeLanguageModels2026a, reports the slope with a CI and interprets its size, and keeping α alongside it is what their advice to linearly recalibrate predictions needs. And dropping the tests is consistent with removing the other significance-test metrics (item 7). The calibration R² goes because it equals the squared pooled Pearson r already on the leaderboard. The 95% intervals for α and β come from the same intervention cluster bootstrap as every other metric, which respects the dependence just described, where heteroskedasticity-robust standard errors would not (item 18). See *Comparison functions* (*Calibration regression*).
+16. **A cap of three entries per tier, and every entry enters the main analyses.** Each team may submit up to three entries per tier (so up to nine in total). Where a team has good reasons to systematically vary some aspect of an approach, we may grant additional entries on request, but only three per tier enter the main analyses. All of a team's entries appear in every analysis, including the field summary (Finding 1) and the leaderboard (Finding 2). Scoring every entry gives the benchmark more approaches and more variation between approaches, and the per-tier cap limits how much any single team can shape the field distribution. Each team still designates exactly one of its entries, across all tiers, as its **primary entry** before the prediction lock. As a robustness analysis, the main results are recomputed on primary entries only, a field with exactly one entry per team (see *Cross-team comparison*, *Primaries-only robustness*). In the figures and the leaderboard, entries appear under neutral labels (`submission_1` for a single-entry team, `submission_2_a`, `submission_2_b`, … for a multi-entry team, with `_a` the primary). An appendix table maps each label to its team.
+
+**D. Revisions after external review.** Before registration, a member of the core team reviewed this document in detail. The following revisions came out of that review (together with wording clarifications throughout). All were made before any submission was received, and none was informed by human outcome data.
+
+17. **A noise-corrected calibration slope for Tier 1.** Sampling noise in the *predicted* effects drags the calibration slope toward zero (noise in the human reference never does — it only widens the residuals), so a noisy but well-calibrated submission prints β < 1 without exaggerating anything, and by an amount that depends on its synthetic sample size. Because Tier-1 effects are refit by us, their standard errors are known, and we report a corrected slope beside the raw one: raw β divided by the reliability of the predicted effects. The raw β stays the Ashokkumar-comparable quantity. Tiers 2–3 submit no uncertainty, so no correction exists there and the wording carries the caveat. See *Comparison functions* (*Calibration regression*).
+18. **Cluster-bootstrap calibration intervals.** The α and β intervals now come from the intervention cluster bootstrap (same seed and draws as every other metric) instead of heteroskedasticity-robust standard errors, which treated the 208 pooled points as independent — a dependence this document itself flags in item 15. See *Comparison functions* (*Calibration regression*).
+19. **An empirical chance level for directional agreement.** Every intervention was designed to *increase* trust, so if most human effects come out positive, a mindless "every message works" strategy beats 50% without skill. An all-positive baseline row is added beside the no-effect floor, and its directional score — the share of positive human ATEs — is the chance level to read the field against. Predicted exact zeros score half credit: a zero makes no directional claim, so it earns what a coin flip earns, and the no-effect floor accordingly reads 50%. See *Cross-team comparison*.
+20. **Adjusted RMSE reported as 0 at the reference noise.** When a submission's errors are smaller than the sampling noise of the human reference estimates, the noise-corrected RMSE used to come out undefined (NA) — punishing exactly the best submissions and dropping their best bootstrap replicates. It is now reported as 0 with a flag: indistinguishable from perfect at this reference precision. See *Comparison functions*.
+21. **A within-outcome companion correlation.** The pooled Pearson r credits two different kinds of knowledge: which *outcomes* are movable at all (generic knowledge, available from the literature) and which *messages* work (the skill this benchmark tests). We additionally report the correlation computed within outcomes (each outcome's mean effect subtracted on both sides, the outcome-fixed-effects estimate). What survives is message-level skill only, and the gap to the pooled r says how much of the field's headline number came from outcome knowledge. See *Cross-team comparison*.
+22. **A secondary self-report vs. behavioral cut.** The two behavioral outcomes contribute 32 of the 208 pooled pairs, so the pooled metrics cannot say whether an approach that predicts stated attitudes also predicts what people do. The pooled metrics are recomputed within the eleven self-report outcomes and within the two behavioral outcomes, registered as a designated secondary result. See *Cross-team comparison* (*Where the field predicts well*).
+23. **Baseline calibration without correlations.** Section 3a used to report a Pearson correlation over each moderator's group means. Those correlations run over three to seven points — over two points a correlation is always exactly ±1 — and correlation ignores level and scale, the two things baseline calibration is about. The section now rests on the RMSE of the group means, the demographic parity gap, and the per-group display. See *Section 3*.
+24. **Stereotyping read from the group gaps.** A higher demographic R² in a synthetic sample than in humans can mean two things: the group differences are exaggerated, or the synthetic individuals answer too much alike, which shrinks the residual variance and inflates R² even when every group mean is right. The regression's group coefficients — the predicted group gaps next to the human ones — become the primary stereotyping quantity, and the R² comparison stays as the demographic-predictability summary with that two-source reading stated. Under-dispersion is diagnosed separately by the variance ratio. See *Section 3*.
+25. **Visible minimum-group-size exclusions.** Groups under 30 respondents on either side were silently skipped in the demographic parity gap, and the smallest groups are exactly the metric's motivating population. Skipped groups are now named, with their sizes, wherever the parity gap is reported. The within-subgroup distribution comparisons, which had no minimum at all, apply the same threshold. See *Section 2* and *Section 3*.
+26. **A fixed grid for the distribution metrics.** The overlap coefficient and the Wasserstein-1 distance used to be computed over the observed minimum-to-maximum range of each human–submission pair, so every submission was scored on a slightly different grid. The grid is now fixed to each outcome's full scale range (0–100 for the sliders, $0–10 for the donation), identical for every submission. See *Comparison functions* (*Distribution comparison metrics*).
+27. **The Tier-2 moderator file must be complete.** The file schema used to allow NA for moderator cells an approach "cannot" produce. But every Tier-2 team already predicts each condition mean in its main file, and repeating that mean in a group's cells is an honest, always-available prediction of "no moderation for this group" — so NA really meant "I'd rather not be scored here", and pairwise exclusion would have scored different teams on different, self-chosen cell sets. The validator now rejects NAs, and the repeat-the-condition-mean convention is documented in the submission template. See *Submission specification*.
+28. **Weighting scope written down.** If the megastudy's preregistered attrition checks trigger inverse-probability weighting, the weights apply to *all* human-side mean and regression estimates that enter scoring — the ATEs, the interaction estimates, and the demographic group means, in both human halves. The distribution comparisons are the stated exception and stay unweighted. Deciding this now closes a fork that would otherwise have been resolved after seeing data. See *The human target sample*.
+29. **A hardened scoring pipeline.** The set of scored conditions is derived from the canonical intervention list, never from a submission's own labels, and every pair-building join asserts the full intervention × outcome grid with no missing estimates — a submission that cannot be paired completely stops the pipeline instead of being silently scored on the surviving subset. See *Cross-team comparison*.
+30. **The core team does not submit.** No member of the core team enters the benchmark, and the passage that reserved that option is removed.
 
 ## The human target sample
 
@@ -278,7 +316,7 @@ quota_table_data |>
   style_tt(fontsize = 0.85)
 ```
 
-Full sampling and exclusion detail is in the [human study preregistration](https://doi.org/10.5281/zenodo.20160212). The human reference estimates follow that preregistration's analysis plan throughout; in particular, its preregistered checks for differential attrition may lead the human models to apply inverse-probability weights, in which case submissions are scored against the weighted estimates.
+Full sampling and exclusion detail is in the [human study preregistration](https://doi.org/10.5281/zenodo.20160212). The human reference estimates follow that preregistration's analysis plan throughout; in particular, its preregistered checks for differential attrition may lead the human models to apply inverse-probability weights, in which case submissions are scored against the weighted estimates. If that happens, the weights apply to **all** human-side mean and regression estimates that enter scoring — the ATEs, the condition × moderator interaction estimates, and the demographic group means, in both human halves — so no analysis scores an unweighted human quantity against a weighted one. The response-distribution comparisons are the one stated exception and stay unweighted: they compare raw respondent-level distributions, and reweighted density estimation would introduce machinery of its own with no counterpart in the human study's plan.
 
 ## Benchmark design
 
@@ -286,7 +324,7 @@ Participation is by invitation. Each team builds an AI-based prediction pipeline
 
 Teams can use any models, personas, prompts, fine-tuning, retrieval, or prior data and literature they want. Before the prediction lock deadline, each team registers its approach by depositing its synthetic sample/predictions and materials on Zenodo, hashed and time-stamped. After the prediction lock deadline, every submission runs through the preregistered analysis pipeline unchanged and is reported on a public leaderboard alongside the human replication reference, and in a joint manuscript with all participating teams as co-authors. There are three ground rules for an entry to be valid: **No data access.** By design, no participating team has access to the human data. **Pipelines are AI-based and automated.** Predictions may be made based on previously published human data, but no new human data specific to this project may be collected. **Everything is registered** (see the disclosure policy below). The full procedure, ground rules, timeline, and incentives are in the [call for participation](index.html).
 
-**Blinding and data access.** The collected human data (all ~18,000 responses; collection complete at the time of writing) have been accessed only by the research lead, Jan Pfänder, for data-quality monitoring and for the preliminary interim results presented at the talks disclosed below. As a result, members or affiliates of the core team who have had no access to any human outcome data may enter the benchmark as regular teams under the same rules as everyone else (same registration form, same blinding attestation, same deadlines). 
+**Blinding and data access.** The collected human data (all ~18,000 responses; collection complete at the time of writing) have been accessed only by the research lead, Jan Pfänder, for data-quality monitoring and for the preliminary interim results presented at the talks disclosed below. No member of the core team enters the benchmark.
 
 For full disclosure, Jan Pfänder presented some very preliminary results (human megastudy sample at the time N ≈ 3000) from an initial simulation attempt (following preregistration **v1**) in a five-minute talk at a closed academic workshop at the Max Planck Institute for Human Development in Berlin (May 2026). This is the only presentation that has targeted an audience of potential collaborators on the benchmark study. It focused on the prediction ability of the simulation approach and revealed nothing about how humans behaved in the megastudy. Two other talks were explicitly about the human megastudy results. Jan Pfänder presented preliminary results from the human megastudy at an invited talk at the Max Planck Institute for Human Development in Berlin (May 2026, N at the time ≈ 3000 of 22000), and at a small conference at the University of Hohenheim (June 2026, N at the time ≈ 13000 of 22000). No one in the audience of these talks will be invited to participate in the benchmark study. In addition, since we ask for extensive disclosure of materials, a "cheating" prompt (e.g., "make sure intervention XX does best") would surface in the reporting framework that teams are required to fill out.
 
@@ -346,7 +384,7 @@ Two long-format files. `*_cells_main.csv` has one row per condition × outcome, 
 | `condition` | factor | Per `survey/condition_codenames.csv` (lowercase `control`). |
 | `moderator`, `moderator_level` | factor | Moderator file only. Levels per codebook. |
 | `outcome` | string | Outcome variable name per codebook. |
-| `mean` | numeric | Predicted cell mean on the original scale (proportion for `newsletter_signup`). Cells in the moderator file may be `NA` where an approach cannot produce a group mean; they are excluded pairwise and the validator warns. The main file must be complete. |
+| `mean` | numeric | Predicted cell mean on the original scale (proportion for `newsletter_signup`). Both files must be complete, with no `NA` cells. To predict *no moderation* for a demographic group, repeat the condition mean from the main file in that group's cells — an always-available, honest prediction that the intervention works the same for that group (changelog item 27). The validator rejects files with missing cells. |
 
 ### Tier 3 — effect-level file
 
@@ -366,7 +404,7 @@ One row per intervention × outcome (16 × 13 = 208 rows). Estimates are ATEs ve
 
 ### Overview and the human replication reference
 
-Each submission is scored against the same human sample. The human sample is split into two halves by a preregistered random seed (seed 42, set in the setup chunk above). **Human 1** is the reference half every submission is scored against. **Human 2** predicts Human 1 like any submission would, and its scores define the **human replication reference**, which shows how well a fresh human sample of this size reproduces the reference half. This human reference is evaluated in the same way as a Tier-1 synthetic submission. A **floor baseline** ("no effect") provides a reference for metrics without a natural null (see *Cross-team comparison*). Because the split seed for the human sample is an arbitrary choice, we will provide robustness checks across many alternative splits, so that results do not hinge on the seed we happened to select (*Robustness of the scoring pipeline*, below). 
+Each submission is scored against the same human sample. The human sample is split into two halves by a preregistered random seed (seed 42, set in the setup chunk above). **Human 1** is the reference half every submission is scored against. **Human 2** predicts Human 1 like any submission would, and its scores define the **human replication reference**, which shows how well a fresh human sample of this size reproduces the reference half. This human reference is evaluated in the same way as a Tier-1 synthetic submission. It is a reference, not a ceiling: Human 2's predictions carry the sampling noise of a half sample of this size, so a synthetic submission built on a much larger sample can legitimately score above it, and if that happens it is a result, not an artifact. Two baseline rows — "no effect" and "all positive" — provide references for the metrics without a natural null (see *Cross-team comparison*). Because the split seed for the human sample is an arbitrary choice, we will provide robustness checks across many alternative splits, so that results do not hinge on the seed we happened to select (*Robustness of the scoring pipeline*, below).
 
 Which of the analyses below applies to a given submission follows from its tier (see *Analysis eligibility by tier*). Tier 1 is eligible for all of them, Tiers 2–3 for the estimate-based subset.
 
@@ -403,9 +441,10 @@ The comparison metrics are implemented by a small set of helper functions, appli
 
 The estimate-based metrics compare the point estimates of a submission with those of the human reference, for ATEs (Section 1) and moderator interaction estimates (Section 2). They are reported in increasing order of strictness and implemented in `pooled_metrics()` (shown under *Scoring functions*, below).
 
-- **Directional agreement (%)**. The share of estimates with the same sign as the human estimate, where chance is 50%. Does the approach at least get the direction of each effect right?
+- **Directional agreement (%)**. The share of estimates with the same sign as the human estimate. Does the approach at least get the direction of each effect right? A predicted exact zero makes no directional claim and scores half credit — the expected score of a coin flip — which keeps every pair in every submission's denominator. The chance level to read this metric against is *not* 50%: every intervention was designed to increase trust, so if most human effects come out positive, a mindless "every message works" strategy beats 50% without any skill. The empirical chance level is the share of positive human ATEs, reported as the all-positive baseline row in the leaderboard.
 - **Spearman $\rho$**. The rank correlation of the point estimates. Does the approach rank the interventions in the same order as humans? It is insensitive to scale or offset, so an approach that inflates all effects equally still scores $\rho$ = 1.
 - **Pearson r**. The linear correlation of the point estimates. It captures whether predicted and human effects rise and fall together in proportion, but not whether their absolute size matches.
+- **Pearson r within outcomes**. The pooled Pearson r credits two different kinds of knowledge: knowing which *outcomes* are movable at all (attitude sliders shift by a couple of points, donations barely move — generic knowledge available from the literature) and knowing which *messages* work, the skill this benchmark tests. As a companion, we report the correlation computed within outcomes: each outcome's mean effect is subtracted on both sides before correlating, which is the same as adding outcome fixed effects to a regression of human on predicted effects. What survives is message-level skill only, and the gap to the pooled r says how much of the pooled score came from outcome-level knowledge.
 - **RMSE**. The root mean squared error, the average size of the prediction errors. In the cross-team analysis every estimate is expressed in **percentage points (pp) of its outcome's scale range** before scoring (see *Scoring principle*, below), so RMSE reads in pp and is reported both pooled across outcomes and per outcome, matching @ashokkumarLargeLanguageModels2026a, whose primary archive reports RMSE pooled across experiments in exactly these units. To judge whether an RMSE is good, compare it to the standard deviation of the human ATEs — how much the 16 human effects spread out around their mean (a spread across interventions, not a standard error). A submission that ignores the interventions entirely and predicts the same value for all of them can at best reach an RMSE equal to that SD, by predicting the mean ATE. A submission with intervention-specific skill must therefore come in below it. (In v1, which scores each outcome on its own raw scale, RMSE stays per outcome and is omitted from the pooled row.)
 
 #### Adjusted correlation and RMSE (noise-corrected)
@@ -414,7 +453,7 @@ The effects in the human sample are noisy. That noise mechanically drags the cor
 
 Wherever Pearson r appears in the cross-team analysis we therefore report, beside the raw value, a noise-corrected correlation **r~adj~** and a noise-corrected RMSE (`adjusted_metrics()`). The correction works by subtraction. Because the sampling noise is independent (that's an assumption we make), the true spread of the reference effects is their observed spread minus the average known sampling variance. The adjusted correlation divides the covariance by that corrected spread (Spearman disattenuation with known error variances). This method is similar to the meta-analytic r~adj~ of @ashokkumarLargeLanguageModels2026a, but uses fewer assumptions. As @ashokkumarLargeLanguageModels2026a, we will report r and r~adj~ side by side in the manuscript. This allows us to directly compare our results to their larger megastudy archive, the closest analogue to this benchmark^[We take Ashokkumar et al.'s megastudy figures, not their headline r = .85, as the reference because the two numbers measure different tasks. The .85 is a correlation over 469 effects pooled from 70 unrelated survey experiments, spanning many topics, treatments, and outcomes. Their megastudy figures instead measure how well the model distinguishes the several interventions of a single megastudy against that study's shared control, which is exactly this benchmark's setting (16 interventions, one control). Ashokkumar et al. report the megastudies as a separate secondary archive (15 megastudies, 606 effects) and note that these correlations are lower than the primary archive's.], survey experiments reach r = .43 (r~adj~ = .52) and text-based treatments r = .45 (r~adj~ = .54).
 
-The adjusted RMSE applies the same logic to the RMSE. It subtracts the average reference sampling variance from the average squared prediction error and takes the square root.
+The adjusted RMSE applies the same logic to the RMSE. It subtracts the average reference sampling variance from the average squared prediction error and takes the square root. When a submission's errors are smaller than the reference sampling variance, the subtraction goes negative; the adjusted RMSE is then reported as 0 with a flag, meaning the submission's errors are at or below the sampling noise of the human reference estimates — indistinguishable from perfect at this reference precision. The same rule applies inside every bootstrap replicate (an NA would drop exactly the best replicates from the interval).
 
 ```{r, results='asis'}
 #| label: fn-adjusted-metrics
@@ -429,6 +468,8 @@ print_a_function_from_file("adjusted_metrics")
 - **OVL (overlapping coefficient)**. The share of area the two kernel density estimates have in common (1 = identical distributions, 0 = no overlap). It summarizes overall shape similarity.
 - **KS D-statistic**. The largest gap between the two empirical cumulative distributions (0 = indistinguishable everywhere). It is sensitive to local departures that OVL might average away.
 - **Wasserstein-1 distance (W1)**, enabled with `include_w1 = TRUE` (new in this preregistration, not part of v1). The area between the two cumulative distributions, in outcome scale points (0 = identical). It is the bandwidth-free companion to OVL: kernel density estimates depend on bandwidths, which change with sample size and leak density past the 0/100 scale bounds, while W1 has no tuning parameter.
+
+In the benchmark, the OVL and W1 evaluation grid is fixed to each outcome's full scale range (0–100 for the sliders, $0–10 for the donation), so every submission is scored on the identical grid (changelog item 26). With the default empirical grid — the observed minimum-to-maximum of the two samples, kept for v1 compatibility — the integration range would follow each submission's own responses, and the resulting areas would not be comparable across teams.
 
 ```{r, results='asis'}
 #| label: fn-compare-distributions
@@ -449,7 +490,9 @@ print_a_function_from_file("compute_w1")
 
 Correlation tells us only whether the human and predicted effects covary. It does not capture baseline differences or scaling. An approach could inflate every effect by a factor of two and still score Pearson r = 1. The calibration regression captures this.
 
-`run_calibration_pooled()` regresses human ATEs on predicted ATEs, $\mathrm{ATE}_{human} = \alpha + \beta \times \mathrm{ATE}_{predicted}$, across all condition × outcome pairs pooled over the 13 outcomes (16 × 13 = 208 points, every estimate in pp of scale range). The slope $\beta$ captures proportional scaling: $\beta = 1$ is perfect, $\beta < 1$ means predicted effects are exaggerated (a 1-pp change in prediction corresponds to less than 1 pp of human effect), $\beta > 1$ that they are compressed. The intercept $\alpha$ is a constant offset added to all effects, and the expected human effect when the predicted synthetic sample effect is zero. An approach can be perfectly proportional ($\beta = 1$) and still be off by the same amount on every prediction ($\alpha \neq 0$). For example, if the clones react to receiving any message at all with the same extra shift, one that humans do not show, then every predicted ATE is too large by that fixed amount and the regression returns $\beta = 1$ with a negative $\alpha$. We report $\alpha$ and $\beta$ with 95% CIs and read them descriptively (follwing @ashokkumarLargeLanguageModels2026a). The CIs are HC2 heteroskedasticity-robust, because the human ATEs carry sampling error that differs across conditions. We do not test the point hypotheses $\alpha = 0$ and $\beta = 1$, and instead report the slope with a CI and interpret its size (see @ashokkumarLargeLanguageModels2026a).
+`run_calibration_pooled()` regresses human ATEs on predicted ATEs, $\mathrm{ATE}_{human} = \alpha + \beta \times \mathrm{ATE}_{predicted}$, across all condition × outcome pairs pooled over the 13 outcomes (16 × 13 = 208 points, every estimate in pp of scale range). The slope $\beta$ captures proportional scaling ($\beta = 1$ is perfect), the intercept $\alpha$ a constant offset added to all effects ($\alpha = 0$ is perfect). An approach can be perfectly proportional and still be off by the same amount on every prediction: if the clones react to receiving any message at all with the same extra shift, one that humans do not show, every predicted ATE is too large by that fixed amount and the regression returns $\beta = 1$ with a negative $\alpha$. We report $\alpha$ and $\beta$ with 95% intervals and read them descriptively (following @ashokkumarLargeLanguageModels2026a). We do not test the point hypotheses $\alpha = 0$ and $\beta = 1$, and instead report the slope with an interval and interpret its size. The intervals come from the intervention cluster bootstrap, the same resampling (identical seed and draws) that produces every other uncertainty interval in the cross-team analysis (see *Uncertainty intervals on the leaderboard*): the 13 outcomes within an intervention share that intervention's draw, and resampling interventions whole respects that dependence, where heteroskedasticity-robust standard errors would treat the 208 points as independent.
+
+A slope below 1 has two possible readings, and only one of them is the approach's fault. The first is genuine exaggeration: the approach systematically predicts larger effects than humans show. The second is sampling noise in the predictions themselves. Noise in the *human* effects never biases the slope (it only widens the residuals), but noise in the *predicted* effects drags the slope toward zero by the reliability of the predictions, $\lambda = 1 - \overline{se_{pred}^2} / \mathrm{var}(\mathrm{ATE}_{predicted})$. A perfectly calibrated Tier-1 entry built on a synthetic sample near the precision floor can therefore print a raw $\beta$ well below 1 without exaggerating anything — and by an amount that depends on its sample size, so the raw slope would partly rank simulation budgets. For Tier-1 entries, whose effects we refit ourselves so their standard errors are known, we therefore report a corrected slope beside the raw one: $\beta_{adj} = \beta / \hat{\lambda}$, the slope of the entry's latent (infinite-sample) predictions. The raw $\beta$ stays the reported, Ashokkumar-comparable quantity — it is also the right shrinkage factor for using an entry's numbers as delivered — while $\beta_{adj}$ answers whether the *approach* exaggerates. Tiers 2–3 submit point predictions with no standard errors, so no correction exists there and a $\beta$ below 1 is read as exaggeration, prediction noise, or both. This mirrors how the noise in the reference is handled for the correlation (r beside r~adj~): the raw value stays comparable, the corrected value carries the interpretation. Correcting $\beta$ takes nothing away from the noise penalty a small synthetic sample rightly pays — that penalty lives in r, RMSE, and the other scored metrics, while $\beta$'s job is to name the *kind* of error.
 
 ```{r, results='asis'}
 #| label: fn-calibration
@@ -458,7 +501,7 @@ print_a_function_from_file("run_calibration_pooled")
 
 #### Demographic baseline and predictability metrics
 
-`compare_demographic_baselines()` computes, for each moderator, the Pearson correlation and RMSE between human and synthetic sample cell means in the control condition. `compare_demographic_predictability()` fits separate OLS regressions of the outcome on each moderator plus condition fixed effects, returning $R^2$ and dummy-coded coefficients for humans and for the submission. `demographic_parity_gap()` quantifies, for each moderator, the gap between the worst- and best-served demographic group in the control condition. For example, if an approach's control-condition baseline is off by 6 pp for Republicans but only 1 pp for Democrats, the parity gap for partisan identity is 5 pp, with Republicans the worst-served group (see *Section 3*).
+`compare_demographic_baselines()` computes, for each moderator, the RMSE between human and synthetic sample cell means in the control condition. (The function also returns a per-moderator Pearson correlation, kept for v1 compatibility, which the benchmark does not report: the moderators have three to seven groups, a correlation over so few points is unstable — over two points it is always exactly ±1 — and correlation ignores level and scale, the two things baseline calibration is about. See changelog item 23.) `compare_demographic_predictability()` fits separate OLS regressions of the outcome on each moderator plus condition fixed effects, returning $R^2$ and dummy-coded coefficients for humans and for the submission. `demographic_parity_gap()` quantifies, for each moderator, the gap between the worst- and best-served demographic group in the control condition. For example, if an approach's control-condition baseline is off by 6 pp for Republicans but only 1 pp for Democrats, the parity gap for partisan identity is 5 pp, with Republicans the worst-served group. Groups under 30 respondents on either side are skipped, and the skipped groups are named, with their sizes, wherever the parity gap is reported (see *Section 3*).
 
 ```{r, results='asis'}
 #| label: fn-demographic-baselines
@@ -483,21 +526,21 @@ print_a_function_from_file("demographic_parity_gap")
 
 ### Section 2 — Subgroup Effects
 
-**Heterogeneity in treatment effects.** Interventions may work differently across demographic groups. A consensus message might shift trust more among Republicans than Democrats, or more among younger than older respondents. For each of six categorical moderators (gender, age band, race, education, income, partisan identity), condition × moderator interactions are estimated with `run_moderator_model()` on the human reference and on the submission. For the binary outcome the same OLS fit is a linear probability model, so the interaction coefficient is the difference-in-differences of cell signup proportions on the probability scale (see *Estimation functions*). As in Section 1, all interaction estimates are converted to percentage points of each outcome's scale range before pooling. The interaction estimates are then compared with the same metrics as Section 1, except RMSE: directional agreement, Spearman $\rho$, and Pearson r (`signed_metrics()`), plus the adjusted correlation r~adj~ computed from the human interaction estimates' standard errors. RMSE is left out because interaction estimates are far noisier than ATEs, so an absolute-error comparison would mostly measure reference noise. The subgroup section is where the noise correction matters most, and r~adj~ is the emphasized value here. Small demographic cells make the reference noise large and uneven, so raw correlations are unevenly deflated across groups (see *Adjusted correlation and RMSE (noise-corrected)*).
+**Heterogeneity in treatment effects.** Interventions may work differently across demographic groups. A consensus message might shift trust more among Republicans than Democrats, or more among younger than older respondents. For each of six categorical moderators (gender, age band, race, education, income, partisan identity), condition × moderator interactions are estimated with `run_moderator_model()` on the human reference and on the submission. For the binary outcome the same OLS fit is a linear probability model, so the interaction coefficient is the difference-in-differences of cell signup proportions on the probability scale (see *Estimation functions*). Each interaction estimate is a contrast against a reference level, and the reference levels are fixed here: the control condition for `condition`, and for each moderator its first codebook level (the level order of the cleaned human data, which every submission's factors are aligned to before fitting — see `align_submission_levels()` under *Scoring functions*). As in Section 1, all interaction estimates are converted to percentage points of each outcome's scale range before pooling. The interaction estimates are then compared with the same metrics as Section 1, except RMSE: directional agreement, Spearman $\rho$, and Pearson r (`signed_metrics()`), plus the adjusted correlation r~adj~ computed from the human interaction estimates' standard errors. RMSE is left out because interaction estimates are far noisier than ATEs, so an absolute-error comparison would mostly measure reference noise. The subgroup section is where the noise correction matters most, and r~adj~ is the emphasized value here. Small demographic cells make the reference noise large and uneven, so raw correlations are unevenly deflated across groups (see *Adjusted correlation and RMSE (noise-corrected)*). One honest approximation: interaction estimates for the same moderator share the reference group's cells, so their sampling errors are correlated, and the independence assumption behind the r~adj~ correction holds only approximately here. The cluster bootstrap, which resamples interventions whole, respects that dependence in the uncertainty intervals.
 
 One caveat is that if the human data turn out to contain little true moderation, subgroup recovery cannot separate approaches: a submission that predicts no heterogeneity at all then scores well, and a high correlation may reflect generalized predictions rather than subgroup-specific skill. @ashokkumarLargeLanguageModels2026a flag the same limitation: in their archive, only 7.7%, 8.8%, and 18.3% of effects were significantly moderated by gender, ethnicity, and party, so there was virtually no heterogeneity to predict. Eligible for Tiers 1–2.
 
-**Response distributions by subgroup.** Mirroring Section 1, within each demographic subgroup in the control condition we compare response distributions (variance ratio, OVL, KS D, W1), to catch an approach that reproduces the overall distribution while miscalibrating within-group spreads. Tier 1 only.
+**Response distributions by subgroup.** Mirroring Section 1, within each demographic subgroup in the control condition we compare response distributions (variance ratio, OVL, KS D, W1), to catch an approach that reproduces the overall distribution while miscalibrating within-group spreads. Groups under 30 respondents on either side are skipped, the same threshold as the demographic parity gap, and the skipped groups are named in the output — a kernel density over a dozen respondents is not a distribution estimate. Tier 1 only.
 
 ### Section 3 — Demographic Baseline Calibration
 
 Section 2 tests whether an approach exaggerates *effect* heterogeneity. Section 3 asks a separate question. Does the approach start from the right **baseline**? It uses only the control condition. An approach could assign far too little trust to Republicans, or too much to Democrats, before any treatment, a case of baseline stereotyping.
 
-**Demographic baseline calibration.** For each moderator, we compute control condition group means for humans and for the submission, then correlate and compare them (`compare_demographic_baselines()`, which reports Pearson r and RMSE of the cell means). High correlation and low RMSE mean the approach starts from the right response level for each demographic group. This is a different question from the distribution comparisons of Sections 1 and 2: those ask whether the whole response distribution has the right shape and spread, while baseline calibration asks whether each group's *mean* sits at the right level. An approach can match every group mean while badly missing the spread within groups, and vice versa. Eligible for Tiers 1–2.
+**Demographic baseline calibration.** For each moderator, we compute control condition group means for humans and for the submission and compare them by their RMSE (`compare_demographic_baselines()`). A low RMSE means the approach starts from the right response level for each demographic group. We report no correlation over the group means (changelog item 23): each moderator has only three to seven groups, a correlation over so few points is unstable — over two points it is always exactly ±1 regardless of the values — and a correlation ignores level and scale, which are exactly what baseline calibration is about (an approach that puts every group 20 points too low still correlates perfectly). Where the group means themselves are shown, any wrong ordering is visible directly. This is a different question from the distribution comparisons of Sections 1 and 2: those ask whether the whole response distribution has the right shape and spread, while baseline calibration asks whether each group's *mean* sits at the right level. An approach can match every group mean while badly missing the spread within groups, and vice versa. Eligible for Tiers 1–2.
 
-**Demographic parity gap (DPD).** The baseline-calibration metrics average over groups, and an average can hide a simulation approach that may serve most groups well while consistently missing one. Following the demographic-parity-difference summary of @parkLLMAgentsGrounded2026^[Park et al. compute the gap in per-group predictive accuracy over paired agent–person data, while this benchmark has no person-level pairing, so the gap is taken over group-mean baseline errors instead.], `demographic_parity_gap()` reports, per moderator, the gap between the worst- and best-served demographic group (the difference between the largest and smallest absolute cell-mean error in the control condition), together with which groups those are. The worst-served group's absolute error is reported alongside it, because a zero gap can also mean every group is served equally *badly*, which the worst-group error would reveal. Groups with fewer than 30 respondents on either side are skipped (`min_n = 30`). Eligible for Tiers 1–2; for Tier 2, the submitted moderator-cell means take the place of computed group means.
+**Demographic parity gap (DPD).** The baseline-calibration metrics average over groups, and an average can hide a simulation approach that may serve most groups well while consistently missing one. Following the demographic-parity-difference summary of @parkLLMAgentsGrounded2026^[Park et al. compute the gap in per-group predictive accuracy over paired agent–person data, while this benchmark has no person-level pairing, so the gap is taken over group-mean baseline errors instead.], `demographic_parity_gap()` reports, per moderator, the gap between the worst- and best-served demographic group (the difference between the largest and smallest absolute cell-mean error in the control condition), together with which groups those are. The worst-served group's absolute error is reported alongside it, because a zero gap can also mean every group is served equally *badly*, which the worst-group error would reveal. Groups with fewer than 30 respondents on either side are skipped (`min_n = 30`), because a group mean over fewer respondents is itself several scale points of noise — and because the smallest groups are exactly the population this metric exists for, the skipped groups are named, with their sizes, in every table that reports the gap (changelog item 25). Eligible for Tiers 1–2; for Tier 2, the submitted moderator-cell means take the place of computed group means.
 
-**Demographic predictability.** For each of the six moderators we fit a separate OLS regression of the outcome on that moderator plus condition fixed effects, on the human reference and on the submission independently (`compare_demographic_predictability()`). This answers questions such as how much does partisan identity alone explain outcome variance in humans versus in the synthetic samples? An $R^2$ substantially higher for the submission than for humans flags exaggeration of demographic variables (stereotyping). The dummy-coded coefficients identify which groups are over- or under-weighted. Tier 1 only.
+**Demographic predictability and stereotyping.** For each of the six moderators we fit a separate OLS regression of the outcome on that moderator plus condition fixed effects, on the human reference and on the submission independently (`compare_demographic_predictability()`). The regression returns two quantities with two distinct jobs (changelog item 24). The **dummy-coded coefficients are the primary stereotyping quantity**: each coefficient is a group's gap to the reference level (say, how many points lower Republicans answer than the reference group), and putting the submission's gaps next to the human ones tests directly whether the approach exaggerates group differences. A group average does not care how tightly individuals cluster around it, so this comparison is immune to under-dispersion. The **$R^2$ comparison** is the demographic-predictability summary: how much of the outcome variance does partisan identity alone explain in the synthetic sample versus in humans? That answers a real question for anyone who would study group differences in a synthetic sample — but a higher synthetic $R^2$ has two possible sources, exaggerated group gaps *or* synthetic individuals answering too much alike (a smaller residual variance inflates $R^2$ even when every group mean is exactly right). The coefficients separate the first source, and the variance ratio (Section 1) diagnoses the second. Tier 1 only.
 
 ### Cross-team comparison
 
@@ -507,7 +550,7 @@ The primary goal of this project is to assess how well the research field of syn
 
 We deliberately do not collapse the metrics into one composite "champion" score. An approach can recover the direction of effects well while mis-scaling them, or do well on the primary outcome while failing on the rest, and indeed this inconsistency across outcome metrics has been observed in other studies [@cumminsThreatAnalyticFlexibility2025b]. A pooled correlation can also be earned partly by predicting *which outcomes* are generally movable rather than which interventions work within an outcome; the per-outcome breakdown (see *Where the field predicts well*) is reported alongside every pooled value and shows this directly. With all estimates in pp, RMSE and its noise-corrected companion RMSE~adj~ are comparable across outcomes and are reported pooled as well as in the by-outcome and by-intervention breakdowns (in v1's raw-unit, per-outcome framing they could not be pooled). The per-intervention breakdown keeps its restriction to `outcomes_continuous`: the pp conversion removes the *unit* mix, but a per-intervention correlation across all 13 outcomes would still mix attitude and behavioral constructs.
 
-Teams may enter up to three submissions per tier. For the main findings on the field (Finding 1) we use only one pre-designated primary entry per team. Every valid entry still appears on the leaderboard (Finding 2), labeled primary or secondary. Every submission must cover the full study, all 16 interventions and all 13 outcomes. Predicting a selected, potentially easier-to-predict subset of effects would make for an unfair comparison to submissions attempting to predict all effects, so partial submissions are not accepted. 
+Each team may submit up to three entries per tier (up to nine in total). Where a team has good reasons to systematically vary some aspect of its approach, we may grant additional entries on request, but only three per tier enter the main analyses. All entries within the cap appear in every analysis — the field summary (Finding 1) as well as the leaderboard (Finding 2). This gives the benchmark more approaches and more variation between approaches, and the per-tier cap limits how much any single team can shape the field distribution. Entries from the same team are still not statistically independent, since they typically share most of a pipeline, and the field's center and spread are read descriptively with that caveat in mind. Each team designates exactly one of its entries, across all tiers, as its **primary entry** before the prediction lock. As a robustness analysis, the main results are recomputed on primary entries only, a field with exactly one entry per team, each team's single best effort (see *Primaries-only robustness*). In the figures and the leaderboard, entries appear under neutral labels: `submission_1` for a single-entry team, and `submission_2_a`, `submission_2_b`, … for a multi-entry team, with `_a` the team's primary entry. An appendix table (@tbl-submission-teams) maps each label to its team. The neutral labels keep the headline figures about the field rather than about named teams, in line with not crowning a single champion. Every submission must cover the full study, all 16 interventions and all 13 outcomes. Predicting a selected, potentially easier-to-predict subset of effects would make for an unfair comparison to submissions attempting to predict all effects, so partial submissions are not accepted. 
 
 Finally, the field distribution describes an invited, selected set of expert teams, a purposive sample of the current generation of serious approaches rather than a random sample of all possible ones. We state this wherever we define the "field" in the manuscript.
 
@@ -523,7 +566,9 @@ The pooled metric is computed once on the full data to give the point estimate. 
 
 **Assumptions.** The interval treats the 16 interventions as a sample from the broader space of possible interventions. It asks: would this approach's score, and its rank, survive on a different set of interventions of the same kind? A wide bar signals that a score is flimsy and may reflect test-set luck rather than generalizable prediction skill.
 
-Each interval describes the uncertainty of one approach's own score, in the same way that each arm of a multi-arm experiment is reported with a confidence interval against the shared control group. As in that case, the difference between two approaches is not tested by checking whether their intervals overlap. All scores are computed against the same human reference and the same resampled intervention sets, so the scores of two approaches are correlated, and their difference can be reliable even where their intervals overlap. We therefore present the ranking as descriptive and preregister no test of whether one approach outperforms another. Among top performers, statistical near-ties are the most common outcome in comparable mass-collaboration benchmarks [@salganikMeasuringPredictabilityLife2020], and we expect them here. Two caveats apply to all bootstrap intervals. With 16 intervention clusters, percentile intervals are known to undercover somewhat. And the 16 ATEs share the single control arm, which induces a dependence the intervention-level resampling does not capture. The intervals are read as honest approximations, not exact coverage statements.
+Why resample interventions and not outcomes? Because the two dimensions have different status in the design. The messages were contributed by independent intervention-author teams — a real sampling process from the space of what researchers would propose — and the benchmark's forward-looking question (could synthetic samples pre-screen the *next* batch of candidate messages?) is a question about new messages measured on the same instrument. The 13 outcomes, in contrast, are the megastudy's fixed outcome battery: they define the research question rather than sample from a population, and how scores vary across them is a finding shown descriptively, not noise to average over. There is also a mechanical reason: intervention arms contain disjoint respondents (each person sits in one condition), so they form approximately independent resampling units, while every respondent answers every outcome — outcome slices are built from identical people and could not serve as bootstrap clusters at all.
+
+Each interval describes the uncertainty of one approach's own score, in the same way that each arm of a multi-arm experiment is reported with a confidence interval against the shared control group. As in that case, the difference between two approaches is not tested by checking whether their intervals overlap. All scores are computed against the same human reference and the same resampled intervention sets — the identical bootstrap draws for every team, which is intentional: two teams' intervals then differ only because their predictions differ, never because of resampling luck. The scores of two approaches are therefore correlated, and their difference can be reliable even where their intervals overlap. We therefore present the ranking as descriptive and preregister no test of whether one approach outperforms another. Among top performers, statistical near-ties are the most common outcome in comparable mass-collaboration benchmarks [@salganikMeasuringPredictabilityLife2020], and we expect them here. Two caveats apply to all bootstrap intervals. With 16 intervention clusters, percentile intervals are known to undercover somewhat. And the 16 ATEs share the single control arm, which induces a dependence the intervention-level resampling does not capture. The intervals are read as honest approximations, not exact coverage statements.
 
 **Relation to the per-effect standard errors.** The bootstrap interval is a different layer of uncertainty from the sampling error of the individual human effects. A per-effect standard error is *within-intervention*: it says how precisely a single human effect is estimated, and it enters the scoring only through the noise-corrected r~adj~ and RMSE~adj~. The bootstrap interval is *across-intervention*: it says how much the pooled score depends on which interventions were tested, holding each estimate fixed at its point value.
 
@@ -566,7 +611,7 @@ print_a_function_from_file("metrics_by_group")
 print_a_function_from_file("summarise_field")
 ```
 
-The remainder of this section demonstrates the code on placeholder data with **30 mock "teams"**, each a stratified bootstrap resample (within condition) of the single individual-level placeholder dataset, enough approaches to give the field distributions a meaningful shape. To exercise all three tier code paths, 28 teams enter at Tier 1 (individual-level), one is collapsed into a Tier 2 cell-level file, and one into a Tier 3 effect-level file. All of this placeholder data, including the resampled teams and the collapsed Tier 2/3 files, is built in the simulation script (`R/simulate_data_preregistration.R`), not here. This document only reads it. Because every mock team is just a resample of the same dataset, all approaches are random noise relative to the human reference. On placeholder data the field distributions therefore cluster near the null, and the figures only show that the code runs. Real submissions will spread out. The adjusted correlation r~adj~ behaves accordingly. With no true signal, the reference effects' observed spread is all noise, so the NA guard binds for many mock teams and the surviving values are unstable. That is the intended behavior, demonstrated rather than hidden. The code applies to real submissions without modification.
+The remainder of this section demonstrates the code on placeholder data with **30 mock entries from 26 mock "teams"**, each entry a stratified bootstrap resample (within condition) of the single individual-level placeholder dataset, enough approaches to give the field distributions a meaningful shape. To exercise all three tier code paths, 28 entries are individual-level Tier 1 data, one is collapsed into a Tier 2 cell-level file, and one into a Tier 3 effect-level file. To exercise the entry policy (item 16), two mock teams hold three Tier-1 entries each and every other mock team holds one, so the neutral submission labels and the primaries-only robustness analysis render with real content. All of this placeholder data, including the resampled entries and the collapsed Tier 2/3 files, is built in the simulation script (`R/simulate_data_preregistration.R`), not here. This document only reads it. Because every mock entry is just a resample of the same dataset, all approaches are random noise relative to the human reference. On placeholder data the field distributions therefore cluster near the null, and the figures only show that the code runs. Real submissions will spread out. The adjusted correlation r~adj~ behaves accordingly. With no true signal, the reference effects' observed spread is all noise, so the NA guard binds for many mock teams and the surviving values are unstable. That is the intended behavior, demonstrated rather than hidden. The code applies to real submissions without modification.
 
 ```{r}
 #| label: variables
@@ -585,6 +630,22 @@ outcomes_continuous <- c(outcomes_primary, outcomes_secondary, outcomes_tertiary
 # `outcomes_continuous` only.
 outcomes_behavioral <- c("donation_ams", "newsletter_signup")
 outcomes_pooled     <- c(outcomes_continuous, outcomes_behavioral)
+
+# Outcome classes for the secondary self-report vs behavioral cut (see
+# "Where the field predicts well"): the 11 sliders are self-report attitude
+# measures, the donation and the newsletter signup are behavior.
+outcome_class <- c(
+  set_names(rep("Self-report", length(outcomes_continuous)), outcomes_continuous),
+  donation_ams = "Behavioral", newsletter_signup = "Behavioral"
+)
+
+# Expected pair count per submission: every scored intervention × every
+# outcome (16 × 13 = 208 with the real data; the placeholder simulation
+# generates 20 generic interventions, so this demo grid is 20 × 13). Every
+# pair-building join asserts this count, so a mislabeled or missing condition
+# or outcome stops the pipeline instead of silently shrinking a submission's
+# test set.
+n_pairs_expected <- (length(scored_conditions) - 1) * length(outcomes_pooled)
 
 # Scale ranges: all cross-team scoring runs in percentage points (pp) of each
 # outcome's scale range — effects and SEs are converted once, at pair-building
@@ -646,15 +707,14 @@ outcome_label_map <- c(
 ```{r}
 #| label: leaderboard-helpers
 
-# Extract ATE pairs (estimate, SE, adjusted p) — same helper as the original
-# preregistration's rq1-all chunk.
+# Extract ATE pairs (estimate, SE) — as in the original preregistration's
+# rq1-all chunk, minus the adjusted p-value: no benchmark metric reads it
+# (the significance-based metrics were dropped, changelog item 7), so the
+# pairs no longer carry it.
 prep_ate <- function(df) {
   df |>
     select(condition, estimate) |>
-    mutate(
-      se    = if ("std.error"        %in% names(df)) df$std.error        else NA_real_,
-      p_adj = if ("p.value_adjusted" %in% names(df)) df$p.value_adjusted else NA_real_
-    )
+    mutate(se = if ("std.error" %in% names(df)) df$std.error else NA_real_)
 }
 
 control_lab <- levels(human_data$condition)[1]
@@ -700,13 +760,28 @@ ate_side <- function(dat, models = NULL) {
     transmute(condition,
               estimate,
               se      = (conf.high - conf.low) / (2 * z95),
-              p_adj   = p.value_adjusted,
               outcome = "newsletter_signup")
   bind_rows(cont, bin)
 }
 
 human_side <- ate_side(human_data_1, models = human_models) |>
-  rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj)
+  rename(estimate_h = estimate, se_h = se)
+
+# The reference side must itself span the full scored grid before any
+# submission is joined against it.
+stopifnot(nrow(human_side) == n_pairs_expected)
+
+# Inner joins drop unmatched rows silently, so a mislabeled condition or
+# outcome in a submission would quietly shrink its test set and its scores
+# would be computed on the surviving subset. Every pair builder therefore
+# asserts the full scored grid, with no missing estimates — a submission that
+# cannot be paired completely stops the pipeline instead of being scored
+# partially.
+assert_full_grid <- function(pairs) {
+  stopifnot(nrow(pairs) == n_pairs_expected,
+            !anyNA(pairs$estimate_l), !anyNA(pairs$estimate_h))
+  pairs
+}
 
 # Common unit for all scoring: estimates and SEs in pp of each outcome's scale
 # range (see `scale_range` in the variables chunk). Applied once to every set
@@ -720,12 +795,15 @@ pp_scale_pairs <- function(pairs) {
 }
 
 # Tier 1: ATE pairs from an individual-level dataset, refitting the
-# preregistered treatment models on the submission.
+# preregistered treatment models on the submission. The refit SE travels with
+# the pairs as se_l: it measures the submission's own sampling noise, which
+# the corrected calibration slope needs (see run_calibration_pooled()).
 build_pairs_t1 <- function(pred_data) {
   ate_side(align_submission_levels(pred_data)) |>
-    select(condition, outcome, estimate_l = estimate) |>
+    select(condition, outcome, estimate_l = estimate, se_l = se) |>
     inner_join(human_side, by = c("condition", "outcome")) |>
-    pp_scale_pairs()
+    pp_scale_pairs() |>
+    assert_full_grid()
 }
 
 # Tier 2: ATEs from submitted cell means (mean per condition x outcome),
@@ -742,7 +820,8 @@ build_pairs_t2 <- function(cells_main) {
     }) |>
     ungroup() |>
     inner_join(human_side, by = c("condition", "outcome")) |>
-    pp_scale_pairs()
+    pp_scale_pairs() |>
+    assert_full_grid()
 }
 
 # Tier 3: submitted ATEs taken as-is.
@@ -750,24 +829,25 @@ build_pairs_t3 <- function(effects) {
   effects |>
     transmute(condition = as.character(condition), outcome, estimate_l = ate) |>
     inner_join(human_side, by = c("condition", "outcome")) |>
-    pp_scale_pairs()
+    pp_scale_pairs() |>
+    assert_full_grid()
 }
 
 # `pooled_metrics()`, `signed_metrics()`, and `cluster_boot()` are defined in
 # R/functions/statistics.R and shown under "Scoring functions" above.
 
 # One leaderboard row: pooled metrics + the intercept and slope of the pooled
-# calibration regression (all outcomes; descriptive, with HC2-robust CIs in
-# the released results: the outcome side carries known, condition-varying
-# sampling error) + the share of expected intervention x outcome cells that
-# entered scoring (cells that fail to parse are dropped at pair-building, so
-# this is the usable-output share reported per submission).
+# calibration regression (all outcomes; descriptive; 95% intervals come from
+# the intervention cluster bootstrap in the leaderboard-build chunk below).
+# beta_adj is the noise-corrected slope, computable only for Tier 1 (the
+# refit SEs se_l exist there); it is NA for Tiers 2-3 and the reference rows.
+# No usable-share column: assert_full_grid() makes partially paired
+# submissions impossible, so every scored row rests on the full grid.
 leaderboard_row <- function(pairs, submission, tier, disclosure) {
   calib <- run_calibration_pooled(pairs)
   pooled_metrics(pairs, include_rmse = TRUE) |>
     mutate(submission = submission, tier = tier, disclosure = disclosure,
-           alpha = calib$alpha, beta = calib$beta,
-           usable_pct = 100 * nrow(pairs) / nrow(human_side))
+           alpha = calib$alpha, beta = calib$beta, beta_adj = calib$beta_adj)
 }
 ```
 
@@ -786,12 +866,13 @@ effects_t3 <- readRDS(here("data/simulation_preregistration/mock_submission_tier
 ```{r}
 #| label: leaderboard-build
 
-# 30 mock submissions plus the fixed human replication reference (Human 1 vs. Human 2).
-# Teams 1-28 enter as individual-level Tier 1 data; team 29 as a Tier 2
-# cell-level file and team 30 as a Tier 3 effect-level file, so all three tier
-# code paths are exercised. Each submission's ATE pairs are built once here and
+# 30 mock entries plus the fixed human replication reference (Human 1 vs. Human 2).
+# Entries 1-28 are individual-level Tier 1 data; entry 29 is a Tier 2
+# cell-level file and entry 30 a Tier 3 effect-level file, so all three tier
+# code paths are exercised. Each entry's ATE pairs are built once here and
 # reused by the headline and breakdown figures, the leaderboard table, and the
-# companion tables.
+# companion tables. The cached lists are keyed by the sim's entry ids
+# ("Team N"); display labels are applied right after via submission_meta.
 tier1_ids <- 1:28
 
 # Cached: the 29 Tier-1 builds each refit the treatment models incl. the
@@ -812,12 +893,38 @@ pairs_list <- cached("amendment_pairs_list", {
   )
 })
 
+# Mock team structure for the entry policy (changelog item 16): the 30 mock
+# entries belong to 26 mock teams. Teams 1 and 2 hold three Tier-1 entries
+# each (the _a entry is the team's primary), teams 3-24 one Tier-1 entry,
+# team 25 the Tier-2 entry, team 26 the Tier-3 entry. Everything downstream
+# shows the neutral submission labels; @tbl-submission-teams maps labels to
+# teams.
 set.seed(2026)
 submission_meta <- tibble(
-  submission = c(paste0("Team ", 1:30), "Human replication"),
+  entry_id   = c(paste0("Team ", 1:30), "Human replication"),
+  team       = c(rep(c("Mock team 1", "Mock team 2"), each = 3),
+                 paste("Mock team", 3:26), "Human replication"),
+  entry      = c(rep(c("primary", "secondary-1", "secondary-2"), times = 2),
+                 rep("primary", 24), "—"),
+  submission = c(paste0("submission_1_", letters[1:3]),
+                 paste0("submission_2_", letters[1:3]),
+                 paste0("submission_", 3:26), "Human replication"),
   tier       = c(rep("1", 28), "2", "3", "—"),
   disclosure = c(sample(c("A", "B", "C"), 30, replace = TRUE), "—")
 )
+
+relabel_submissions <- function(x)
+  set_names(x, submission_meta$submission[match(names(x), submission_meta$entry_id)])
+
+# Same mapping for data frames that carry a submission column (the cached
+# bootstrap results stamp it at cache time, possibly under the entry ids);
+# labels already in display form pass through unchanged.
+relabel_submission_col <- function(df) {
+  lookup <- set_names(submission_meta$submission, submission_meta$entry_id)
+  df |> mutate(submission = coalesce(unname(lookup[submission]), submission))
+}
+
+pairs_list <- relabel_submissions(pairs_list)
 
 # Floor baseline: a naive reference row for the metrics without a natural
 # null (chiefly RMSE). "No effect" predicts a zero ATE everywhere — a fully
@@ -831,19 +938,34 @@ submission_meta <- tibble(
 floor_pairs <- list(
   "Floor: no effect" = human_side |>
     mutate(estimate_l = 0) |>
+    pp_scale_pairs(),
+  # The all-positive baseline exists because 50% is the wrong chance level
+  # for directional agreement when the interventions were all designed to
+  # increase trust: a mindless "every message works" strategy scores the
+  # share of positive human ATEs, and that share — this row's directional
+  # % — is the empirical chance level the field has to beat.
+  "Floor: all positive" = human_side |>
+    mutate(estimate_l = 1) |>
     pp_scale_pairs()
 )
 floor_labels <- names(floor_pairs)
 
-# Calibration is undefined for the floor (a constant prediction ->
-# zero-variance regressor), so its row carries NA there. Its directional %
-# reads 0, not 50: sign(0) matches neither sign, an artifact of the all-zero
-# prediction, not below-chance skill (footnoted in the table).
+# Calibration is undefined for the floors (a constant prediction ->
+# zero-variance regressor), so their rows carry NA there. Under the
+# half-credit rule the no-effect floor's directional % reads 50, a predictor
+# with no directional information. The all-positive row reports its
+# directional % only: its other scores are artifacts of a constant
+# prediction and are not shown.
 floor_rows <- imap_dfr(floor_pairs, function(pr, sub) {
-  pooled_metrics(pr, include_rmse = TRUE) |>
+  row <- pooled_metrics(pr, include_rmse = TRUE) |>
     mutate(submission = sub, tier = "—", disclosure = "—",
-           alpha = NA_real_, beta = NA_real_,
-           usable_pct = 100 * nrow(pr) / nrow(human_side))
+           alpha = NA_real_, beta = NA_real_, beta_adj = NA_real_)
+  if (sub == "Floor: all positive")
+    row <- row |>
+      mutate(across(c(spearman_rho, pearson_r, pearson_within, pearson_adj,
+                      rmse, rmse_adj), ~ NA_real_),
+             rmse_adj_at_floor = NA)
+  row
 })
 
 leaderboard <- bind_rows(
@@ -854,6 +976,23 @@ leaderboard <- bind_rows(
   floor_rows
 ) |>
   arrange(desc(submission == "Human replication"), desc(pearson_r))
+
+# 95% intervals for the calibration coefficients, from the same intervention
+# cluster bootstrap (identical seed and draws) as every other metric. The 13
+# outcomes within an intervention share that intervention's draw, and
+# resampling interventions whole respects that dependence — this replaces the
+# HC2 intervals, which treated the pooled pairs as independent. The shared
+# control arm stays fixed across replicates (see the caveats under
+# "Uncertainty intervals on the leaderboard"). Fast enough to run uncached.
+calib_ci <- imap_dfr(pairs_list, function(pr, sub) {
+  cluster_boot(pr, run_calibration_pooled, n_boot = n_boot_demo) |>
+    mutate(submission = sub)
+}) |>
+  filter(metric %in% c("alpha", "beta")) |>
+  pivot_wider(names_from = metric, values_from = c(value, lo, hi),
+              names_glue = "{metric}_{.value}") |>
+  select(submission, alpha_lo = alpha_lo, alpha_hi = alpha_hi,
+         beta_lo = beta_lo, beta_hi = beta_hi)
 ```
 
 ```{r}
@@ -864,6 +1003,7 @@ ladder_labels <- c(
   directional_pct = "Directional %",
   spearman_rho    = "Spearman ρ",
   pearson_r       = "Pearson r",
+  pearson_within  = "Pearson r (within outcomes)",
   pearson_adj     = "Pearson r (adj.)",
   rmse            = "RMSE (pp)",
   rmse_adj        = "RMSE (adj., pp)"
@@ -923,7 +1063,8 @@ ate_forest <- cached("amendment_ate_forest", {
       mutate(submission = sub)
   }) |>
     relabel_metrics(ladder_labels)
-})
+}) |>
+  relabel_submission_col()
 p_forest <- plot_field_forest_single(ate_forest, tag = "B")
 
 (p_scatter | p_forest) + plot_layout(widths = c(1, 1.15))
@@ -943,7 +1084,7 @@ field_pooled <- leaderboard |>
 
 ```{r}
 #| label: tbl-field-summary
-#| tbl-cap: "Field summary (placeholder data). Center and spread of each pooled ATE-recovery metric across the 30 approaches (the human replication reference excluded)."
+#| tbl-cap: "Field summary (placeholder data). Center and spread of each pooled ATE-recovery metric across the 30 mock entries (the human replication reference excluded). Entries from the same team are not independent; the primaries-only recomputation is in @tbl-field-primaries."
 
 summarise_field(field_pooled) |>
   gt() |>
@@ -1057,6 +1198,29 @@ field_group_table(field_by_intervention, "condition") |>
   cols_label(condition = "Intervention")
 ```
 
+As a **secondary analysis**, the pooled metrics are recomputed within two outcome classes: the eleven self-report attitude sliders, and the two behavioral outcomes (the donation and the newsletter signup). Whether an approach that predicts stated attitudes also predicts what people *do* is a question the pooled row cannot answer, because the behavioral outcomes contribute only 32 of its pairs and their signal is drowned by the sliders. The class cut is registered here so it is a designated result rather than a post-hoc regrouping (@tbl-field-by-class).
+
+```{r}
+#| label: tbl-field-by-class
+#| tbl-cap: "Secondary field summary by outcome class (placeholder data). Median across approaches of each pooled metric, computed within the eleven self-report outcomes and within the two behavioral outcomes (donation, newsletter signup), with the human replication reference in parentheses. All estimates in pp of scale range."
+
+field_by_class <- imap_dfr(pairs_list, function(pr, sub) {
+  metrics_by_group(pr |> mutate(class = unname(outcome_class[outcome])),
+                   "class",
+                   f = \(p) pooled_metrics(p, include_rmse = TRUE)) |>
+    mutate(submission = sub)
+}) |>
+  pivot_longer(c(directional_pct, spearman_rho, pearson_r, pearson_adj,
+                 rmse, rmse_adj),
+               names_to = "metric", values_to = "value") |>
+  relabel_metrics(ladder_labels)
+
+field_group_table(field_by_class, "class") |>
+  gt() |>
+  sub_missing(missing_text = "—") |>
+  cols_label(class = "Outcome class")
+```
+
 ##### Subgroup recovery
 
 Whether an approach reproduces *who* an intervention moves, not just its average effect. For each Tier-1 submission we fit the preregistered condition × moderator interaction model (`run_moderator_model()`) across the demo outcome set (four outcomes plus the binary newsletter signup, the latter as a linear probability model, see *Estimation functions*; the registered analysis runs all outcomes — see the callout above) over the six demographic moderators, then pool the interaction estimates against Human 1. All interaction estimates are placed in percentage points of each outcome's scale range before pooling, the same unit as Section 1. Because interaction estimates require respondent-level data, this view covers Tier 1 only. As specified in Section 2 above, the scored metrics are directional agreement, Spearman $\rho$, and Pearson r, plus the adjusted correlation r~adj~, emphasized here because small subgroup cells make the reference noise uneven across cells (see *Adjusted correlation and RMSE (noise-corrected)*).
@@ -1098,9 +1262,13 @@ build_subgroup_pairs <- function(pred_data) {
         mutate(outcome = out, moderator = mod)
     })
   })
-  inner_join(human_mod_side, pred_side,
+  joined <- inner_join(human_mod_side, pred_side,
              by = c("condition", "moderator_level", "outcome", "moderator")) |>
     pp_scale_pairs()
+  # Same silent-shrinkage guard as the ATE builders: every human-side
+  # interaction estimate must find its counterpart in the submission's refit.
+  stopifnot(nrow(joined) == nrow(human_mod_side))
+  joined
 }
 
 # Tier-1 submissions plus the reference are eligible. Interaction pairs are built
@@ -1114,7 +1282,8 @@ subgroup_inputs <- c(
 )
 subgroup_pairs_list <- cached("amendment_subgroup_pairs", {
   map(subgroup_inputs, build_subgroup_pairs)
-})
+}) |>
+  relabel_submissions()
 
 ```
 
@@ -1204,10 +1373,16 @@ How well an approach reproduces the **shape** of the human response distribution
 ```{r}
 #| label: distribution-pairs
 
+# The OVL/W1 evaluation grid is fixed to each outcome's scale range (0-100
+# sliders, 0-10 donation), so every submission is scored on the identical
+# grid — with the empirical default the grid would follow each submission's
+# observed min/max, and the integrated areas would not be comparable across
+# teams.
 dist_per_outcome <- function(pred_data) {
   map_dfr(outcomes_continuous, function(out) {
     compare_distributions(human_data_1, pred_data, out, control_lab,
-                          include_w1 = TRUE) |>
+                          include_w1 = TRUE,
+                          range = c(0, scale_range[[out]])) |>
       mutate(outcome = out)
   })
 }
@@ -1220,7 +1395,8 @@ dist_labels <- c(ovl = "Overlap (OVL)", w1 = "Wasserstein-1",
 # passes over full respondent-level data).
 dist_per_outcome_list <- cached("amendment_dist_per_outcome", {
   map(subgroup_inputs, dist_per_outcome)
-})
+}) |>
+  relabel_submissions()
 ```
 
 ```{r}
@@ -1288,44 +1464,62 @@ field_group_table(field_distribution, "outcome", pct_metrics = character()) |>
 
 #### Finding 2 — Ranking approaches (secondary)
 
-Having characterized the field, we rank individual approaches. This is the secondary read. Each metric is its own ranking, and the interesting result is *which* approaches lead on *which* metric. The leaderboard **table** is the main summary. The ranking *visual* for the key metric, with its cluster-bootstrap uncertainty intervals, is panel B of @fig-headline.
+Having characterized the field, we rank individual approaches. This is the secondary read. The leaderboard holds one row per entry, up to three per tier and team, under the neutral submission labels. A multi-entry team's entries share a number and differ by letter, with `_a` the team's primary entry. @tbl-submission-teams maps each label to its team, and in the manuscript that mapping appears in the appendix, which keeps the ranking displays about approaches rather than about named teams. Each metric is its own ranking, and the interesting result is *which* approaches lead on *which* metric. The leaderboard **table** is the main summary. The ranking *visual* for the key metric, with its cluster-bootstrap uncertainty intervals, is panel B of @fig-headline.
 
 ```{r}
 #| label: tbl-leaderboard
-#| tbl-cap: "Cross-team leaderboard (placeholder data). Pooled ATE-recovery metrics across all outcomes (every estimate in percentage points of its outcome's scale range), plus the intercept and slope of the pooled calibration regression and the share of usable cells, scored against the Human 1 reference half. The Human replication row (Human 1 vs. Human 2) shows how well two human halves of this size agree. Metrics run least to most strict, left to right. Class is the disclosure-class badge (A open, B escrowed, C sealed)."
+#| tbl-cap: "Cross-team leaderboard (placeholder data). Pooled ATE-recovery metrics across all outcomes (every estimate in percentage points of its outcome's scale range), plus the intercept and slope of the pooled calibration regression (95% cluster-bootstrap intervals in brackets, and the noise-corrected slope where the submission's refit standard errors exist), scored against the Human 1 reference half. The Human replication row (Human 1 vs. Human 2) shows how well two human halves of this size agree. Metrics run least to most strict, left to right. Class is the disclosure-class badge (A open, B escrowed, C sealed)."
 
 leaderboard |>
-  select(submission, tier, disclosure, usable_pct, directional_pct,
-         spearman_rho, pearson_r, pearson_adj, rmse, rmse_adj,
-         alpha, beta) |>
+  left_join(calib_ci, by = "submission") |>
+  mutate(
+    alpha_ci = if_else(is.na(alpha), NA_character_,
+                       sprintf("%.2f [%.2f, %.2f]", alpha, alpha_lo, alpha_hi)),
+    beta_ci  = if_else(is.na(beta), NA_character_,
+                       sprintf("%.2f [%.2f, %.2f]", beta, beta_lo, beta_hi))
+  ) |>
+  select(submission, tier, disclosure, directional_pct,
+         spearman_rho, pearson_r, pearson_within, pearson_adj, rmse, rmse_adj,
+         rmse_adj_at_floor, alpha_ci, beta_ci, beta_adj) |>
   gt() |>
-  fmt_number(columns = c(spearman_rho, pearson_r, pearson_adj,
-                         rmse, rmse_adj, alpha, beta),
+  fmt_number(columns = c(spearman_rho, pearson_r, pearson_within, pearson_adj,
+                         rmse, rmse_adj, beta_adj),
              decimals = 2) |>
-  fmt_number(columns = c(usable_pct, directional_pct), decimals = 0) |>
+  fmt_number(columns = directional_pct, decimals = 0) |>
   sub_missing(missing_text = "—") |>
+  cols_hide(columns = rmse_adj_at_floor) |>
   cols_label(
     submission      = "Submission",
     tier            = "Tier",
     disclosure      = "Class",
-    usable_pct      = "Usable cells %",
     directional_pct = "Directional %",
     spearman_rho    = "Spearman ρ",
     pearson_r       = "Pearson r",
+    pearson_within  = "Pearson r (within)",
     pearson_adj     = "Pearson r (adj.)",
     rmse            = "RMSE (pp)",
     rmse_adj        = "RMSE (adj., pp)",
-    alpha           = "Calib. α",
-    beta            = "Calib. β"
+    alpha_ci        = "Calib. α [95% CI]",
+    beta_ci         = "Calib. β [95% CI]",
+    beta_adj        = "Calib. β (adj.)"
   ) |>
   tab_footnote(
-    footnote = "Share of expected intervention × outcome cells that parsed and entered scoring. Cells that fail to parse are dropped at pair-building.",
-    locations = cells_column_labels(columns = usable_pct)
-  ) |>
-  tab_footnote(
-    footnote = "The floor's directional % reads 0, not 50, because sign(0) matches neither sign. This is an artifact of the all-zero prediction, not below-chance skill.",
+    footnote = "A predicted exact zero makes no directional claim and scores half credit, the expected score of a coin flip — the all-zero floor therefore reads 50. The all-positive row's directional % is the share of positive human ATEs, the empirical chance level; its other scores are artifacts of a constant prediction and are not shown.",
     locations = cells_body(columns = directional_pct,
                            rows = submission %in% floor_labels)
+  ) |>
+  tab_footnote(
+    footnote = "Correlation computed within outcomes (each outcome's mean effect subtracted on both sides): message-level skill only, with no credit for knowing which outcomes are movable.",
+    locations = cells_column_labels(columns = pearson_within)
+  ) |>
+  tab_footnote(
+    footnote = "Raw slope divided by the reliability of the predicted effects (1 − mean(se²)/var), computable only where refit standard errors exist: Tier 1 and the human replication.",
+    locations = cells_column_labels(columns = beta_adj)
+  ) |>
+  tab_footnote(
+    footnote = "Errors at or below the sampling noise of the human reference estimates; the corrected value is reported as 0.",
+    locations = cells_body(columns = rmse_adj,
+                           rows = !is.na(rmse_adj_at_floor) & rmse_adj_at_floor)
   ) |>
   tab_style(
     style     = cell_fill(color = "#eef3f7"),
@@ -1335,6 +1529,18 @@ leaderboard |>
     style     = cell_fill(color = "#f4f4f4"),
     locations = cells_body(rows = submission %in% floor_labels)
   )
+```
+
+```{r}
+#| label: tbl-submission-teams
+#| tbl-cap: "Which submission is by which team (placeholder data, mock teams). One row per entry, with its tier and the team's designation of the entry (one primary per team across tiers). In the manuscript this table appears in the appendix."
+
+submission_meta |>
+  filter(submission != "Human replication") |>
+  select(submission, team, tier, entry) |>
+  gt() |>
+  cols_label(submission = "Submission", team = "Team",
+             tier = "Tier", entry = "Designation")
 ```
 
 ##### Cross-metric consistency
@@ -1360,6 +1566,41 @@ rank_consistency |>
   fmt_number(columns = -metric, decimals = 2) |>
   sub_missing(missing_text = "—") |>
   cols_label(metric = "")
+```
+
+#### Primaries-only robustness
+
+Because every entry within the cap enters the main analyses, a team with three entries contributes three scores to the field summary where a single-entry team contributes one, and entries from the same team are not independent. As a robustness analysis we therefore recompute the field summary on primary entries only, one entry per team, each team's designated best effort. Little movement between the two summaries shows that the multi-entry teams do not drive the field's center or spread.
+
+```{r}
+#| label: tbl-field-primaries
+#| tbl-cap: "Primaries-only robustness (placeholder data). The field summary of @tbl-field-summary recomputed on primary entries only (one per team), next to the all-entries values. On placeholder data every entry is a noise resample of the same dataset, so the two versions differ only in which resamples enter."
+
+primary_subs <- submission_meta |>
+  filter(entry == "primary") |>
+  pull(submission)
+
+field_primaries <- leaderboard |>
+  filter(submission %in% primary_subs) |>
+  select(submission, all_of(names(ladder_labels))) |>
+  pivot_longer(-submission, names_to = "metric", values_to = "value") |>
+  relabel_metrics(ladder_labels)
+
+left_join(
+  summarise_field(field_pooled) |>
+    select(metric, mean_all = mean, sd_all = sd),
+  summarise_field(field_primaries) |>
+    select(metric, mean_primary = mean, sd_primary = sd),
+  by = "metric"
+) |>
+  gt() |>
+  fmt_number(columns = -metric, decimals = 2) |>
+  sub_missing(missing_text = "—") |>
+  tab_spanner(label = "All entries", columns = c(mean_all, sd_all)) |>
+  tab_spanner(label = "Primary entries only",
+              columns = c(mean_primary, sd_primary)) |>
+  cols_label(metric = "Metric", mean_all = "Mean", sd_all = "SD",
+             mean_primary = "Mean", sd_primary = "SD")
 ```
 
 #### Design analysis of what the metrics can resolve at this sample size
@@ -1413,12 +1654,13 @@ resplit_ceiling <- cached("amendment_resplit_ceiling", {
     # pp_scale_pairs() puts every estimate in pp of scale range.
     inner_join(
       ate_side(h1_i) |>
-        rename(estimate_h = estimate, se_h = se, p_adj_h = p_adj),
+        rename(estimate_h = estimate, se_h = se),
       ate_side(h2_i) |>
         select(condition, outcome, estimate_l = estimate),
       by = c("condition", "outcome")
     ) |>
       pp_scale_pairs() |>
+      assert_full_grid() |>
       pooled_metrics(include_rmse = TRUE) |>
       mutate(resplit = i)
   })

@@ -390,11 +390,19 @@ outcomes_continuous <- c(
   "policy_specific_mean", "behavior_mean"
 )
 
+# The full submission covers all 13 outcomes: real Tier-2/3 entries must
+# include the two behavioral outcomes (full coverage is a submission
+# requirement, and the benchmark asserts 16 x 13 pairs after every join), so
+# the mock files do too. newsletter_signup is logical; its mean is the cell
+# signup proportion.
+outcomes_submitted <- c(outcomes_continuous, "donation_ams", "newsletter_signup")
+
 # Collapse one team's individual-level data to cell means (condition x outcome).
 cell_stats <- function(team_data) {
   team_data |>
-    select(condition, all_of(outcomes_continuous)) |>
-    pivot_longer(-condition, names_to = "outcome", values_to = "value") |>
+    select(condition, all_of(outcomes_submitted)) |>
+    pivot_longer(-condition, names_to = "outcome", values_to = "value",
+                 values_transform = as.numeric) |>
     group_by(condition, outcome) |>
     summarise(mean = mean(value, na.rm = TRUE), .groups = "drop")
 }
