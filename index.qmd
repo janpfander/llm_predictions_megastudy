@@ -130,9 +130,9 @@ format:
     <tbody>
       <tr><td>ATE recovery (Section 1)<br><span class="small">Does the approach recover each intervention's average effect?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
       <tr><td>Calibration regression α / β (Section 1)<br><span class="small">Are predicted effects systematically biased or exaggerated?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="ok">✓</td></tr>
-      <tr><td>Response distributions — variance ratio, OVL, KS, W1 (Section 1)<br><span class="small">Are the shapes of responses reproduced, not just means?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
       <tr><td>Subgroup heterogeneity — condition × moderator (Section 2)<br><span class="small">Do treatment effects vary across demographic groups as in humans?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="no-x">—</td></tr>
-      <tr><td>Within-subgroup distributions (Section 2)<br><span class="small">Are response shapes reproduced inside each demographic group?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
+      <tr><td>Response distributions — variance ratio, OVL, KS, W1 (Section 3)<br><span class="small">Are the shapes of responses reproduced, not just means?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
+      <tr><td>Within-subgroup distributions (Section 3)<br><span class="small">Are response shapes reproduced inside each demographic group?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
       <tr><td>Demographic baseline calibration (Section 3)<br><span class="small">Do subgroup means in the control condition match humans?</span></td><td class="ok">✓</td><td class="ok">✓</td><td class="no-x">—</td></tr>
       <tr><td>Demographic predictability / stereotyping (Section 3)<br><span class="small">Do demographics predict responses with human-like strength, or do clones over-rely on them?</span></td><td class="ok">✓</td><td class="no-x">—</td><td class="no-x">—</td></tr>
     </tbody>

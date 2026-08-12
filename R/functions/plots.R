@@ -783,6 +783,118 @@ plot_field_forest_single <- function(forest_df,
     plot_theme
 }
 
+# Grouped version of the ranking forest (panel B of the headline figure):
+# the ranked entries are cut into n_groups rank blocks (quartiles by default), and each block
+# closes with a summary row — the density of its members' scores and a
+# diamond at their mean. The group means are descriptive, so they carry no
+# intervals. All densities (groups and the all-approaches row) share one
+# bandwidth, estimated on the full field: a kernel density over a handful of
+# entries would otherwise pick its own narrow bandwidth and show spurious
+# bumps. Spacer levels differ only in width so the discrete axis keeps the
+# blank rows apart.
+plot_field_forest_grouped <- function(forest_df,
+                                        metric_main      = "Pearson r",
+                                        metric_companion = "Pearson r (adj.)",
+                                        ref_label        = "Human replication",
+                                        field_label      = "All approaches",
+                                        null_line        = 0,
+                                        x_lab            = "Pearson r",
+                                        n_groups         = 4,
+                                        group_labels     = paste("Quartile", seq_len(n_groups)),
+                                        tag              = NULL) {
+  main <- forest_df |> filter(as.character(metric) == metric_main)
+  comp <- forest_df |>
+    filter(as.character(metric) == metric_companion, !is.na(value))
+
+  ranked <- main |>
+    filter(submission != ref_label) |>
+    arrange(desc(value)) |>
+    mutate(group = ceiling(row_number() / (n() / n_groups)))
+
+  lvls <- c(field_label, "")
+  for (g in rev(seq_len(n_groups))) {
+    members <- ranked |> filter(group == g) |> arrange(value) |> pull(submission)
+    lvls <- c(lvls, strrep(" ", g + n_groups + 5), group_labels[g],
+              strrep(" ", g + 1), members)
+  }
+  lvls <- c(lvls, ref_label)
+  main <- main |> mutate(submission = factor(submission, levels = lvls))
+  comp <- comp |> mutate(submission = factor(submission, levels = lvls))
+
+  ref_val <- main |> filter(submission == ref_label) |> pull(value)
+  rng <- range(c(main$value, main$lo, main$hi, comp$value, null_line),
+               na.rm = TRUE)
+
+  field_vals <- na.omit(ranked$value)
+  bw_shared <- density(field_vals)$bw
+  dens_scaled <- function(vals, base_pos, grp, height = 1.5) {
+    d <- density(vals, bw = bw_shared, from = rng[1], to = rng[2])
+    tibble(x = c(d$x[1], d$x, d$x[length(d$x)]),
+           y = base_pos + c(0, d$y / max(d$y) * height, 0),
+           grp = grp)
+  }
+
+  polys <- bind_rows(
+    dens_scaled(field_vals, 1, "field", height = 1.6),
+    map_dfr(seq_len(n_groups), function(g) {
+      vals <- ranked |> filter(group == g) |> pull(value) |> na.omit()
+      dens_scaled(vals, match(group_labels[g], lvls), paste0("g", g))
+    })
+  )
+  group_summ <- map_dfr(seq_len(n_groups), function(g) {
+    vals <- ranked |> filter(group == g) |> pull(value) |> na.omit()
+    tibble(mean = mean(vals), pos = match(group_labels[g], lvls))
+  })
+  comp_vals <- comp |>
+    filter(submission != ref_label) |>
+    pull(value) |>
+    na.omit()
+  field_summ <- tibble(
+    mean      = mean(field_vals),
+    ci        = qnorm(0.975) * sd(field_vals) / sqrt(length(field_vals)),
+    mean_comp = if (length(comp_vals)) mean(comp_vals) else NA_real_
+  )
+
+  ggplot(main, aes(value, submission)) +
+    geom_vline(xintercept = null_line, linetype = "dotted",
+               colour = field_colours[["null"]], linewidth = 0.4) +
+    geom_vline(xintercept = ref_val, linetype = "dotted", colour = "grey50",
+               linewidth = 0.4) +
+    geom_polygon(data = polys, aes(x, y, group = grp),
+                 fill = field_colours[["violin"]], colour = NA, alpha = 0.55,
+                 inherit.aes = FALSE) +
+    geom_errorbarh(data = field_summ,
+                   aes(xmin = mean - ci, xmax = mean + ci, y = 1),
+                   height = 0.35, linewidth = 0.5,
+                   colour = field_colours[["marker"]], inherit.aes = FALSE) +
+    geom_point(data = field_summ |> filter(!is.na(mean_comp)),
+               aes(mean_comp, 1), shape = 21, size = 2, fill = "white",
+               colour = field_colours[["point"]], stroke = 0.5,
+               inherit.aes = FALSE) +
+    geom_point(data = field_summ, aes(mean, 1), shape = 23, size = 3,
+               fill = "white", colour = field_colours[["marker"]],
+               stroke = 0.7, inherit.aes = FALSE) +
+    geom_point(data = group_summ, aes(mean, pos), shape = 23, size = 2.6,
+               fill = "white", colour = field_colours[["marker"]],
+               stroke = 0.7, inherit.aes = FALSE) +
+    geom_errorbarh(aes(xmin = lo, xmax = hi), height = 0, linewidth = 0.45,
+                   colour = "grey40") +
+    geom_point(data = comp, shape = 21, size = 2, fill = "white",
+               colour = field_colours[["point"]], stroke = 0.5) +
+    geom_point(aes(fill = submission == ref_label), shape = 21, size = 2.2,
+               colour = "white", stroke = 0.4) +
+    scale_fill_manual(values = c(`TRUE`  = field_colours[["ceiling"]],
+                                 `FALSE` = field_colours[["point"]]),
+                      guide = "none") +
+    scale_y_discrete(drop = FALSE) +
+    coord_cartesian(xlim = rng) +
+    labs(x = x_lab, y = NULL, tag = tag) +
+    plot_theme +
+    theme(axis.text.y = element_text(
+      face = ifelse(lvls %in% c(group_labels, field_label, ref_label),
+                    "bold", "plain")))
+}
+
 # Response densities in one condition, one facet per outcome: every Tier-1
 # approach a thin line, the human reference (Human 1) bold, the replication
 # half (Human 2) dashed red. `annotations` (optional) is a tibble with
