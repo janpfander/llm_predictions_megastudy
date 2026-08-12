@@ -32,7 +32,7 @@ The highest one your approach supports. **Tier 1 (individual-level synthetic dat
 
 ### Do we get a participant pool?
 
-No. The benchmark ships the survey, the codebook, the intervention texts, and a validator, but no profiles and never any human outcome data. You construct your own synthetic respondents from any source (a public survey such as GSS, ANES, or the Census, fully synthetic personas, or none) and assign them to the 17 conditions yourself. `profile_id` is simply a unique id you assign. If you want to match the human target population, the census-based quota table in the [benchmark preregistration](preregistration_benchmark.qmd#the-human-target-sample) is available to sample against, but using it is your choice. You declare how you built your profiles in registration items D.1 to D.3.
+No. The benchmark ships the survey, the codebook, the intervention texts, and a validator, but no profiles and never any human outcome data. You construct your own synthetic respondents from any source (a public survey such as GSS, ANES, or the Census, fully synthetic personas, or none) and assign them to the 17 conditions yourself. `profile_id` is simply a unique id you assign. If you want to match the human target population, the census-based quota table in the [benchmark preregistration](preregistration_benchmark.qmd#sec-human-sample) is available to sample against, but using it is your choice. You declare how you built your profiles in registration items D.1 to D.3.
 
 ### How many synthetic respondents do we need?
 
