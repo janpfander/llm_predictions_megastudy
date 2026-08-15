@@ -289,12 +289,18 @@ run_moderator_model <- function(data,
                                 weights           = NULL,
                                 adjust_method     = "BH",
                                 compute_predicted = TRUE) {
-  
+
   rhs           <- paste(c(paste0(condition_var, " * ", moderator), covariates),
                          collapse = " + ")
   model_formula <- as.formula(paste(outcome, "~", rhs))
   baseline      <- levels(data[[condition_var]])[1]
-  
+
+  # The interaction coefficients are contrasts against two reference levels at
+  # once. Both travel with the output: `baseline` (condition) and
+  # `moderator_baseline` (NA for numeric moderators, which have no levels).
+  moderator_baseline <- if (is.numeric(data[[moderator]])) NA_character_ else
+    levels(factor(data[[moderator]]))[1]
+
   fit <- lm(
     model_formula,
     data    = data,
@@ -308,6 +314,7 @@ run_moderator_model <- function(data,
     filter(str_detect(term, ":")) |>
     mutate(
       baseline             = baseline,
+      moderator_baseline   = moderator_baseline,
       condition            = str_extract(term, paste0("(?<=", condition_var, ")[^:]+")),
       moderator_level      = str_remove(str_extract(term, "(?<=:).+"), moderator),
       p.value_adjusted     = p.adjust(p.value, method = adjust_method),
@@ -318,7 +325,7 @@ run_moderator_model <- function(data,
         TRUE                    ~ NA_character_
       )
     )
-  
+
   is_numeric_mod <- is.numeric(data[[moderator]])
 
   # `predicted_effects` (marginal effects via marginaleffects) is the expensive

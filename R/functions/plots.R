@@ -647,9 +647,17 @@ plot_pred_scatter <- function(pairs_df,
 # list of layers to add with `+`. The r / adj. values are passed in from the
 # established metric functions (leaderboard, signed_metrics) so they match the
 # ranked panel; the coefficients are computed here from the plotted pairs.
+# `top_labels` / `bottom_labels` add the extreme groups (top / bottom 10% of
+# the ranking in the forest panel): their average calibration lines (same
+# per-approach-fits-averaged convention as the field line, drawn dashed in
+# greys so the extremes stay colour-free) and corner readouts, with the group
+# r / adj. values passed in like the field's.
 calibration_overlay <- function(pairs_df, r_field, radj_field,
                                 r_human, radj_human,
-                                ref_label = "Human replication") {
+                                ref_label = "Human replication",
+                                top_labels = NULL, bottom_labels = NULL,
+                                r_top = NULL, radj_top = NULL,
+                                r_bottom = NULL, radj_bottom = NULL) {
   coefs <- function(df, across) {
     per <- df |>
       group_by(submission) |>
@@ -681,7 +689,7 @@ calibration_overlay <- function(pairs_df, r_field, radj_field,
   }
 
   m <- max(abs(c(pairs_df$estimate_l, pairs_df$estimate_h)), na.rm = TRUE)
-  list(
+  layers <- list(
     geom_abline(intercept = get(fc, "alpha")$est, slope = get(fc, "beta")$est,
                 colour = field_colours[["point"]], linewidth = 0.8),
     geom_abline(intercept = get(hc, "alpha")$est, slope = get(hc, "beta")$est,
@@ -689,10 +697,29 @@ calibration_overlay <- function(pairs_df, r_field, radj_field,
     annotate("text", x = -m, y = 0.99 * m, hjust = 0, vjust = 1, size = 2.8,
              lineheight = 0.95, colour = field_colours[["point"]],
              label = lab("Field", r_field, radj_field, fc)),
-    annotate("text", x = -m, y = 0.68 * m, hjust = 0, vjust = 1, size = 2.8,
+    annotate("text", x = -m, y = 0.72 * m, hjust = 0, vjust = 1, size = 2.8,
              lineheight = 0.95, colour = field_colours[["ceiling"]],
              label = lab("Human", r_human, radj_human, hc))
   )
+  group_layers <- function(labels, r_grp, radj_grp, name, y_pos, colour) {
+    gc <- coefs(pairs_df |> filter(submission %in% labels), across = TRUE)
+    list(
+      geom_abline(intercept = get(gc, "alpha")$est, slope = get(gc, "beta")$est,
+                  colour = colour, linewidth = 0.6, linetype = "42"),
+      annotate("text", x = -m, y = y_pos * m, hjust = 0, vjust = 1, size = 2.8,
+               lineheight = 0.95, colour = colour,
+               label = lab(name, r_grp, radj_grp, gc))
+    )
+  }
+  # the extreme-group readouts live in the lower-left corner, below the point
+  # cloud, so they never collide with the data
+  if (!is.null(top_labels))
+    layers <- c(layers, group_layers(top_labels, r_top, radj_top,
+                                     "Top 10%", -0.52, "grey30"))
+  if (!is.null(bottom_labels))
+    layers <- c(layers, group_layers(bottom_labels, r_bottom, radj_bottom,
+                                     "Bottom 10%", -0.78, "grey60"))
+  layers
 }
 
 # Single-metric ranking with an integrated field-summary row: approaches
@@ -702,7 +729,11 @@ calibration_overlay <- function(pairs_df, r_field, radj_field,
 # bottom — a meta-analytic-style summary carrying the field's density (drawn
 # upward into a blank spacer row), the field mean as a diamond, and a 95% CI
 # on that mean. `forest_df` is the long cluster_boot output: submission,
-# metric, value, lo, hi.
+# metric, value, lo, hi. `highlight_top` / `highlight_bottom` (character
+# vectors of submission labels) shade the extreme groups' rows in grey — no
+# accent colour. `rank_order` optionally fixes the ranking (worst to best)
+# from outside, so a registered tie rule computed on the leaderboard can
+# override the plain value sort.
 plot_field_forest_single <- function(forest_df,
                                      metric_main      = "Pearson r",
                                      metric_companion = "Pearson r (adj.)",
@@ -710,15 +741,21 @@ plot_field_forest_single <- function(forest_df,
                                      field_label      = "All approaches",
                                      null_line        = 0,
                                      x_lab            = "Pearson r",
+                                     highlight_top    = NULL,
+                                     highlight_bottom = NULL,
+                                     top_label        = "Top 10%",
+                                     bottom_label     = "Bottom 10%",
+                                     rank_order       = NULL,
                                      tag              = NULL) {
   main <- forest_df |> filter(as.character(metric) == metric_main)
   comp <- forest_df |>
     filter(as.character(metric) == metric_companion, !is.na(value))
 
-  ranked <- main |>
-    filter(submission != ref_label) |>
-    arrange(desc(is.na(value)), value) |>
-    pull(submission)
+  ranked <- if (!is.null(rank_order)) rank_order else
+    main |>
+      filter(submission != ref_label) |>
+      arrange(desc(is.na(value)), value) |>
+      pull(submission)
   # summary row at the bottom, blank spacer row above it for its density
   lvls <- c(field_label, "", ranked, ref_label)
   main <- main |> mutate(submission = factor(submission, levels = lvls))
@@ -727,6 +764,22 @@ plot_field_forest_single <- function(forest_df,
   ref_val <- main |> filter(submission == ref_label) |> pull(value)
   rng <- range(c(main$value, main$lo, main$hi, comp$value, null_line),
                na.rm = TRUE)
+
+  shade_band <- function(subs) {
+    rows <- match(subs, lvls)
+    if (!length(rows) || anyNA(rows)) return(NULL)
+    annotate("rect", xmin = -Inf, xmax = Inf,
+             ymin = min(rows) - 0.5, ymax = max(rows) + 0.5,
+             fill = "grey80", alpha = 0.35)
+  }
+  # names the shaded bands at the right panel edge (drawn into the margin,
+  # so coord_cartesian() runs with clip = "off" below)
+  shade_label <- function(subs, lab) {
+    rows <- match(subs, lvls)
+    if (!length(rows) || anyNA(rows) || is.null(lab)) return(NULL)
+    annotate("text", x = rng[2] + 0.035 * diff(rng), y = mean(range(rows)),
+             label = lab, angle = 270, size = 2.9, colour = "grey35")
+  }
 
   field_vals <- main |>
     filter(submission != ref_label) |>
@@ -750,6 +803,10 @@ plot_field_forest_single <- function(forest_df,
   )
 
   ggplot(main, aes(value, submission)) +
+    shade_band(highlight_top) +
+    shade_band(highlight_bottom) +
+    shade_label(highlight_top, top_label) +
+    shade_label(highlight_bottom, bottom_label) +
     geom_vline(xintercept = null_line, linetype = "dotted",
                colour = field_colours[["null"]], linewidth = 0.4) +
     geom_vline(xintercept = ref_val, linetype = "dotted", colour = "grey50",
@@ -778,9 +835,10 @@ plot_field_forest_single <- function(forest_df,
                                  `FALSE` = field_colours[["point"]]),
                       guide = "none") +
     scale_y_discrete(drop = FALSE) +
-    coord_cartesian(xlim = rng) +
+    coord_cartesian(xlim = rng, clip = "off") +
     labs(x = x_lab, y = NULL, tag = tag) +
-    plot_theme
+    plot_theme +
+    theme(plot.margin = margin(5.5, 20, 5.5, 5.5))
 }
 
 # Grouped version of the ranking forest (panel B of the headline figure):
@@ -903,7 +961,8 @@ plot_field_forest_grouped <- function(forest_df,
 plot_density_overlay <- function(human_ref, human_rep, team_data, outcomes,
                                  condition_val, outcome_labels = NULL,
                                  annotations = NULL, team_col = "team",
-                                 x_lab = "Response", ncol = 4) {
+                                 x_lab = "Response", ncol = 4,
+                                 facet_scales = "free_y") {
   relabel <- function(df) df |>
     mutate(outcome = factor(
       if (is.null(outcome_labels)) outcome else unname(outcome_labels[outcome]),
@@ -925,7 +984,7 @@ plot_density_overlay <- function(human_ref, human_rep, team_data, outcomes,
                  linetype = "dashed", linewidth = 0.55, na.rm = TRUE) +
     geom_density(data = longify(human_ref), colour = "grey15",
                  linewidth = 0.7, na.rm = TRUE) +
-    facet_wrap(~ outcome, scales = "free_y", ncol = ncol) +
+    facet_wrap(~ outcome, scales = facet_scales, ncol = ncol) +
     # headroom above the curves so the corner stamp does not sit on the peaks
     scale_y_continuous(expand = expansion(mult = c(0.02, 0.30))) +
     labs(x = x_lab, y = "Density") +

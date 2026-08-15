@@ -120,7 +120,7 @@ format:
 
   <div class="sst-callout">
     <span class="tag">Multiple entries welcome</span>
-    <p>We actively encourage teams to enter more than once, up to <strong>three entries per tier</strong>. Each approach is a separate entry with its own repository and registration, and <strong>every entry enters all main analyses</strong> — the field statistics and the leaderboard. The per-tier cap limits how much any single team can shape the field distribution. If there are good reasons to systematically vary some aspect of an approach, we may grant more entries on request, but only three per tier enter the main analyses. The team designates exactly one of its entries — across tiers — as its <strong>primary entry</strong>: a robustness analysis reruns the main results on primary entries only, one per team. In figures and the leaderboard, entries appear under neutral submission labels, with a table in the appendix mapping each label to its team. The most informative way to use multiple entries is <strong>structured variation</strong>: vary one factor you believe matters (the amount of individual-level information, the model, the elicitation format) and hold the rest fixed. Restacking one method across tiers remains pointless — a Tier-1 entry already yields the Tier-2 and Tier-3 metrics.</p>
+    <p>We actively encourage teams to enter more than once, up to <strong>three entries per tier</strong>. Each approach is a separate entry with its own repository and registration, and <strong>every entry enters all main analyses</strong> — the field statistics and the leaderboard. The per-tier cap limits how much any single team can shape the field distribution. If there are good reasons to systematically vary some aspect of an approach, we may grant more entries on request, but only three per tier enter the main analyses. The team designates exactly one of its entries — across tiers — as its <strong>primary entry</strong>: a robustness analysis reruns the main results on primary entries only, one per team. In figures and the leaderboard, entries appear under neutral submission labels, with a table mapping each label to its team. The most informative way to use multiple entries is <strong>structured variation</strong>: vary one factor you believe matters (the amount of individual-level information, the model, the elicitation format) and hold the rest fixed. Restacking one method across tiers remains pointless — a Tier-1 entry already yields the Tier-2 and Tier-3 metrics.</p>
   </div>
 
   <h3>Analysis eligibility by tier</h3>
@@ -283,7 +283,7 @@ format:
     <thead><tr><th style="width:260px">Metric / comparison</th><th>What it asks</th></tr></thead>
     <tbody>
       <tr class="grp"><td colspan="2">ATE recovery — increasing strictness, top to bottom</td></tr>
-      <tr><td>Directional agreement</td><td>Do you get the sign of each effect right? Chance = 50%.</td></tr>
+      <tr><td>Directional agreement</td><td>Do you get the sign of each effect right? Exact-zero predictions score half credit. The chance level to beat is the share of positive human effects (the all-positive baseline row), not a fixed 50%.</td></tr>
       <tr><td>Spearman ρ</td><td>Do you rank the interventions in the human order?</td></tr>
       <tr><td>Pearson r</td><td>Are your effects proportional to human effects?</td></tr>
       <tr><td>RMSE</td><td>How large is the absolute magnitude error, in percentage points of the outcome's scale range?</td></tr>
@@ -291,7 +291,7 @@ format:
       <tr><td>Calibration regression</td><td>Human ATEs regressed on predicted ATEs, separating additive bias (intercept α) from proportionality (slope β); both reported with 95% CIs and read descriptively.</td></tr>
       <tr><td>Subgroup effects</td><td>Recovery of condition × moderator interaction effects — whether treatment effects vary across the six demographic moderators as they do in humans, scored with the same signed-effect metrics.</td></tr>
       <tr><td>Distributional metrics <span class="small">(Tier 1)</span></td><td>Variance ratio, distribution overlap coefficient (OVL), Kolmogorov–Smirnov distance, and Wasserstein-1 distance — whether response <em>shapes</em> are reproduced, not just means; also within subgroups.</td></tr>
-      <tr><td>Demographic baseline calibration</td><td>Pearson r and RMSE of subgroup means against humans in the control condition, computed per moderator.</td></tr>
+      <tr><td>Demographic baseline calibration</td><td>RMSE of subgroup means against humans in the control condition, computed per moderator, plus the gap between the worst- and best-served group (demographic parity gap).</td></tr>
       <tr><td>Demographic predictability / stereotyping</td><td>R² from separate per-moderator regressions — whether demographics predict synthetic responses with the same strength as in humans, or whether clones over-rely on demographic cues.</td></tr>
     </tbody>
   </table>

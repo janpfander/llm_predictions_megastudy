@@ -267,7 +267,7 @@ ul.task-list li input[type="checkbox"] {
 
   <div class="sst-callout">
     <span class="tag">Multiple entries welcome</span>
-    <p>We actively encourage teams to enter more than once, up to <strong>three entries per tier</strong>. Each approach is a separate entry with its own repository and registration, and <strong>every entry enters all main analyses</strong> — the field statistics and the leaderboard. The per-tier cap limits how much any single team can shape the field distribution. If there are good reasons to systematically vary some aspect of an approach, we may grant more entries on request, but only three per tier enter the main analyses. The team designates exactly one of its entries — across tiers — as its <strong>primary entry</strong>: a robustness analysis reruns the main results on primary entries only, one per team. In figures and the leaderboard, entries appear under neutral submission labels, with a table in the appendix mapping each label to its team. The most informative way to use multiple entries is <strong>structured variation</strong>: vary one factor you believe matters (the amount of individual-level information, the model, the elicitation format) and hold the rest fixed. Restacking one method across tiers remains pointless — a Tier-1 entry already yields the Tier-2 and Tier-3 metrics.</p>
+    <p>We actively encourage teams to enter more than once, up to <strong>three entries per tier</strong>. Each approach is a separate entry with its own repository and registration, and <strong>every entry enters all main analyses</strong> — the field statistics and the leaderboard. The per-tier cap limits how much any single team can shape the field distribution. If there are good reasons to systematically vary some aspect of an approach, we may grant more entries on request, but only three per tier enter the main analyses. The team designates exactly one of its entries — across tiers — as its <strong>primary entry</strong>: a robustness analysis reruns the main results on primary entries only, one per team. In figures and the leaderboard, entries appear under neutral submission labels, with a table mapping each label to its team. The most informative way to use multiple entries is <strong>structured variation</strong>: vary one factor you believe matters (the amount of individual-level information, the model, the elicitation format) and hold the rest fixed. Restacking one method across tiers remains pointless — a Tier-1 entry already yields the Tier-2 and Tier-3 metrics.</p>
   </div>
 
   <h3 class="anchored">Analysis eligibility by tier</h3>
@@ -708,7 +708,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Directional agreement</td>
-<td>Do you get the sign of each effect right? Chance = 50%.</td>
+<td>Do you get the sign of each effect right? Exact-zero predictions score half credit. The chance level to beat is the share of positive human effects (the all-positive baseline row), not a fixed 50%.</td>
 </tr>
 <tr class="odd">
 <td>Spearman ρ</td>
@@ -739,7 +739,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td>Demographic baseline calibration</td>
-<td>Pearson r and RMSE of subgroup means against humans in the control condition, computed per moderator.</td>
+<td>RMSE of subgroup means against humans in the control condition, computed per moderator, plus the gap between the worst- and best-served group (demographic parity gap).</td>
 </tr>
 <tr class="odd">
 <td>Demographic predictability / stereotyping</td>
